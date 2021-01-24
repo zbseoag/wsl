@@ -1,0 +1,8 @@
+RabbitMQ    /ra比特/
+ActiveMQ    /啊克踢无
+RocketMQ    /若剋特
+topic       /托皮克
+Token       /头肯
+Replication /rai扑你剋型
+Statement /丝逮特闷特
+relay /瑞内

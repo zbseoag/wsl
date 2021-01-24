@@ -1,0 +1,298 @@
+什么是索引？
+索引是存储引擎用于快速找到记录的一种数据结构。
+
+为什么要优化索引？
+索引能够轻易将查询效率提高好几个数据级。但不恰当的索引，不仅无用，还有可能在数据量逐渐增大时，使性能急剧下降。
+
+索引的工作过程？
+存储引擎先在索引中找到查询条件中对应值，然后根据匹配的索引找到对应的数据行。
+
+什么是独立索引和多列索引？
+索引可以包含一个或多个列的值，如果是多列索引，那么列的顺序十分重要，因为 Mysql 只能高效地使用索引的最左前缀列。
+
+索引是在哪一层实现的？
+索引是在存储引擎层实现的，所以前没有统一的实现标准。
+
+索引有哪些类型？
+B-Tree 索引：使用 B-Tree 数据结构来存储索引数据，所有值都是按顺序存储，并且每一个叶子页到根的距离相同。
+不过底层存储引擎也可能使用了不同的存储结构，如：NDB 集群存储索引使用 T-Tree；InnoDB 使用的 B+Tree。
+存储引擎不再需要全表扫描来获取数据，而是从索引根节点开始搜索，然后再根据槽中指向子节点的指针继续向下层查找。
+叶子节点比较特别，它们的指针指向的是被索引的数据。
+B-Tree 对索引是顺序组织存储的，所以很适合查找范围数据。
+
+B-Tree 索引适合哪些查找类型？
+全值匹配、匹配最左前缀、匹配列前缀、匹配范围值
+
+限制
+如果不是按照索引的最左列开始查找，则无法使用索引。
+不能跳过索引中的列。
+如果查询中有某个列是范围查询，则其后面所有列都无法使用索引优化查询。
+
+
+哈希索引：基于哈希表实现，对索引列计算一个哈希码并存储到索引中，同时哈希表中保存着指向数据行的指针。只有精确匹配索引所有列的查询才有效。
+缺点：哈希索引不是按照索引值顺序来存储的，所以无法用于排序。
+由于哈希索引是使用索引列的全部内容来计算哈希值的，所以无法支持部分索引列的匹配查找。
+只能支持等值比较查询。如：=、IN、<=>
+如果有哈希冲突的话，一些索引维护操作代价会很高。
+
+空间数据索引
+可以用作地理数据存储。空间索引会从所有维度来索引数据，所以无须注意前缀查询。
+
+全文索引
+用于查询文本中的关键字，类似于搜索引擎做的事情。
+
+索引有哪些优点？
+1、索引大大减少了服务器需要扫描的数据行。
+2、索引可能帮助服务器避免排序和临时表。
+3、索引可以将随机 IO 变为顺序 IO。
+
+什么是索引选择性？
+不重复的索引值与数据表总记录数的比值，值超大表示选择性越高，则查询效率越高。
+选择性高的索引可以让 Mysql 在查询时过滤掉更多的行。
+
+
+从数据结构角
+1、B-Tree索引
+2、hash 索引
+3、全文索引
+
+从物理存储角度
+1、聚集索引（clustered index）
+2、非聚集索引（non-clustered index）
+
+从逻辑角度
+1、主键索引：主键索引是一种特殊的唯一索引，不允许有空值
+2、普通索引
+3、多列索引：复合索引指多个字段上创建的索引，只有在查询条件中使用了创建索引时的第一个字段，索引才会被使用。使用复合索引时遵循最左前缀集合
+4、唯一索引
+5、空间索引：空间索引是对空间数据类型的字段建立的索引，MYSQL中的空间数据类型有4种，分别是GEOMETRY、POINT、LINESTRING、POLYGON。MYSQL使用SPATIAL关键字进行扩展，使得能够用于创建正规索引类型的语法创建空间索引。创建空间索引的列，必须将其声明为NOT NULL，空间索引只能在存储引擎为MYISAM的表中创建
+
+ 
+
+run -d -e MYSQL_ROOT_PASSWORD=123456 -p 3306:3306 mysql mysql:8.0 --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+
+dock open mysql-1 /etc/mysql/my.cnf
+log_bin = mysql-bin
+server_id = 10
+
+dock push mysql-1 /etc/mysql/my.cnf
+docker restart mysql-1
+
+主：
+grant replication slave, replication client on *.* to repl@'172.18.0.%' identified by '123456'
+show master status;
+
+备：
+log_bin = mysql-bin
+server_id = 2
+relay_log = /var/lib/mysql/mysql-relay-bin
+log_slave_updates = 1
+read_only = 1
+skip_slave_start
+sync_master_info = 1
+sync_relay_log = 1
+sync_relay_log_info = 1
+
+
+change master to master_host='mysql-1', master_user='repl', master_password='123456', master_log_file='mysql-bin.000001', master_log_pos=0;
+show slave status\G
+start slave;
+show slave status\G
+show processlist\G
+show processlist\G
+
+sync_binlog = 1
+innodb_flush_logs_at_trx_commit
+innodb_support_xa = 1
+innodb_safe_binlog
+
+
+采用 blackhole 
+storage_engine = blackhole
+
+show master logs;
+show binlog events in 'mysql-bin.000001' from 775\G;
+
+checksum table;
+
+pt-table-checksum --replicate=test.checksum <master-host>
+pt-summary
+pt-mysql-summary
+
+
+在服务器之间复制
+mysqldump --host=server1 test tb1 | mysql --host server2 test
+
+mysqldump --all-databases > dump.sql
+mysqldump --databases test > dump.sql
+mysqldump test.user > dump.sql
+
+show tables form <database>
+lock tables read
+
+
+flush privileges
+
+DROP TABLE [IF EXISTS] tbl_name
+
+mysql> SELECT CONCAT(first_name, ' ', last_name)
+    -> FROM citizen
+    -> WHERE income/dependents > 10000 AND age > 30;
+
+mysqldump
+mysqladmin
+mysqlcheck
+myisamchk
+
+
+--transaction-isolation=SERIALIZABLE --sql-mode=ANSI
+
+SET GLOBAL TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+SET GLOBAL sql_mode = 'ANSI';
+
+SELECT @@GLOBAL.sql_mode;
+
+当版本大于等于5.1.10 时
+CREATE TABLE t1(a INT, KEY (a)) /*!50110 KEY_BLOCK_SIZE=1024 */;   
+
+ANALYZE TABLE
+CHECK TABLE
+OPTIMIZE TABLE
+REPAIR TABLE
+
+CREATE DATABASE
+DROP DATABASE
+ALTER DATABASE
+
+FLUSH
+RESET
+EXPLAIN SELECT
+LOAD DATA
+RENAME TABLE
+REPLACE
+LAST_INSERT_ID()
+
+INSERT INTO tbl_name SET col_name =
+
+SELECT * FROM t1 FOR UPDATE INTO @myvar;
+SELECT id, data INTO @x, @y FROM test.t1 LIMIT 1;
+
+TABLE t ORDER BY b LIMIT 3 OFFSET 2;
+SELECT * FROM t1 WHERE a IN (TABLE t2);
+TABLE t1 UNION TABLE t2;
+
+
+TABLE employees ORDER BY lname DESC LIMIT 1
+INTO @id, @fname, @lname, @hired, @separated, @job_code, @store_id;
+
+SELECT * FROM (VALUES ROW(2,4,8)) AS t INTO @x,@y,@z;
+SELECT * FROM (VALUES ROW(2,4,8)) AS t(a,b,c) INTO @x,@y,@z;
+
+LOAD DATA INFILE 'data.txt' INTO TABLE db2.my_table;
+
+
+INSERT INTO tbl_temp2 (fld_id)
+    SELECT tbl_temp1.fld_order_id
+    FROM tbl_temp1 WHERE tbl_temp1.fld_order_id > 100;
+
+更新差异：结果是 col1和col2具有相同的值
+UPDATE t1 SET col1 = col1 + 1, col2 = col1;
+
+CREATE TABLE IF NOT EXISTS `user`(
+   `id` INT UNSIGNED AUTO_INCREMENT,
+   `name` VARCHAR(100) NOT NULL,
+   `age` int(10) NOT NULL,
+   `create` DATE,
+   PRIMARY KEY ( `id` )
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO user(`name`, `age`, `create`) VALUES("JAVA", "12", '2016-05-06');
+
+SHOW COUNT(*) WARNINGS;
+SELECT @@warning_count;
+
+SHOW VARIABLES LIKE 'max_error_count';
+
+SELECT TABLE_SCHEMA, TABLE_NAME, COLUMN_NAME, CONSTRAINT_NAME
+FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+WHERE REFERENCED_TABLE_SCHEMA IS NOT NULL;
+
+set foreign_key_checks = 1;
+[CONSTRAINT [symbol]] FOREIGN KEY
+    [index_name] (col_name, ...)
+    REFERENCES tbl_name (col_name,...)
+    [ON DELETE reference_option]
+    [ON UPDATE reference_option]
+
+reference_option:
+    RESTRICT | CASCADE | SET NULL | NO ACTION | SET DEFAULT
+
+
+CREATE TABLE product (
+    category INT NOT NULL, id INT NOT NULL,
+    price DECIMAL,
+    PRIMARY KEY(category, id)
+)   ENGINE=INNODB;
+
+CREATE TABLE customer (
+    id INT NOT NULL,
+    PRIMARY KEY (id)
+)   ENGINE=INNODB;
+
+CREATE TABLE product_order (
+    no INT NOT NULL AUTO_INCREMENT,
+    product_category INT NOT NULL,
+    product_id INT NOT NULL,
+    customer_id INT NOT NULL,
+
+    PRIMARY KEY(no),
+    INDEX (product_category, product_id),
+    INDEX (customer_id),
+
+    FOREIGN KEY (product_category, product_id) REFERENCES product(category, id)
+    ON UPDATE CASCADE ON DELETE RESTRICT,
+
+    FOREIGN KEY (customer_id) REFERENCES customer(id)
+)   ENGINE=INNODB;
+
+
+ALTER TABLE tbl_name
+    ADD [CONSTRAINT [symbol]] FOREIGN KEY
+    [index_name] (col_name, ...)
+    REFERENCES tbl_name (col_name,...)
+    [ON DELETE reference_option]
+    [ON UPDATE reference_option]
+
+ALTER TABLE tbl_name DROP FOREIGN KEY fk_symbol;
+
+SHOW CREATE TABLE
+
+您可以从INFORMATION_SCHEMA.KEY_COLUMN_USAGE 表中获取有关外键的信息 。此处显示了针对该表的查询示例
+SELECT TABLE_SCHEMA, TABLE_NAME, COLUMN_NAME, CONSTRAINT_NAME
+       FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+       WHERE REFERENCED_TABLE_SCHEMA IS NOT NULL;
+
+SHOW ENGINE INNODB STATUS\G
+
+
+MySQL 数据表的约束
+约束保证数据的完整性和一致性，约束分为表级约束和列级约束。
+约束类型包括：
+NOT NULL            (非空约束)
+PRIMARY KEY       (主键约束)
+UNIQUE KEY         (唯一约束)
+DEFAULT              (默认约束)
+FOREIGN KEY       (外键约束)
+
+ 
+
+外键约束保证数据一致性，完整性，实现一对多或者一对一关系 (含有外键的表称为子表)
+
+外键约束的要求
+1）父表和子表必须使用相同的存储引擎，而且禁止使用临时表
+2）数据表的存储引擎只能为InnoDB
+3）外键列和参照列必须具有相似的数据类型，其中数字的长度或是否有符号位必须相同，而字符的长度则可以不同
+4）外键列和参照列必须创建索引。如果外键列不存在索引的话，MYSQL将自动创建索引
+
+“套接字”，它是计算机之间进行通信约定的一种数据格式。
