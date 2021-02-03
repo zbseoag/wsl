@@ -1669,7 +1669,7 @@ mongo
 http://localhost:27017/
 
 
-
+redis-cli info | grep config 
 
 
 dpkg -l |grep ^rc|awk '{print $2}' |sudo xargs dpkg -P              清除残余的配置文件
@@ -1678,15 +1678,48 @@ sudo apt-get install libtool
 sudo apt install autoreconf  
 
 
-
 redis-cli> info replication
-
 
 redis-server 6400.conf --sentinel &&  redis-server 6401.conf --sentinel
 
-redis-cli --cluster-replicas 1 --cluster create 127.0.0.1:6300 127.0.0.1:6301 127.0.0.1:6302 127.0.0.1:6303 127.0.0.1:6304 127.0.0.1:6305
+redis-cli --cluster create  172.18.0.2:6379 172.18.0.3:6379 172.18.0.4:6379 172.18.0.5:6379 172.18.0.6:6379 172.18.0.7:6379 --cluster-replicas 1
 
-redis-cli -c -h 127.0.0.1 -p 6305 
+
+redis-cli -c -h 172.18.0.2 -p 6379
+
+#查看主节点
+redis-cli -h 172.18.0.2 cluster nodes | grep master
+
+#主节点进入下线状态
+redis-cli -h 172.18.0.2 debug segfault 
+
+redis-cli -h 172.18.0.3 cluster nodes
+
+
+redis-cli --cluster add-node 172.18.0.8:6379 172.18.0.2:6379 --cluster-slave --cluster-master-id e6d0ea4e0d07108ebecbcec5fecf91d7518dd64c
+
+
+cluster addslots
+cluster count-failure-reports
+cluster countkeysinslot
+cluster getkeysinslot
+cluster delslots
+cluster failover
+cluster forget
+cluster info
+cluster keyslot
+cluster meet
+cluster nodes
+cluster replicas <master-node-id> 
+cluster replicate
+cluster reset
+cluster saveconfig
+cluster set-config-epoch
+cluster setslot
+cluster slaves
+cluster slots
+readonly
+readwrite
 
 
 subscribe channle
@@ -2498,4 +2531,9 @@ sudo usermod -d /var/lib/mysql/ mysql
 sudo service mysql start
 
 
+ipconfig /flushdns
 
+
+redis> CONFIG GET appendonly           # appendonly 处于关闭状态
+redis> CONFIG SET appendonly yes       # 打开 appendonly
+redis> CONFIG REWRITE                  # 将 appendonly 的修改写入到 redis.conf 中
