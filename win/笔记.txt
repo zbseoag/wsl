@@ -2537,3 +2537,14 @@ ipconfig /flushdns
 redis> CONFIG GET appendonly           # appendonly 处于关闭状态
 redis> CONFIG SET appendonly yes       # 打开 appendonly
 redis> CONFIG REWRITE                  # 将 appendonly 的修改写入到 redis.conf 中
+
+
+
+runkit7_function_remove 
+
+
+./ext_skel.php --ext myfunctions --std
+cd myfunctions/
+phpize
+./configure
+make
