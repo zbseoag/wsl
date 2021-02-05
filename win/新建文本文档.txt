@@ -138,3 +138,225 @@ docker.open nginx-3 /usr/share/nginx/html/index.html
 
 使用 self:: 或者 __CLASS__ 对当前类的静态引用，取决于当前方法所在的类
 static  表示运行时最初调用的类来绕过限制
+
+
+
+
+模式修饰符 
+i 忽略大小写  
+m 多行模式 
+s 点号匹配包括换行符
+x 
+A (PCRE_ANCHORED) 锚定模式
+S 分析
+U 非贪婪
+
+
+1、表达式定义常量：可以使用包括数值、字符串字面量以及其他常量在内的数值表达式来 定义常量、声明属性以及设置函数参数默认值。
+
+使用 ... 运算符定义变长参数函数
+
+使用 ... 运算符进行参数展开
+
+使用 ** 进行幂运算
+
+use function 以及 use const
+
+PHP 的 SAPI 模块中实现了一个 交互式调试器，叫做 phpdbg
+
+大文件上传：支持大于 2GB 的文件上传。
+
+GMP 支持运算符重载：$a = gmp_init(42); $b = gmp_init(17); echo $a + $b；
+
+
+使用 hash_equals() 比较字符串避免时序攻击。
+
+在 PHP 7 中，很多致命错误以及可恢复的致命错误，都被转换为异常来处理了。
+
+set_exception_handler() 不再保证收到的一定是 Exception 对象 
+function handler(Throwable $e) { ... }
+
+
+间接调用的表达式的新旧解析顺序，旧的从右向左，新的从左到右。如：$$foo['bar']['baz'] 	PHP5：${$foo['bar']['baz']}	 PHP7：($$foo)['bar']['baz']
+
+foreach不再移动数组内部指针
+
+foreach 通过值遍历时，操作的值为数组的副本，foreach 中的操作不会修改原数组的值。
+
+foreach通过引用遍历时，能跟踪变化。
+
+十六进制形式的字符串不再被认为是数字。
+
+dl()在 PHP-FPM 不可用，在 CLI 和 embed SAPIs 中仍可用。
+
+
+类/接口 名称	值必须为指定类和接口的实例化对象 instanceof	 
+self	值必定是所在方法的类的一个 instanceof。 只能在类的内部使用。	 
+array	值必须为 array。	 
+callable	值必定是一个有效的 callable。 不能用于类属性的类型声明。	 
+bool	值必须为一个布尔值。	 
+float	值必须为一个浮点数字。	 
+int	值必须为一个整型数字。	 
+string	值必须为一个 string。	 
+iterable	值必须为 array 或 instanceof Traversable。	PHP 7.1.0
+object	值必须为object。	PHP 7.2.0
+mixed	值可以为任何类型。	PHP 8.0.0
+
+联合类型接受多个不同的类型做为参数。声明联合类型的语法为 T1|T2|...。联合类型自 PHP 8.0.0 起可用。
+
+false 伪类型 通过联合类型支持字面类型（Literal Type）false， 出于历史原因，很多内部函数在失败时返回了 false 而不是 null。
+
+
+null合并运算符 $username = $_GET['user'] ?? 'nobody';
+
+标量类型声明
+
+组合比较符
+通过 define() 定义常量数组
+new class 来实例化一个匿名类
+
+Closure::call() 现在有着更好的性能，简短干练的暂时绑定一个方法到对象上闭包并调用它。
+整数除法函数 intdiv() 
+
+Throwable
+Error
+TypeError
+ParseError
+AssertionError
+ArithmeticError
+DivisionByZeroError
+
+放宽了保留词限制，现在允许全局保留词用于类/接口/Trait 中的属性、常量和方法名。 唯一的限制是： class关键词不能用于常量名，否则会和类名解析语法冲突 (ClassName::class)。
+
+
+
+
+可为空（Nullable）类型 
+function testReturn(): ?string
+
+void 返回值类型
+短数组语法
+类常量可见性
+iterable 伪类型
+多异常捕获处理 FirstException | SecondException $e
+
+list()现在支持键名
+$data = [
+    ["id" => 1, "name" => 'Tom'],
+    ["id" => 2, "name" => 'Fred'],
+];
+
+// list() style
+list("id" => $id1, "name" => $name1) = $data[0];
+
+// [] style
+["id" => $id1, "name" => $name1] = $data[0];
+
+// list() style
+foreach ($data as list("id" => $id, "name" => $name)) {
+    // logic here with $id and $name
+}
+
+// [] style
+foreach ($data as ["id" => $id, "name" => $name]) {
+    // logic here with $id and $name
+}
+
+支持为负的字符串偏移量
+var_dump("abcdef"[-2]);
+
+通过 Closure::fromCallable() 将callables转为闭包
+
+新的 object 对象类型
+
+spl_object_id()
+
+
+
+转换对象和数组中的数字键
+$obj = new class {
+    public function __construct()
+    {
+        $this->{0} = 1;
+    }
+};
+
+is_countable()
+array_key_first()
+array_key_last()
+hrtime ( bool $get_as_number = false ) : mixed
+
+属性添加限定类型
+箭头函数 提供了一种更简洁的定义函数的方法。
+
+<?php
+$factor = 10;
+$nums = array_map(fn($n) => $n * $factor, [1, 2, 3, 4]);
+
+空合并运算符赋值
+$array['key'] ??= computeDefault();
+等同于
+if (!isset($array['key'])) {
+    $array['key'] = computeDefault();
+}
+
+数值文字分隔符
+299_792_458;   // decimal
+
+fn 关键词
+
+
+real 类型已被废弃，请使用 (float) 来替代。
+
+在没有父类的类中使用 parent 关键词已被废弃
+
+新增注解的功能。
+新增构造器属性提升功能（在构造函数中声明类的属性）。
+
+
+新增 match 表达式
+$age = 23;
+$result = match (true) {
+    $age >= 25 => 'adult',
+    $age >= 18 => 'young adult',
+    default => 'kid',
+};
+var_dump($result); // 'young adult'
+
+新增 Nullsafe 运算符(?->)
+
+新增 WeakMap 类。
+新增 ValueError 类。
+
+static ("后期静态绑定"中) 可以作为返回类型：
+class Test {
+     public function create(): static {
+          return new static();
+     }
+}
+
+现在可以通过 $object::class 获取类名，返回的结果和 get_class($object) 一致。
+
+new、instanceof 可用于任何表达式， 用法为 new (expression)(...$args) 和 $obj instanceof (expression)。
+
+添加对一些变量语法一致性的修复，例如现在能够编写 Foo::BAR::$baz。
+
+添加 Stringable interface， 当一个类定义 __toString() 方法后会自动实现该接口。
+
+Trait 可以定义私有抽象方法（abstract private method）。 类必须实现 trait 定义的该方法。
+
+可作为表达式使用 throw。 使得可以编写以下用法：
+
+<?php
+$fn = fn() => throw new Exception('Exception in arrow function');
+$user = $session->user ?? throw new Exception('Must have user');
+
+参数列表中的末尾逗号为可选。
+
+现在允许 catch (Exception) 一个 exception 而无需捕获到变量中。
+
+
+
+
+
+
