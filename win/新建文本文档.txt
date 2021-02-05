@@ -303,8 +303,6 @@ if (!isset($array['key'])) {
 数值文字分隔符
 299_792_458;   // decimal
 
-fn 关键词
-
 
 real 类型已被废弃，请使用 (float) 来替代。
 
@@ -354,9 +352,6 @@ $user = $session->user ?? throw new Exception('Must have user');
 参数列表中的末尾逗号为可选。
 
 现在允许 catch (Exception) 一个 exception 而无需捕获到变量中。
-
-
-
 
 
 
