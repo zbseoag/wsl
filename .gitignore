@@ -158,4 +158,5 @@ runtime/
 /usr/
 $Eis$Bak/
 pear.conf
+/bin/consul
 
