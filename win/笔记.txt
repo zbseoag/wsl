@@ -1,3 +1,42 @@
+数据切分算法
+主键求模：适用于数据增速慢的场景，但难以增加分片。增加分片时，建议在原有分片数量上，成倍数增加新分片。
+主键范围切分：数据快速增长，易于增加分片。数据归档后，腾出的空间也无法被重复利用。
+枚举值切分：归类存储数据，适合大多数业务。
+日期切分：数据快速增长，易于增加分片。数据归档后，腾出的空间也无法被重复利用。
+
+配置：按字段值切分
+<tableRule name="sharding-by-intfile">
+  <rule>
+    <columns>sharding_id</columns>表字段
+    <algorithm>hash-init</algorithm> 底层算法
+  </rule>
+</tableRule>
+
+/mycat/conf/customer-hash-int.txt
+<function name="io.mycat.route.function.PartitionByFileMap">
+  <property name="mapFile">partition-hash-int.txt</property>
+</function>
+
+
+数据的数值=分片序号
+
+sudo dpkg -i *.deb
+sudo apt-get -f install
+
+vim /etc/inputrc
+set bell-style none
+
+docker network create pxc-network
+docker run -d -e MYSQL_ROOT_PASSWORD=root -e CLUSTER_NAME=cluster1  --net=pxc-network --name=node1  percona/percona-xtradb-cluster:5.7
+docker run -d -e MYSQL_ROOT_PASSWORD=root -e CLUSTER_NAME=cluster1  --net=pxc-network -e CLUSTER_JOIN=node1 --name=node2 percona/percona-xtradb-cluster:5.7
+docker run -d -e MYSQL_ROOT_PASSWORD=root -e CLUSTER_NAME=cluster1  --net=pxc-network -e CLUSTER_JOIN=node1 --name=node3 percona/percona-xtradb-cluster:5.7
+
+
+
+docker exec -it node1 /usr/bin/mysql -uroot -proot
+show status like 'wsrep%';
+
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
