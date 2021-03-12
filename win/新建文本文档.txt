@@ -94,8 +94,6 @@ A 系统处理完了直接返回成功了，人都以为你这个请求就成功
 但是关键时刻，用，还是得用的。
 
 
-
-
 docker network create network
 docker run -d --network network --name nginx-1 nginx:latest
 docker run -d --network network --name nginx-2 nginx:latest

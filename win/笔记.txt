@@ -1,3 +1,11 @@
+wget https://repo.percona.com/apt/percona-release_latest.generic_all.deb
+sudo dpkg -i percona-release_latest.generic_all.deb
+sudo percona-release enable-only ps-80 release
+sudo percona-release enable tools release
+sudo apt-get update
+sudo apt-get install percona-server-server percona-server-client percona-toolkit percona-xtrabackup-80 sysbenc
+
+
 数据切分算法
 主键求模：适用于数据增速慢的场景，但难以增加分片。增加分片时，建议在原有分片数量上，成倍数增加新分片。
 主键范围切分：数据快速增长，易于增加分片。数据归档后，腾出的空间也无法被重复利用。
