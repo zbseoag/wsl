@@ -3828,3 +3828,8 @@ script kill
 evalsha 55b22c0d0cedf3866879ce7c854970626dcef0c3 2 ke1 ke2 v1 v2
 redis-cli --ldb --eval loop.lua ke1 k2 , v1 v2
 h
+
+sqlmap.py
+
+测试源码: dvwa
+
