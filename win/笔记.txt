@@ -3014,3 +3014,817 @@ phpize
 ./configure
 make
 
+
+
+
+语法:	events { ... }
+默认值:	—
+上下文:	main
+提供配置上下文，以解析那些影响连接处理的指令。
+
+语法:	include file | mask;
+默认值:	—
+上下文:	任意
+
+
+语法:	accept_mutex on | off;
+默认值:	accept_mutex on;
+上下文:	events
+功能:   串行方式接入新连接。
+
+语法:	accept_mutex_delay time;
+默认值:	accept_mutex_delay 500ms;
+上下文:	events
+
+语法:	daemon on | off;
+默认值:	daemon on;
+上下文:	main
+功能:   决定nginx是否应以守护进程的方式工作。
+
+
+语法:	debug_connection address | CIDR | unix:;
+默认值:	—
+上下文:	events
+开启针对特定客户端连接的调试日志。除开这些连接，其它连接将使用error_log指令设置的日志级别。
+
+语法:	debug_points abort | stop;
+默认值:	—
+上下文:	main
+这条指令用于调试。
+
+语法:	error_log file | stderr [debug | info | notice | warn | error | crit | alert | emerg];
+默认值:	
+error_log logs/error.log error;
+上下文:	main, http, server, location
+
+语法:	env variable[=value];
+默认值:	
+env TZ;
+上下文:	main
+
+语法:	lock_file file;
+默认值:	lock_file logs/nginx.lock;
+上下文:	main
+
+
+语法:	master_process on | off;
+默认值:	master_process on;
+上下文:	main
+是否启动工作进程。
+
+
+语法:	multi_accept on | off;
+默认值:	multi_accept off;
+上下文:	events
+是否批量连接所有请求
+
+语法:	pcre_jit on | off;
+默认值:	
+pcre_jit off;
+上下文:	main
+正则表达式使用“即时编译”(PCRE JIT)技术。
+
+语法:	pid file;
+默认值:	pid nginx.pid;
+上下文:	main
+定义存储nginx主进程ID的file。
+
+语法:	ssl_engine device;
+默认值:	—
+上下文:	main
+定义SSL硬件加速器的名字
+
+语法:	timer_resolution interval;
+默认值:	—
+上下文:	main
+在工作进程中降低定时器的精度，因此可以减少产生gettimeofday()系统调用的次数。
+
+语法:	use method;
+默认值:	—
+上下文:	events
+指定使用的连接处理method(方式)。 通常不需要明确设置，因为nginx默认会使用最高效的方法。
+
+语法:	user user [group];
+默认值:	user nobody nobody;
+上下文:	main
+定义工作进程使用的user和group身份。 如果省略group，nginx会使用与user相同的组名。
+
+语法:	worker_aio_requests number;
+默认值:	worker_aio_requests 32;
+上下文:	events
+在使用epoll连接处理方式的情况下使用aio时， 可以设置单个工作进程未处理的异步I/O操作的最大number(数量)。
+
+语法:	worker_connections number;
+默认值:	
+worker_connections 512;
+上下文:	events
+每个工作进程可以打开的最大并发连接数实际的并发连接数是不能超过打开文件的最大数量限制的，这个限制可以用 worker_rlimit_nofile 指令修改。
+
+
+语法:	worker_cpu_affinity cpumask ...;
+默认值:	—
+上下文:	main
+绑定工作进程到指定的CPU集合。每个CPU集合使用一个标记允许使用的CPU的位图来表示。 需要为每个工作进程分别设置CPU集合。 工作进程默认不会绑定到任何特定的CPU。
+
+比如
+worker_processes    4;
+worker_cpu_affinity 0001 0010 0100 1000;
+将每个工作进程分别绑定至不同的CPU
+
+worker_processes    2;
+worker_cpu_affinity 0101 1010;
+将第一个工作进程绑定至CPU0/CPU2，将第二个工作进程绑定至CPU1/CPU3
+
+
+语法:	worker_priority number;
+默认值:	worker_priority 0;
+上下文:	main
+定义工作进程的调度优先级。这与nice命令行所做的相同： number为负数代表优先级更高。通常允许的范围是[-20, 20]。
+
+语法:	worker_processes number | auto;
+默认值:	worker_processes 1;
+上下文:	main
+定义工作进程的数量。
+
+语法:	worker_rlimit_core size;
+默认值:	—
+上下文:	main
+修改工作进程的core文件尺寸的最大值限制(RLIMIT_CORE)，用于在不重启主进程的情况下增大该限制。
+
+
+语法:	worker_rlimit_nofile number;
+默认值:	—
+上下文:	main
+修改工作进程的打开文件数的最大值限制(RLIMIT_NOFILE)，用于在不重启主进程的情况下增大该限制。
+
+语法:	worker_rlimit_sigpending number;
+默认值:	—
+上下文:	main
+在支持rtsig连接处理方式的系统中，修改工作进程的信号队列长度限制(RLIMIT_SIGPENDING)，用于在不重启主进程的情况下增大该限制。
+
+语法:	working_directory directory;
+默认值:	—
+上下文:	main
+定义工作进程的当前工作路径。 主要用于设置core文件的目标地址。工作进程应当具有指定路径的写权限。
+
+
+语法:	access_log path [format [buffer=size]];
+        access_log off;
+默认值:	access_log logs/access.log combined;
+上下文:	http, server, location, if in location, limit_except
+
+
+语法:	log_format name string ...;
+默认值:	
+log_format combined "...";
+上下文:	http
+指定日志的格式。
+
+$body_bytes_sent发送给客户端的字节数，不包括响应头的大小； 该变量与Apache模块mod_log_config里的“%B”参数兼容。
+$bytes_sent发送给客户端的总字节数。
+$connection连接的序列号。
+$connection_requests当前通过一个连接获得的请求数量。
+$msec日志写入时间。单位为秒，精度是毫秒。
+$pipe如果请求是通过HTTP流水线(pipelined)发送，pipe值为“p”，否则为“.”。
+$request_length请求的长度（包括请求行，请求头和请求正文）。
+$request_time请求处理时间，单位为秒，精度毫秒； 从读入客户端的第一个字节开始，直到把最后一个字符发送给客户端后进行日志写入为止。
+$status响应状态。
+$time_iso8601 ISO8601标准格式下的本地时间。
+$time_local通用日志格式下的本地时间。
+发送给客户端的响应头拥有“sent_http_”前缀。 比如$sent_http_content_range。
+
+语法:	open_log_file_cache max=N [inactive=time] [min_uses=N] [valid=time];
+        open_log_file_cache off;
+默认值:	open_log_file_cache off;
+上下文:	http, server, location
+定义一个缓存，用来存储频繁使用的文件名中包含变量的日志文件描述符。 该指令包含以下参数：
+
+max设置缓存中描述符的最大数量；如果缓存被占满，最近最少使用（LRU）的描述符将被关闭。
+inactive设置缓存文件描述符在多长时间内没有被访问就关闭； 默认为10秒。
+min_uses设置在inactive参数指定的时间里， 最少访问多少次才能使文件描述符保留在缓存中；默认为1。
+valid设置一段用于检查超时后文件是否仍以同样名字存在的时间； 默认为60秒。
+
+open_log_file_cache max=1000 inactive=20s valid=1m min_uses=2;
+
+
+
+语法:	add_before_body uri;
+默认值:	—
+上下文:	location
+在回复正文之前加入一段文字，nginx会发起一个子请求去获取这些文字。
+
+语法:	add_after_body uri;
+默认值:	—
+上下文:	location
+在回复正文之后加入一段文字，nginx会发起一个子请求去获取这些文字。
+
+语法:	addition_types mime-type ...;
+默认值:	addition_types text/html;
+上下文:	http, server, location
+指定生效的回复MIME类型，默认始终包含“text/html”。 如果设置类型为“*”，就会匹配任何类型
+
+
+syntax:	add_header name value;
+default:	—
+context:	http, server, location
+
+
+syntax:	expires [modified] time;
+        expires epoch | max | off;
+default:	expires off;
+context:	http, server, location
+
+
+语法:	aio on | off | sendfile;
+默认值:	
+aio off;
+上下文:	http, server, location
+
+location /video/ {
+    sendfile       on;
+    tcp_nopush     on;
+    aio            sendfile;
+}
+
+语法:	alias path;
+默认值:	—
+上下文:	location
+定义指定路径的替换路径
+location ~ ^/users/(.+\.(?:gif|jpe?g|png))$ {
+    alias /data/w3/images/$1;
+}
+
+
+语法:	chunked_transfer_encoding on | off;
+默认值:	chunked_transfer_encoding on;
+上下文:	http, server, location
+允许关闭HTTP/1.1中的分块传输编码。在客户端软件不支持分块传输编码的时候，这条指令才有用。
+
+语法:	client_body_buffer_size size;
+默认值:	client_body_buffer_size 8k|16k;
+上下文:	http, server, location
+设置读取客户端请求正文的缓冲容量。如果请求正文大于缓冲容量，整个正文或者正文的一部分将写入临时文件。
+
+
+语法:	client_body_in_file_only on | clean | off;
+默认值:	client_body_in_file_only off;
+上下文:	http, server, location
+决定nginx是否将客户端请求正文整个写入文件。这条指令在调试时，或者使用$request_body_file变量时， 或者使用ngx_http_perl_module模块的 $r->request_body_file方法时都可以使用。
+
+
+语法:	client_body_in_single_buffer on | off;
+默认值:	client_body_in_single_buffer off;
+上下文:	http, server, location
+决定nginx将整个客户端请求正文保存在一块缓冲中。 这条指令推荐在使用$request_body变量时使用，可以节省引入的拷贝操作。
+
+语法:	client_body_temp_path path [level1 [level2 [level3]]];
+默认值:	client_body_temp_path client_body_temp;
+上下文:	http, server, location
+定义存储客户端请求正文的临时文件的目录。 支持在指定目录下多达3层的子目录结构。
+
+
+语法:	client_body_timeout time;
+默认值:	client_body_timeout 60s;
+上下文:	http, server, location
+定义读取客户端请求正文的超时。超时是指相邻两次读操作之间的最大时间间隔
+
+
+语法:	client_header_buffer_size size;
+默认值:	client_header_buffer_size 1k;
+上下文:	http, server
+设置读取客户端请求头部的缓冲容量。 对于大多数请求，1K的缓冲足矣。
+
+
+语法:	client_header_timeout time;
+默认值:	client_header_timeout 60s;
+上下文:	http, server
+定义读取客户端请求头部的超时。
+
+语法:	client_max_body_size size;
+默认值:	client_max_body_size 1m;
+上下文:	http, server, location
+设置允许客户端请求正文的最大长度。请求的长度由“Content-Length”请求头指定。
+
+语法:	connection_pool_size size;
+默认值:	
+connection_pool_size 256;
+上下文:	http, server
+允许微调为每个连接分配的内存。这条指令对nginx的性能影响非常小，一般不应该使用。
+
+语法:	default_type mime-type;
+默认值:	
+default_type text/plain;
+上下文:	http, server, location
+定义响应的默认MIME类型。
+
+
+语法:	directio size | off;
+默认值:	directio off;
+上下文:	http, server, location
+当读入长度大于等于指定size的文件时，开启DirectIO功能。
+
+语法:	directio_alignment size;
+默认值:	directio_alignment 512;
+上下文:	http, server, location
+为directio设置文件偏移量对齐。大多数情况下，按512字节对齐足矣， 但在Linux系统下使用XFS，需要将值扩大到4K。
+
+语法:	disable_symlinks off;
+disable_symlinks on | if_not_owner [from=part];
+默认值:	
+disable_symlinks off;
+上下文:	http, server, location
+决定nginx打开文件时如何处理符号链接
+off
+默认行为，允许路径中出现符号链接，不做检查。
+on
+如果文件路径中任何组成部分中含有符号链接，拒绝访问该文件。
+if_not_owner
+如果文件路径中任何组成部分中含有符号链接，且符号链接和链接目标的所有者不同，拒绝访问该文件。
+from=part
+当nginx进行符号链接检查时(参数on和参数if_not_owner)，路径中所有部分默认都会被检查。 而使用from=part参数可以避免对路径开始部分进行符号链接检查，而只检查后面的部分路径。 如果某路径不是以指定值开始，整个路径将被检查，就如同没有指定这个参数一样。 如果某路径与指定值完全匹配，将不做检查。 这个参数的值可以包含变量。
+
+
+语法:	error_page code ... [=[response]] uri;
+默认值:	—
+上下文:	http, server, location, if in location
+为指令错误定义显示的URI。当前配置级别没有error_page指令时，将从上层配置继承。 uri可以包含变量。
+
+比如：
+
+error_page 404             /404.html;
+error_page 500 502 503 504 /50x.html;
+而且，可以使用“=response语法改变响应状态码。比如：
+
+error_page 404 =200 /empty.gif;
+如果URI将被发送到一个被代理的服务器处理，或者发送到一个FastCGI服务器处理， 这些后端服务器又返回了不同的响应状态码（比如200、302、401或404），那么这些返回的状态码也可以由本指令处理：
+
+error_page 404 = /404.php;
+当然，也可以使用本指令对错误处理进行重定向：
+
+error_page 403      http://example.com/forbidden.html;
+error_page 404 =301 http://example.com/notfound.html;
+对于例子中的第一行，nginx将向客户端发送302响应状态码。这种用法能使用的状态码只有301、302、303和307。
+
+如果内部跳转时无需改变URI，可以将错误处理转到一个命名路径：
+
+location / {
+    error_page 404 = @fallback;
+}
+
+location @fallback {
+    proxy_pass http://backend;
+}
+如果处理uri产生了错误，那么nginx将最后一次出错的HTTP响应状态码返回给客户端。
+
+
+语法:	etag on | off;
+默认值:	etag on;
+上下文:	http, server, location
+开启或关闭为静态文件自动计算 ETag 响应头。
+
+
+
+语法:	if_modified_since off | exact | before;
+默认值:	if_modified_since exact;
+上下文:	http, server, location
+
+指定响应的修改时间和“If-Modified-Since”请求头的比较方法：
+off忽略“If-Modified-Since”请求头(0.7.34)；
+exact精确匹配
+before响应的修改时间小于等于“If-Modified-Since”请求头指定的时间。
+
+
+语法:	ignore_invalid_headers on | off;
+默认值:	ignore_invalid_headers on;
+上下文:	http, server
+控制是否忽略非法的请求头字段名。 合法的名字是由英文字母、数字和连字符组成，当然也可以包含下划线(由underscores_in_headers指令控制)。
+本指令可以在默认虚拟主机的server配置层级中定义一次，那么这个值在监听在相同地址和端口的所有虚拟主机上都生效。
+
+语法:	internal;
+默认值:	—
+上下文:	location
+指定一个路径是否只能用于内部访问
+
+语法:	keepalive_disable none | browser ...;
+默认值:	
+keepalive_disable msie6;
+上下文:	http, server, location
+针对行为异常的浏览器关闭长连接功能。 browser参数指定那些浏览器会受到影响。 值为msie6表示在遇到POST请求时，关闭与老版MSIE浏览器建立长连接。 值为safari表示在遇到Mac OS X和类Mac OS X操作系统下的Safari浏览器和类Safari浏览器时，不与浏览器建立长连接。 值为none表示为所有浏览器开启长连接功能。
+
+
+
+语法:	keepalive_requests number;
+默认值:	keepalive_requests 100;
+上下文:	http, server, location
+设置通过一个长连接可以处理的最大请求数。 请求数超过此值，长连接将关闭。
+
+
+语法:	keepalive_timeout timeout [header_timeout];
+默认值:	keepalive_timeout 75s;
+上下文:	http, server, location
+第一个参数设置客户端的长连接在服务器端保持的最长时间（在此时间客户端未发起新请求，则长连接关闭）。
+
+语法:	large_client_header_buffers number size;
+默认值:	large_client_header_buffers 4 8k;
+上下文:	http, server
+设置读取客户端请求超大请求的缓冲最大number(数量)和每块缓冲的size(容量)。 HTTP请求行的长度不能超过一块缓冲的容量，否则nginx返回错误414 (Request-URI Too Large)到客户端。 每个请求头的长度也不能超过一块缓冲的容量，否则nginx返回错误400 (Bad Request)到客户端。 缓冲仅在必需是才分配，默认每块的容量是8K字节。 即使nginx处理完请求后与客户端保持入长连接，nginx也会释放这些缓冲。
+
+
+语法:	limit_except method ... { ... }
+默认值:	—
+上下文:	location
+允许按请求的HTTP方法限制对某路径的请求。method用于指定不由这些限制条件进行过滤的HTTP方法，可选值有 GET、 HEAD、 POST、 PUT、 DELETE、 MKCOL、 COPY、 MOVE、 OPTIONS、 PROPFIND、 PROPPATCH、 LOCK、 UNLOCK 或者 PATCH。 指定method为GET方法的同时，nginx会自动添加HEAD方法。 那么其他HTTP方法的请求就会由指令引导的配置块中的ngx_http_access_module 模块和ngx_http_auth_basic_module模块的指令来限制访问。如：
+
+limit_except GET {
+    allow 192.168.1.0/32;
+    deny  all;
+}
+请留意上面的例子将对除GET和HEAD方法以外的所有HTTP方法的请求进行访问限制。
+
+语法:	limit_rate rate;
+默认值:	limit_rate 0;
+上下文:	http, server, location, if in location
+限制向客户端传送响应的速率限制。参数rate的单位是字节/秒，设置为0将关闭限速。
+
+语法:	limit_rate_after size;
+默认值:	limit_rate_after 0;
+上下文:	http, server, location, if in location
+设置不限速传输的响应大小。当传输量大于此值时，超出部分将限速传送。
+
+
+语法:	lingering_close off | on | always;
+默认值:	lingering_close on;
+上下文:	http, server, location
+控制nginx如何关闭客户端连接。
+默认值“on”指示nginx在完成关闭连接前等待和 处理客户端发来的额外数据。但只有在预测客户端可能发送更多数据的情况才会做此处理。
+“always”指示nginx无条件等待和处理客户端的额外数据。
+“off”指示nginx立即关闭连接，而绝不等待客户端传送额外数据。 这样做破坏了协议，所以正常条件下不应使用。
+
+
+语法:	lingering_time time;
+默认值:	lingering_time 30s;
+上下文:	http, server, location
+lingering_close生效时，这条指令定义nginx处理(读取但忽略)客户端额外数据的最长时间。 超过这段时间后，nginx将关闭连接，不论是否还有更多数据待处理。
+
+语法:	lingering_timeout time;
+默认值:	lingering_timeout 5s;
+上下文:	http, server, location
+lingering_close生效时，这条指令定义nginx等待客户端更多数据到来的最长时间。 
+
+语法:	listen address[:port] [default_server] [setfib=number] [backlog=number] [rcvbuf=size] [sndbuf=size] [accept_filter=filter] [deferred] [bind] [ipv6only=on|off] [ssl] [so_keepalive=on|off|[keepidle]:[keepintvl]:[keepcnt]];
+listen port [default_server] [setfib=number] [backlog=number] [rcvbuf=size] [sndbuf=size] [accept_filter=filter] [deferred] [bind] [ipv6only=on|off] [ssl] [so_keepalive=on|off|[keepidle]:[keepintvl]:[keepcnt]];
+listen unix:path [default_server] [backlog=number] [rcvbuf=size] [sndbuf=size] [accept_filter=filter] [deferred] [bind] [ssl] [so_keepalive=on|off|[keepidle]:[keepintvl]:[keepcnt]];
+默认值:	listen *:80 | *:8000;
+上下文:	server
+
+
+语法:	location [ = | ~ | ~* | ^~ ] uri { ... }
+        location @name { ... }
+默认值:	—
+上下文:	server, location
+
+语法:	log_not_found on | off;
+默认值:	log_not_found on;
+上下文:	http, server, location
+开启或者关闭在error_log中记录文件不存在的错误。
+
+
+语法:	log_subrequest on | off;
+默认值:	log_subrequest off;
+上下文:	http, server, location
+开启或者关闭在access_log中记录子请求的访问日志。
+
+
+语法:	max_ranges number;
+默认值:	—
+上下文:	http, server, location
+如果请求中含有字节范围的请求头，这条指令可以限制此范围允许的最大值。如果请求头的值超过此限制，将按请求未携带此请求头的情况处理。 默认nginx对此不做限制。设置为0将使nginx完全不支持HTTP字节范围特性。
+
+
+语法:	merge_slashes on | off;
+默认值:	merge_slashes on;
+上下文:	http, server
+开启或者关闭将请求URI中相邻两个或更多斜线合并成一个的功能。
+
+
+语法:	msie_padding on | off;
+默认值:	msie_padding on;
+上下文:	http, server, location
+在响应状态码大于等于400时，在响应正文中添加一段注释，使响应正文达到512字节。 本指令可以为MSIE客户端开启或关闭这个功能。
+
+语法:	msie_refresh on | off;
+默认值:	msie_refresh off;
+上下文:	http, server, location
+为MSIE客户端开启或者关闭用页面刷新取代页面重定向的功能。
+
+open_file_cache          max=1000 inactive=20s;
+open_file_cache_valid    30s;
+open_file_cache_min_uses 2;
+open_file_cache_errors   on;
+
+语法:	port_in_redirect on | off;
+默认值:	port_in_redirect on;
+上下文:	http, server, location
+开启或关闭nginx发起重定向时指定端口。
+
+
+语法:	postpone_output size;
+默认值:	postpone_output 1460;
+上下文:	http, server, location
+如果可能，到客户端的数据将被推迟发送，直到nginx需要发送的数据至少有size字节。 设置为0将关闭推迟发送的功能。
+
+语法:	read_ahead size;
+默认值:	read_ahead 0;
+上下文:	http, server, location
+设置内核参数，控制文件预读的数量。
+
+语法:	recursive_error_pages on | off;
+默认值:	recursive_error_pages off;
+上下文:	http, server, location
+允许或禁止error_page指令进行多次重定向。 允许的话，重定向次数也有限制。
+
+
+语法:	reset_timedout_connection on | off;
+默认值:	reset_timedout_connection off;
+上下文:	http, server, location
+开启或关闭重置超时连接的功能。
+
+
+语法:	resolver address ... [valid=time];
+默认值:	—
+上下文:	http, server, location
+配置将后端服务器的名字解析成ip地址的名字服务器，比如：
+resolver 127.0.0.1 [::1]:5353 valid=30s;
+
+语法:	resolver_timeout time;
+默认值:	resolver_timeout 30s;
+上下文:	http, server, location
+为名字解析设置超时
+
+语法:	root path;
+默认值:	root html;
+上下文:	http, server, location, if in location
+为请求设置根目录
+
+
+语法:	satisfy all | any;
+默认值:	
+satisfy all;
+上下文:	http, server, location
+nginx进行访问限制的有ngx_http_access_module模块和 ngx_http_auth_basic_module模块。 本指令设置成all时，表示只有当两个模块的所有限制条件(写入配置的)都授权访问时，允许请求访问； 设置成any时，表示如果当任意模块的任意限制条件授权访问时，允许请求访问。
+
+
+语法:	send_lowat size;
+默认值:	send_lowat 0;
+上下文:	http, server, location
+如果设置成非0值，nginx将尝试最小化向客户端发送数据的次数。
+
+
+语法:	send_timeout time;
+默认值:	send_timeout 60s;
+上下文:	http, server, location
+设置向客户端传输响应的超时。超时仅指两次相邻写操作之间的时间间隔，而非整个响应的传输时间。
+
+
+语法:	sendfile on | off;
+默认值:	
+sendfile off;
+上下文:	http, server, location, if in location
+开启或关闭使用sendfile()调用。
+
+语法:	sendfile_max_chunk size;
+默认值:	
+sendfile_max_chunk 0;
+上下文:	http, server, location
+设置为非0值时，可以限制在一次sendfile()调用时传输的数据量。 如果不进行限制，一个快速的连接可能会霸占整个worker进程的所有资源。
+
+语法:	server { ... }
+默认值:	—
+上下文:	http
+表示开始设置虚拟主机的配置。
+
+语法:	server_name_in_redirect on | off;
+默认值:	
+server_name_in_redirect off;
+上下文:	http, server, location
+开启或关闭nginx将server_name指令指定的首要虚拟主机名用于发起的重定向的功能。
+
+
+
+    Collection 接口，不唯一，无序
+        List 接口，有序，不唯一
+        Set 接口，无序唯一
+        SortedSet 有序 + 唯一
+
+    Map
+    Map 接口存储一组键值对象，提供key（键）到value（值）的映射。
+        Map.Entry 描述在一个Map中的一个元素（键/值对）。
+        SortedMap 使 Key 保持在升序排列。
+        
+
+    <servlet>
+        <servlet-name>HelloServlet</servlet-name>
+        <servlet-class>com.example.javaweb.HelloServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>HelloServlet</servlet-name>
+        <url-pattern>/hello-servlet</url-pattern>
+    </servlet-mapping>
+    
+#!/usr/bin/java --source 14
+
+
+属性名	类名	属性描述
+name	String	指定servlet的name属性，等价于<servlet-name>,若没有指定，则默认是类的全限定名
+value	String[]	等价于urlPatterns，两者不能共存
+urlPatterns	String[]	指定一组servlet的url的匹配模式，等价于<url-pattern>
+loadOnStartup	int	指定servlet的加载顺序，等价于<load-on-startup>
+initParams	WebinitParams[]	指定一组初始化参数，等价于<init-params>
+asyncSupported	boolean	申明servlet是否支持异步操作模式，等价于<async-supported>
+displayName	String	servlet的显示名，等价于<display-name>
+description	String	servlet的描述信息，等价于<description>
+
+
+consul agent -server -bootstrap-expect 3 -data-dir /tmp/consul -node=s1 -bind=172.22.147.212 -ui-dir ./consul_ui/ -rejoin -config-dir=/etc/consul/ -client 0.0.0.0
+
+consul agent -dev
+consul members  -detailed
+
+curl localhost:8500/v1/catalog/nodes
+
+dig @127.0.0.1 -p 8600 Armons-MacBook-Air.node.consul
+
+sudo mkdir /etc/consul.d
+
+echo '{"service": {"name": "web", "tags": ["rails"], "port": 80}}' > /etc/consul.d/web.json
+
+
+consul agent -dev -config-dir=/etc/consul.d
+
+dig @127.0.0.1 -p 8600 web.service.consul
+dig @127.0.0.1 -p 8600 web.service.consul SRV
+
+
+curl http://localhost:8500/v1/catalog/service/web
+
+curl 'http://localhost:8500/v1/health/service/web?passing'
+
+cat <<EOF | sudo tee /etc/consul.d/socat.json
+{
+  "service": {
+    "name": "socat",
+    "port": 8181,
+    "connect": { "sidecar_service": {} }
+  }
+}
+EOF
+
+
+cat <<EOF | sudo tee /etc/consul.d/web.json
+{
+  "service": {
+    "name": "web",
+    "port": 8080,
+    "connect": {
+      "sidecar_service": {
+        "proxy": {
+          "upstreams": [{
+             "destination_name": "socat",
+             "local_bind_port": 9191
+          }]
+        }
+      }
+    }
+  }
+}
+EOF
+
+
+consul connect proxy -sidecar-for socat
+consul reload
+consul agent -server -bootstrap-expect=1 -data-dir=/tmp/consul -node=agent-one -bind=172.20.20.10 -enable-script-checks=true -config-dir=/etc/consul.d
+
+run --network local --name node1,node2,node3 -dit -v /d/bin:/usr/local/bin ubuntu
+
+/node4: 172.18.0.13
+/node2: 172.18.0.11
+/node1: 172.18.0.10
+/node3: 172.18.0.12
+
+consul agent -server -bootstrap-expect=1  -data-dir=/tmp/consul -node=agent-one -bind=172.18.0.10  -enable-script-checks=true -config-dir=/etc/consul.d
+
+consul agent -data-dir=/tmp/consul -node=agent-two  -bind=172.18.0.11 -enable-script-checks=true -config-dir=/etc/consul.d
+
+
+consul join 172.18.0.11
+
+
+echo '{
+"check": {
+    "name": "ping",
+    "args": ["ping", "-c1", "baidu.com"], "interval": "30s"}
+}' >/etc/consul.d/ping.json
+
+
+echo '{
+    "service": {
+        "name": "web",
+        "tags": ["rails"], 
+        "port": 80,
+  "check": {"args": ["curl", "localhost"], "interval": "10s"}}
+}' >/etc/consul.d/web.json
+
+
+sudo useradd --system --home /etc/consul.d --shell /bin/false consul
+
+
+一、什么是CPU亲和
+是一种把CPU核心和Nginx工作进程绑定方式，把每个worker进程固定在一个cpu上执行，减少切换cpu的cache miss，获得更好的性能。
+
+sendfile 零拷贝,直接通过内核空间,把文件传递给 socket,响应给用户
+
+request     -请求行、请求头部、请求数据
+response    -状态行、消息报头、响应正文
+
+给网卡添加多个ip
+ip a add 172.17.0.40/16 dev eth0
+
+
+
+
+
+管理员身份打开 Powershell
+运行Get-ExecutionPolicy 如果返回Restricted，则运行 Set-ExecutionPolicy AllSigned
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+choco install gsudo
+
+nginx 变量
+HTTP请求变量- arg_PARAMETER、http_HEADER、sent_http_HEADER
+内置变量- Nginx内置的
+自定义变量–自己定义
+
+
+
+
+
+!includedir /etc/mysql/conf.d/
+!includedir /etc/mysql/mysql.conf.d/
+
+
+<beans>
+
+    <bean id="bookService" class="BookService">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+</beans>
+
+@Component
+@Autowired
+@ComponentScan
+
+
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE) // @Scope("prototype")
+
+@Order(2)
+
+@Autowired(required = false)
+
+@Bean //Spring对标记为@Bean的方法只调用一次，因此返回的Bean仍然是单例
+
+ @PostConstruct
+ @PreDestroy 
+
+
+@Bean("name")指定别名，也可以用@Bean+@Qualifier("name")指定别名
+
+ @Profile("!test")
+ @Profile({ "test", "master" }) // 同时满足test和master
+
+ @Conditional(OnSmtpEnvCondition.class)
+ @ConditionalOnProperty(name="app.smtp", havingValue="true")
+ @ConditionalOnClass(name = "javax.mail.Transport")
+ 
+@ConditionalOnProperty(name = "app.storage", havingValue = "file", matchIfMissing = true)
+
+
+联机事务处理（OLTP）也称为面向交易的处理系统，其基本特征是原始数据可以立即传送到计算中心进行处理，并在很短的时间内给出处理结果。
+联机分析处理（OLAP）是指通过多维的方式对数据进行分析、查询和报表，可以同数据挖掘工具、统计分析工具配合使用，增强决策分析功能。
+关系型数据库，是建立在关系模型基础上的数据库，其借助于集合代数等数学概念和方法来处理数据库中的数据。主流的oracle、DB2、MS SQL Server和mysql都属于这类传统数据库。
+
+Mycat是一个强大的数据库中间件，不仅仅可以用作读写分离、以及分表分库、容灾备份，而且可以用于多租户应用开发、云平台基础设施、让你的架构具备很强的适应性和灵活性，借助于即将发布的Mycat智能优化模块，系统的数据访问瓶颈和热点一目了然，根据这些统计分析数据，你可以自动或手工调整后端存储，将不同的表映射到不同存储引擎上，而整个应用的代码一行也不用改变。
+
+./mycat console   { console | start | stop | restart | status | dump }
+
+
+eval "return redis.call('set', KEYS[2], ARGV[2])" 3 k1 k2 k3 v1 v2 v3
+
+eval "redis.call('set', KEYS[2], ARGV[2]); redis.pcall('set', KEYS[3], ARGV[3]);" 3 k1 k2 k3 v1 v2 v3
+script load "return redis.call('set', KEYS[1], ARGV[1])"
+script exists 55b22c0d0cedf3866879ce7c854970626dcef0c3
+script flush
+script kill
+evalsha 55b22c0d0cedf3866879ce7c854970626dcef0c3 2 ke1 ke2 v1 v2
+redis-cli --ldb --eval loop.lua ke1 k2 , v1 v2
+h
