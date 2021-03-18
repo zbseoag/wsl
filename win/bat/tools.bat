@@ -1,5 +1,3 @@
-
-
 @echo off
 title 管理工具
 setlocal enabledelayedexpansion

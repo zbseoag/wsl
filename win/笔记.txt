@@ -5,6 +5,35 @@ sudo percona-release enable tools release
 sudo apt-get update
 sudo apt-get install percona-server-server percona-server-client percona-toolkit percona-xtrabackup-80 sysbenc
 
+HTTP1.0 TCP不能复用
+HTTP1.1 顺序性TCP复用
+HTTP2.0 多路复用TCP复用
+
+HTTP请求建立在一次TCP连接基础上,一次TCP请求至少产生一次HTTP请求
+
+
+
+如果定义了大量名字，或者定义了非常长的名字，那可能需要在http配置块中使用server_names_hash_max_size和server_names_hash_bucket_size指令进行调整。
+优先级：
+确切的名字；
+最长的以星号起始的通配符名字：*.start
+最长的以星号结束的通配符名字：end.*；
+第一个匹配的正则表达式名字（按在配置文件中出现的顺序）。
+
+server_name  *.example.org; #通配符,只能在名字的起始处或结尾处包含一个星号,形如“.example.org”的特殊通配符，它可以匹配“example.org” 和 “*.example.org”。
+server_name  ~^(?<domain>.+)\.example\.net$; #正则表达式,以波浪线“~”起,捕获组可以作为变量使用 root /sites/$domain 或者直接用捕获组 /sites/$2
+
+error_log  /path/to/log  debug;
+#只针对选定的客户端地址开启调试日志
+events {
+    debug_connection   192.168.1.1;
+    debug_connection   192.168.10.0/24;
+}
+
+
+
+
+
 
 数据切分算法
 主键求模：适用于数据增速慢的场景，但难以增加分片。增加分片时，建议在原有分片数量上，成倍数增加新分片。
