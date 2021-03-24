@@ -3833,3 +3833,16 @@ h
 sqlmap
 测试源码: dvwa
 
+
+shop_goods_sku
+goods_channel_price	decimal(10,2)	0.00	NO	渠道价		
+goods_cost_price	decimal(10,2)	0.00	NO	平台成本价		
+goods_dealers_price	decimal(10,2)	0.00	NO	经销商价		
+goods_guided_price	decimal(10,2)	0.00	NO	指导价		
+goods_id	int unsigned	0	NO	商品id		
+goods_max_price	decimal(10,2)	0.00	NO	最高售价		
+goods_min_price	decimal(10,2)	0.00	NO	最低售价
+
+
+
+                tableHTML += '            <th width="100" style="text-align: center; vertical-align: middle; ">最低售价（店铺）</th>';
