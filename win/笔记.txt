@@ -3843,6 +3843,3 @@ goods_id	int unsigned	0	NO	商品id
 goods_max_price	decimal(10,2)	0.00	NO	最高售价		
 goods_min_price	decimal(10,2)	0.00	NO	最低售价
 
-
-
-                tableHTML += '            <th width="100" style="text-align: center; vertical-align: middle; ">最低售价（店铺）</th>';
