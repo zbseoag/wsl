@@ -3764,10 +3764,6 @@ HTTP请求变量- arg_PARAMETER、http_HEADER、sent_http_HEADER
 内置变量- Nginx内置的
 自定义变量–自己定义
 
-
-
-
-
 !includedir /etc/mysql/conf.d/
 !includedir /etc/mysql/mysql.conf.d/
 
@@ -3842,4 +3838,268 @@ goods_guided_price	decimal(10,2)	0.00	NO	指导价
 goods_id	int unsigned	0	NO	商品id		
 goods_max_price	decimal(10,2)	0.00	NO	最高售价		
 goods_min_price	decimal(10,2)	0.00	NO	最低售价
+
+
+
+Laravel 服务容器是一个用于管理类依赖以及实现依赖注入的强有力工具。依赖注入这个名词表面看起来花哨，实质上是指：通过构造函数，或者某些情况下通过「setter」方法将类依赖「注入」到类中。
+
+
+$this->app->bind('HelpSpot\API', function ($app) {
+    return new \HelpSpot\API($app->make('HttpClient'));
+});
+
+
+绑定单例
+$this->app->singleton('HelpSpot\API', function ($app) {
+    return new \HelpSpot\API($app->make('HttpClient'));
+});
+
+绑定对象
+$api = new \HelpSpot\API(new HttpClient);
+$this->app->instance('HelpSpot\API', $api);
+
+绑定接口到实现，当需要一个EventPusher 接口，注入实现类
+$this->app->bind('App\Contracts\EventPusher', 'App\Services\RedisEventPusher');
+
+
+上下文绑定
+use App\Http\Controllers\PhotoController;
+use App\Http\Controllers\UploadController;
+use App\Http\Controllers\VideoController;
+use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Storage;
+
+$this->app->when(PhotoController::class)
+          ->needs(Filesystem::class)
+          ->give(function () {
+              return Storage::disk('local');
+          });
+
+$this->app->when([VideoController::class, UploadController::class])
+          ->needs(Filesystem::class)
+          ->give(function () {
+              return Storage::disk('s3');
+          });
+
+绑定基本值
+$this->app->when('App\Http\Controllers\UserController')
+    ->needs('$variableName')->give($value);
+
+
+$this->app->when(ReportAggregator::class)
+    ->needs('$reports')
+    ->giveTagged('reports');
+
+
+绑定变长参数类型
+class Firewall {
+    public function __construct(Logger $logger, Filter ...$filters){
+        $this->logger = $logger;
+        $this->filters = $filters;
+    }
+}
+
+
+$this->app->when(Firewall::class)
+  ->needs(Filter::class)
+  ->give(function ($app) {
+        return [
+            $app->make(NullFilter::class),
+            $app->make(ProfanityFilter::class),
+            $app->make(TooLongFilter::class),
+        ];
+  });
+
+$this->app->when(Firewall::class)
+    ->needs(Filter::class)
+    ->give([
+        NullFilter::class,
+        ProfanityFilter::class,
+        TooLongFilter::class,
+]);
+
+
+扩展绑定
+$this->app->extend(Service::class, function ($service) {
+    return new DecoratedService($service);//装饰器扩展其功能
+});
+
+
+从容器中解析出类实例
+$api = $this->app->make('HelpSpot\API');
+$api = resolve('HelpSpot\API');
+$api = $this->app->makeWith('HelpSpot\API', ['id' => 1]);
+
+
+服务容器每次解析对象会触发一个事件，你可以使用 resolving 方法监听这个事件：
+$this->app->resolving(function ($object, $app) {
+    // 当容器解析任何类型的对象时调用...
+});
+
+$this->app->resolving(\HelpSpot\API::class, function ($api, $app) {
+    // 当容器解析类型为 "HelpSpot\API" 的对象时调用...
+});
+
+
+use Psr\Container\ContainerInterface;
+Route::get('/', function (ContainerInterface $container) {
+    $service = $container->get('Service');
+});
+
+
+
+
+php artisan make:controller API/PhotoController --api
+
+嵌套资源
+Route::resource('photos.comments', PhotoCommentController::class);
+/photos/{photo}/comments/{comment}
+
+Route::resource('photos.comments', PhotoCommentController::class)->scoped([
+    'comment' => 'slug',
+]);
+
+/photos/{photo}/comments/{comment:slug}
+
+Route::resource('photos.comments', CommentController::class)->shallow();
+Route::resource('photos', PhotoController::class)->names(['create' => 'photos.build']);
+
+Route::resource('users', AdminUserController::class)->parameters([
+    'users' => 'admin_user'
+]);
+/users/{admin_user}
+
+use App\Http\Controllers\PostsController;
+Route::resource('users.posts', PostsController::class)->scoped();
+
+use App\Http\Controllers\PostsController;
+
+Route::resource('users.posts', PostsController::class)->scoped([
+    'post' => 'slug',
+]);
+
+php artisan make:resource Users --collection
+php artisan make:resource UserCollection
+
+use App\Http\Resources\User as UserResource;
+use App\Models\User;
+Route::get('/user', function () {
+    return new UserResource(User::find(1));
+});
+
+
+use App\Http\Resources\User as UserResource;
+use App\Models\User;
+Route::get('/user', function () {
+    return UserResource::collection(User::all());
+});
+
+php artisan make:resource UserCollection
+
+
+<?php
+
+namespace App\Http\Resources;
+use Illuminate\Http\Resources\Json\JsonResource;
+class UserResource extends JsonResource{
+    /**
+     * 将资源转换成数组
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    public function toArray($request)
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'email' => $this->email,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+        ];
+    }
+}
+
+use App\Http\Resources\User as UserResource;
+use App\Models\User;
+Route::get('/user', function () {
+    return new UserResource(User::find(1));
+});
+
+use App\Http\Resources\User as UserResource;
+use App\Models\User;
+Route::get('/user', function () {
+    return UserResource::collection(User::all());
+});
+
+
+<?php
+namespace App\Http\Resources;
+use Illuminate\Http\Resources\Json\ResourceCollection;
+class UserCollection extends ResourceCollection{
+    /**
+     * 将资源集合转换成数组
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    public function toArray($request)
+    {
+        return [
+            'data' => $this->collection,
+            'links' => [
+                'self' => 'link-value',
+            ],
+        ];
+    }
+}
+
+use App\Http\Resources\UserCollection;
+use App\Models\User;
+Route::get('/users', function () {
+    return new UserCollection(User::all());
+});
+
+
+
+
+/**
+ * 将资源转换成数组
+ * @param  \Illuminate\Http\Request  $request
+ * @return array
+ */
+public function toArray($request){
+    return [
+        'id' => $this->id,
+        'name' => $this->name,
+        'email' => $this->email,
+        $this->mergeWhen(Auth::user()->isAdmin(), [
+            'first-secret' => 'value',
+            'second-secret' => 'value',
+        ]),
+        'created_at' => $this->created_at,
+        'updated_at' => $this->updated_at,
+    ];
+}
+
+/**
+ * 将资源转换成数组
+ * @param  \Illuminate\Http\Request  $request
+ * @return array
+ */
+public function toArray($request){
+    return [
+        'id' => $this->id,
+        'name' => $this->name,
+        'email' => $this->email,
+        'posts' => PostResource::collection($this->whenLoaded('posts')),
+        'created_at' => $this->created_at,
+        'updated_at' => $this->updated_at,
+    ];
+}
+
+
+
+
+
 
