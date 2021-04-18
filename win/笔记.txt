@@ -4099,7 +4099,216 @@ public function toArray($request){
 }
 
 
+curl -X POST '<PROTOCOL>://<HOST>:<PORT>/<PATH>?<QUERY_STRING>' -d '<BODY>'
 
 
 
+curl -X GET "localhost:9200/_cat/health?v=true&pretty"
 
+curl -X GET "localhost:9200/?pretty"
+
+curl -X PUT 'localhost:9200/weather'
+
+
+创建 Index 和 添加文档
+curl -X PUT "localhost:9200/customer/_doc/1?pretty" -H 'Content-Type: application/json' -d '
+{
+  "name": "John Doe"
+}'
+
+
+根据 id 获取文档： index/doc/id
+curl -X GET "localhost:9200/customer/_doc/1?pretty"
+
+
+批量索引 bank 是 index 名
+curl -H "Content-Type: application/json" -XPOST "localhost:9200/bank/_bulk?pretty&refresh" --data-binary "@accounts.json"
+curl "localhost:9200/_cat/indices?v=true"
+
+查询
+curl -X GET "localhost:9200/bank/_search?pretty" -H 'Content-Type: application/json' -d'
+{
+  "query": { "match_all": {} },
+  "sort": [
+    { "account_number": "asc" }
+  ],
+  "from": 10,
+  "size": 10
+}
+'
+
+curl -X GET "localhost:9200/bank/_search?pretty" -H 'Content-Type: application/json' -d'
+{
+  "query": { "match": { "address": "mill lane" } }
+}
+'
+
+curl -X GET "localhost:9200/bank/_search?pretty" -H 'Content-Type: application/json' -d'
+{
+  "query": {
+    "bool": {
+      "must": [
+        { "match": { "age": "40" } }
+      ],
+      "must_not": [
+        { "match": { "state": "ID" } }
+      ]
+    }
+  }
+}
+'
+
+查询 balance 范围  20000 <= balance <= 30000
+curl -X GET "localhost:9200/bank/_search?pretty" -H 'Content-Type: application/json' -d'
+{
+  "query": {
+    "bool": {
+      "must": { "match_all": {} },
+      "filter": {
+        "range": {
+          "balance": {
+            "gte": 20000,
+            "lte": 30000
+          }
+        }
+      }
+    }
+  }
+}
+'
+
+
+通过 state 聚合（aggregations）
+curl -X GET "localhost:9200/bank/_search?pretty" -H 'Content-Type: application/json' -d'
+{
+  "size": 0,
+  "aggs": {
+    "group_by_state": {
+      "terms": {
+        "field": "state.keyword"
+      }
+    }
+  }
+}'
+
+
+curl -X GET "localhost:9200/bank/_search?pretty" -H 'Content-Type: application/json' -d'
+{
+  "size": 0,
+  "aggs": {
+    "group_by_state": {
+      "terms": {
+        "field": "state.keyword"
+      },
+      "aggs": {
+        "average_balance": {
+          "avg": {
+            "field": "balance"
+          }
+        }
+      }
+    }
+  }
+}'
+
+
+127.0.1.1       win.localdomain win
+
+
+curl -X GET "localhost:9200/bank/_search?pretty" -H 'Content-Type: application/json' -d'{
+    "query" : {
+        "match" : {
+            "last_name" : "Smith"
+        }
+    }
+}
+'
+
+
+{
+    "query" : {
+        "match_phrase" : {
+            "about" : "rock climbing"
+        }
+    }
+}
+
+
+
+{
+    "query" : {
+        "match_phrase" : {
+            "about" : "rock climbing"
+        }
+    },
+    "highlight": {  高亮
+        "fields" : {
+            "about" : {}
+        }
+    }
+}
+
+
+{
+  "aggs": {
+    "all_interests": {
+      "terms": { "field": "interests" }
+    }
+  }
+}
+
+{
+  "query": {
+    "match": {
+      "last_name": "smith"
+    }
+  },
+  "aggs": {
+    "all_interests": {
+      "terms": {
+        "field": "interests"
+      }
+    }
+  }
+}
+
+curl -X GET "localhost:9200/_cluster/health?pretty"
+
+
+curl -X PUT "localhost:9200/blogs?pretty" -H 'Content-Type: application/json' -d '{ "settings": {  "number_of_shards" : 3,  "number_of_replicas" : 1 }}'
+
+返回部分字段
+GET /website/blog/123/_source
+GET /website/blog/123?_source=title,text 
+
+检索文档是否存在
+curl -i -XHEAD http://localhost:9200/website/blog/123
+
+更新整个文档
+PUT /website/blog/123
+{
+  "title": "My first blog entry",
+  "text":  "I am starting to get the hang of this...",
+  "date":  "2014/01/02"
+}
+
+curl -X DELETE "localhost:9200/website/blog/123?pretty"
+
+
+取回多个文档
+GET /_mget
+{
+   "docs" : [
+      {
+         "_index" : "website",
+         "_type" :  "blog",
+         "_id" :    2
+      },
+      {
+         "_index" : "website",
+         "_type" :  "pageviews",
+         "_id" :    1,
+         "_source": "views"
+      }
+   ]
+}
