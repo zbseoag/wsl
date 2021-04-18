@@ -1,0 +1,29 @@
+
+sudo apt install  gcc zip net-tools curl tesseract-ocr tesseract-ocr-chi-sim
+ 
+sudo apt install php-fpm php-gd php-zip php-mbstring php-bcmath php-json php-redis php-curl php-mysql
+
+
+ libfreetype-dev
+
+python3-pip
+python3-tk
+
+tesseract-ocr
+tesseract-ocr-chi-sim
+
+
+libpng++-dev
+libjpeg62-dev
+libtiff-dev
+
+golang-go
+
+libpng-dev libxml2-dev libcurl4-gnutls-dev libmcrypt-dev
+
+
+libcurl4-openssl-dev
+libcurl4
+
+
+

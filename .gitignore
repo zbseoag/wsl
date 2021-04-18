@@ -159,5 +159,5 @@ runtime/
 $Eis$Bak/
 pear.conf
 /bin/consul
-/Software/
-/Downloads/
+/software/
+/src/
