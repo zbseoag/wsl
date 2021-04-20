@@ -117,5 +117,5 @@ if ! shopt -oq posix; then
 fi
 function open(){ sudo vim "$@"; }
 function load(){ source ~/.bashrc; }
-SHELL_PATH=/e/develop/shell
-source $SHELL_PATH/common.sh 
+SHELL_PATH='/e/develop/shell'
+source $SHELL_PATH/common.sh

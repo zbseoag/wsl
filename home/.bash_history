@@ -1077,3 +1077,99 @@ open -common
 install mysql-server
 sudo mysql
 pull
+cd d
+git status
+git push
+push
+cd dev
+push
+cd d
+status
+cd 
+rm .ssh
+cp /d/home/.ssh/ ~
+cp -r /d/home/.ssh/ ~
+ll .ssh/
+cd e
+cd dev
+cd
+open /etc/mysql
+cd
+sudo mysql
+start mysql
+sudo mysql
+show ip
+ping 169.254.173.175
+sudo mysql
+start mysql
+ifconfig
+ifconfig -all
+ifconfig -a
+mysql -uroot -p
+mysql -uroot -h169.254.173.175 -p
+stop mysql
+start mysql
+sudo vim mysql.cnf 
+sudo vim mysqld.cnf 
+start mysql
+install g++
+install wget
+vim /etc/sudoers
+ll /etc/sudoers
+sudo vim /etc/sudoers
+cd 
+start php nginx redis
+code.exe
+open -host
+open -common
+ll /c/Windows/System32/drivers/etc/hosts
+sudo u+w /c/Windows/System32/drivers/etc/hosts
+sudo chmod u+w /c/Windows/System32/drivers/etc/hosts
+sudo vim /c/Windows/System32/drivers/etc/hosts
+load
+open -host
+where code
+load
+open -host
+wsl code.cmd
+wsl.exe code.cmd
+code.cmd
+cmd.exe code.cmd
+cmd.exe
+where Code
+code.exe
+load
+open -host
+load
+open -host
+load
+open -host
+load
+open -host
+cd e
+cd d
+cd etc
+cd ../home/
+open .bashrc
+load
+open -common
+load
+open -com
+load
+open -com
+start php nginx
+start redis
+ping test.com
+cd d
+cd etc
+cd php/
+cd 7.4/
+cd fpm/
+open php.ini
+start php
+start mysql
+ping 172.36.22.153
+php artisan sku-retail-price B08NDMF4TH 1
+php artisan sku-retail-price
+\
+php artisan sku-retail-price
