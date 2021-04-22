@@ -1173,3 +1173,58 @@ php artisan sku-retail-price B08NDMF4TH 1
 php artisan sku-retail-price
 \
 php artisan sku-retail-price
+cd d
+cd home/
+show ip
+ifconfig -a
+touch .hushlogin
+ln -s .hushlogin ~
+cd 
+cd -
+ln -s /d/home/.hushlogin ~
+rm ~/.hushlogin 
+ln -s /d/home/.hushlogin ~
+cd 
+start php nginx redis mysql
+cat -debug
+rm -debug
+cat -debug
+rm -debug
+cat -debug
+stop nginx
+start nginx 
+start nginx
+stop nginx
+cd dev
+status
+cat test.php
+cat php/test.php
+cd dev
+push
+cd d
+push
+start nginx php
+curl --hlep
+curl --help
+where docker
+install docker
+list docker
+open -com
+load
+install docker
+where docker
+start docker
+ing
+sudo usermod -aG docker $USER
+ing
+start docker
+ing
+start redis
+php artisan sku-retail-price
+wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+sudo apt-get install apt-transport-https
+echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-7.x.list
+sudo apt-get update && sudo apt-get install elasticsearch
+start elasticsearch 
+php artisan product-margin-rate
+start php nginx redis

@@ -1,3 +1,5155 @@
+如何保证消息不被重复消费？或者说，如何保证消息消费的幂等性？
+
+使用消息队列中间件时，都有可能会出现消息重复消费的问题，这很正常。
+这个问题通常不是 MQ 自己保证的，是由我们开发来保证的。
+在客户端消费消息的时候，都会有应答机制
+
+
+sudo iptables -P FORWARD ACCEPT
+
+任务管理器->服务->打开服务 -> Routing and Remote Access 
+打开 powershell 管理员身份运行：
+route add 172.17.0.0 mask 255.255.0.0 172.17.0.1
+
+
+route add 172.17.0.0 mask 255.255.0.0 172.19.48.1
+
+
+32 位
+8 8 8 + 6
+10.10.2.1
+
+网络号 子网号 + 主机号
+主机号不能全0（本网络）或全1(广播) 所以至少两位。
+
+b类，网络号16位 子网号占8位，主机号也占8位
+
+子网掩码：网络号全1，主机号全0
+全1.全1.0.0 => 255.255.0.0
+
+子网掩码与ip地址相与，得到子网网络地址
+
+1.1.3.10
+如果有8位子网号，则子网地址是： 1.1.3.0
+
+ip: 141.14.72.24 子网掩码：255.255.192.0 求网络地址
+解：141.14.X.0
+70  = 01001000
+192 = 11000000
+-------------------
+      01000000 = 64
+
+主机的IP地址是202.112.14.137 掩码 255.255.255.224，求网络地址和广播地址
+
+掩码 255.255.255.224 转二进制：
+
+11111111 11111111 11111111 11100000
+网络号有27位，主机号有5位
+
+IP地址&子网掩码
+
+11001010 01110000 00001110 10001001
+11111111 11111111 11111111 11100000
+------------------------------------------------------
+11001010 01110000 00001110 10000000
+
+即：202.112.14.128
+广播地址：网络地址的主机位全部变成1 ，100 11111 即159 即：202.112.14.159
+
+010011|00
+
+
+
+
+核心使用场景有3个：解耦、异步、削峰。
+
+解耦：A 系统需要调用 B C 两个系统的接口，现在如果 C 系统不要了，并新增加一个 E 系统，那么A系统就得修改代码。
+而且 A 系统要时时刻刻考虑它所依赖的几个系统如果挂了该咋办？要不要重发，要不要把消息存起来，等一系列问题。
+
+如果使用 MQ，A 系统产生一条数据，发送到 MQ 里面去，哪个系统需要数据自己去 MQ 里面消费。
+如果某个系统不需要数据了，就取消对 MQ 消息的消费即可。
+这样下来，A 系统压根儿不需要去考虑要给谁发送数据，不需要维护这个代码，也不需要考虑人家是否调用成功、失败超时等情况。
+
+总结：通过一个 MQ，Pub/Sub 发布订阅消息这么一个模型，A 系统就跟其它系统彻底解耦了。
+
+技巧：你需要去考虑一下你负责的系统中是否有类似的场景，就是一个系统或者一个模块，调用了多个系统或者模块，互相之间的调用很复杂，维护起来很麻烦。
+但是其实这个调用是不需要直接同步调用，如果用 MQ 给它异步化解耦，也是可以的，你就需要去考虑在你的项目里，是不是可以运用这个 MQ 去进行系统的解耦。
+
+异步：同步请求是要等待整个系统流程处理完成之后才返回结果，如果涉及到多个外部系统调用，往往很慢。有此场景做成异步体验会更好，如：发送短信验证码。
+
+削峰：一个系统只在某个时间段请求流量比较高，超出系统承载能力，但又没必要为了应对这一段时间的流量，而提升系统并发能力。
+那么可以考虑用将所有请求先暂存到 MQ 中，再从 MQ 中拉取，这样保证系统不会挂掉，而且高峰期一过，积压的消息也会很解决掉。
+
+缺点有以下几个：
+系统可用性降低：引入 MQ 之后，MQ 成为多个系统之间通信的桥梁， MQ 一挂，整套系统就崩溃了。所以要保证消息队列的高可用。
+
+系统复杂度提高：怎么保证消息没有重复消费？怎么处理消息丢失的情况？怎么保证消息传递的顺序性？
+
+一致性问题：
+A 系统处理完了直接返回成功了，人都以为你这个请求就成功了；
+但是问题是，要是 BCD 三个系统那里，BD 两个系统写库成功了，结果 C 系统写库失败了，咋整？你这数据就不一致了。
+
+
+所以消息队列实际是一种非常复杂的架构，你引入它有很多好处，但是也得针对它带来的坏处做各种额外的技术方案和架构来规避掉，做好之后，你会发现，系统复杂度提升了一个数量级，也许是复杂了 10 倍。
+但是关键时刻，用，还是得用的。
+
+
+docker network create network
+docker run -d --network network --name nginx-1 nginx:latest
+docker run -d --network network --name nginx-2 nginx:latest
+docker run -d --network network --name nginx-3 nginx:latest
+
+docker exec -it nginx-1 bash
+sed -i "s/deb.debian.org/mirrors.aliyun.com/g" /etc/apt/sources.list
+apt update
+apt install -y vim iputils-ping
+
+vim /etc/nginx/nginx.conf
+
+http {
+     upstream backend {
+     server nginx-2;
+     server nginx-3;
+
+   }
+
+    server {     
+      listen 80;
+      location / {
+      	proxy_pass http://backend;
+			}
+   }
+}
+
+
+
+echo 'nginx2' > /usr/share/nginx/html/index.html
+
+echo 'nginx3' > /usr/share/nginx/html/index.html
+
+
+
+docker.open nginx-1 /etc/nginx/nginx.conf
+docker.open nginx-2 /usr/share/nginx/html/index.html
+docker.open nginx-3 /usr/share/nginx/html/index.html
+
+
+使用 self:: 或者 __CLASS__ 对当前类的静态引用，取决于当前方法所在的类
+static  表示运行时最初调用的类来绕过限制
+
+
+
+
+模式修饰符 
+i 忽略大小写  
+m 多行模式 
+s 点号匹配包括换行符
+x 
+A (PCRE_ANCHORED) 锚定模式
+S 分析
+U 非贪婪
+
+
+1、表达式定义常量：可以使用包括数值、字符串字面量以及其他常量在内的数值表达式来 定义常量、声明属性以及设置函数参数默认值。
+
+使用 ... 运算符定义变长参数函数
+
+使用 ... 运算符进行参数展开
+
+使用 ** 进行幂运算
+
+use function 以及 use const
+
+PHP 的 SAPI 模块中实现了一个 交互式调试器，叫做 phpdbg
+
+大文件上传：支持大于 2GB 的文件上传。
+
+GMP 支持运算符重载：$a = gmp_init(42); $b = gmp_init(17); echo $a + $b；
+
+
+使用 hash_equals() 比较字符串避免时序攻击。
+
+在 PHP 7 中，很多致命错误以及可恢复的致命错误，都被转换为异常来处理了。
+
+set_exception_handler() 不再保证收到的一定是 Exception 对象 
+function handler(Throwable $e) { ... }
+
+
+间接调用的表达式的新旧解析顺序，旧的从右向左，新的从左到右。如：$$foo['bar']['baz'] 	PHP5：${$foo['bar']['baz']}	 PHP7：($$foo)['bar']['baz']
+
+foreach不再移动数组内部指针
+
+foreach 通过值遍历时，操作的值为数组的副本，foreach 中的操作不会修改原数组的值。
+
+foreach通过引用遍历时，能跟踪变化。
+
+十六进制形式的字符串不再被认为是数字。
+
+dl()在 PHP-FPM 不可用，在 CLI 和 embed SAPIs 中仍可用。
+
+
+类/接口 名称	值必须为指定类和接口的实例化对象 instanceof	 
+self	值必定是所在方法的类的一个 instanceof。 只能在类的内部使用。	 
+array	值必须为 array。	 
+callable	值必定是一个有效的 callable。 不能用于类属性的类型声明。	 
+bool	值必须为一个布尔值。	 
+float	值必须为一个浮点数字。	 
+int	值必须为一个整型数字。	 
+string	值必须为一个 string。	 
+iterable	值必须为 array 或 instanceof Traversable。	PHP 7.1.0
+object	值必须为object。	PHP 7.2.0
+mixed	值可以为任何类型。	PHP 8.0.0
+
+联合类型接受多个不同的类型做为参数。声明联合类型的语法为 T1|T2|...。联合类型自 PHP 8.0.0 起可用。
+
+false 伪类型 通过联合类型支持字面类型（Literal Type）false， 出于历史原因，很多内部函数在失败时返回了 false 而不是 null。
+
+
+null合并运算符 $username = $_GET['user'] ?? 'nobody';
+
+标量类型声明
+
+组合比较符
+通过 define() 定义常量数组
+new class 来实例化一个匿名类
+
+Closure::call() 现在有着更好的性能，简短干练的暂时绑定一个方法到对象上闭包并调用它。
+整数除法函数 intdiv() 
+
+Throwable
+Error
+TypeError
+ParseError
+AssertionError
+ArithmeticError
+DivisionByZeroError
+
+放宽了保留词限制，现在允许全局保留词用于类/接口/Trait 中的属性、常量和方法名。 唯一的限制是： class关键词不能用于常量名，否则会和类名解析语法冲突 (ClassName::class)。
+
+
+
+
+可为空（Nullable）类型 
+function testReturn(): ?string
+
+void 返回值类型
+短数组语法
+类常量可见性
+iterable 伪类型
+多异常捕获处理 FirstException | SecondException $e
+
+list()现在支持键名
+$data = [
+    ["id" => 1, "name" => 'Tom'],
+    ["id" => 2, "name" => 'Fred'],
+];
+
+// list() style
+list("id" => $id1, "name" => $name1) = $data[0];
+
+// [] style
+["id" => $id1, "name" => $name1] = $data[0];
+
+// list() style
+foreach ($data as list("id" => $id, "name" => $name)) {
+    // logic here with $id and $name
+}
+
+// [] style
+foreach ($data as ["id" => $id, "name" => $name]) {
+    // logic here with $id and $name
+}
+
+支持为负的字符串偏移量
+var_dump("abcdef"[-2]);
+
+通过 Closure::fromCallable() 将callables转为闭包
+
+新的 object 对象类型
+
+spl_object_id()
+
+
+
+转换对象和数组中的数字键
+$obj = new class {
+    public function __construct()
+    {
+        $this->{0} = 1;
+    }
+};
+
+is_countable()
+array_key_first()
+array_key_last()
+hrtime ( bool $get_as_number = false ) : mixed
+
+属性添加限定类型
+箭头函数 提供了一种更简洁的定义函数的方法。
+
+<?php
+$factor = 10;
+$nums = array_map(fn($n) => $n * $factor, [1, 2, 3, 4]);
+
+空合并运算符赋值
+$array['key'] ??= computeDefault();
+等同于
+if (!isset($array['key'])) {
+    $array['key'] = computeDefault();
+}
+
+数值文字分隔符
+299_792_458;   // decimal
+
+
+real 类型已被废弃，请使用 (float) 来替代。
+
+在没有父类的类中使用 parent 关键词已被废弃
+
+新增注解的功能。
+新增构造器属性提升功能（在构造函数中声明类的属性）。
+
+
+新增 match 表达式
+$age = 23;
+$result = match (true) {
+    $age >= 25 => 'adult',
+    $age >= 18 => 'young adult',
+    default => 'kid',
+};
+var_dump($result); // 'young adult'
+
+新增 Nullsafe 运算符(?->)
+
+新增 WeakMap 类。
+新增 ValueError 类。
+
+static ("后期静态绑定"中) 可以作为返回类型：
+class Test {
+     public function create(): static {
+          return new static();
+     }
+}
+
+现在可以通过 $object::class 获取类名，返回的结果和 get_class($object) 一致。
+
+new、instanceof 可用于任何表达式， 用法为 new (expression)(...$args) 和 $obj instanceof (expression)。
+
+添加对一些变量语法一致性的修复，例如现在能够编写 Foo::BAR::$baz。
+
+添加 Stringable interface， 当一个类定义 __toString() 方法后会自动实现该接口。
+
+Trait 可以定义私有抽象方法（abstract private method）。 类必须实现 trait 定义的该方法。
+
+可作为表达式使用 throw。 使得可以编写以下用法：
+
+<?php
+$fn = fn() => throw new Exception('Exception in arrow function');
+$user = $session->user ?? throw new Exception('Must have user');
+
+参数列表中的末尾逗号为可选。
+
+现在允许 catch (Exception) 一个 exception 而无需捕获到变量中。
+
+
+
+mysql 启动失败：su: warning: cannot change directory to /nonexistent: No such file or directory
+
+# Ubuntu
+sudo service mysql stop
+sudo usermod -d /var/lib/mysql/ mysql
+sudo service mysql start
+
+
+docker run -d --name web -v my-vol:/usr/share/nginx/html  nginx:1.9
+--mount source=my-vol,target=/usr/share/nginx/html 
+
+route add 172.17.0.0/16 mask 255.255.255.0 172.23.89.36 -p
+
+
+apply、call、bind比较
+那么 apply、call、bind 三者相比较，之间又有什么异同呢？何时使用 apply、call，何时使用 bind 呢。简单的一个栗子：
+
+netsh interface portproxy delete v4tov4 listenport=80 listenaddress=*
+netsh interface portproxy delete v4tov4 listenport=80 listenaddress=0.0.0.0
+
+netsh interface portproxy add v4tov4 listenport=80 listenaddress=0.0.0.0 connectport=80 connectaddress=172.30.144.91 protocol=tcp
+netsh interface portproxy add v4tov4 listenport=80 listenaddress=* connectport=80 connectaddress=172.30.144.91 protocol=tcp
+
+
+
+var obj = {
+    x: 81,
+};
+ 
+var foo = {
+    getX: function() {
+        return this.x;
+    }
+}
+ 
+console.log(foo.getX.bind(obj)());  //81
+console.log(foo.getX.call(obj));    //81
+console.log(foo.getX.apply(obj));   //81
+三个输出的都是81，但是注意看使用 bind() 方法的，他后面多了对括号。
+也就是说，区别是，当你希望改变上下文环境之后并非立即执行，而是回调执行的时候，使用 bind() 方法。而 apply/call 则会立即执行函数。
+
+再总结一下：
+apply 、 call 、bind 三者都是用来改变函数的this对象的指向的；
+apply 、 call 、bind 三者第一个参数都是this要指向的对象，也就是想指定的上下文；
+apply 、 call 、bind 三者都可以利用后续参数传参；
+bind 是返回对应函数，便于稍后调用；apply 、call 则是立即调用 。
+
+func.call(this, arg1, arg2);
+func.apply(this, [arg1, arg2])
+
+
+箭头函数
+箭头函数表达式的语法比函数表达式更简洁，并且没有自己的this，arguments，super或new.target。箭头函数表达式更适用于那些本来需要匿名函数的地方，并且它不能用作构造函数。
+
+
+在箭头函数出现之前，每一个新函数根据它是被如何调用的来定义这个函数的this值：
+如果是该函数是一个构造函数，this指针指向一个新的对象
+在严格模式下的函数调用下，this指向undefined
+如果是该函数是一个对象的方法，则它的this指针指向这个对象
+This被证明是令人厌烦的面向对象风格的编程。
+
+
+(param1, …, paramN) => { statements }
+(param1, …, paramN) => expression 
+() => expression
+总结：只有一个参数或是一条语句时，小括号和大括号都是可选的。一条表达式表示返回。
+
+//加括号的函数体返回对象字面量
+params => ({foo: bar}) 
+
+//支持剩余参数和默认参数
+(param1, param2, ...rest) => { statements }
+(param1 = defaultValue1, param2, …, paramN = defaultValueN) => {statements }
+
+//同样支持参数列表解构
+let f = ([a, b] = [1, 2], {x: c} = { x: 3}) => a + b + c; //等于 1 + 2 + 3
+
+//参数解构
+array.map(({ "length": len }) => len); 
+
+
+function foo(n) {
+  var f = () => arguments[0] + n; // 隐式绑定 foo 函数的 arguments 对象. arguments[0] 是 n,即传给foo函数的第一个参数
+  return f();
+}
+
+function foo(arg) {
+  var f = (...args) => args[0];
+  return f(arg);
+}
+
+
+'use strict';
+var obj = {
+  b: () => {
+    console.log(this); //Window 对象
+  },
+  c: function() {
+    console.log( this); // Object 对象
+  }
+}
+
+'use strict';
+Object.defineProperty(obj, "name", {
+  get: () => {
+    console.log(this);//Window 对象
+  }
+});
+
+
+(() => 'foobar')(); //返回 "foobar"
+
+// 常规写法，let作用域
+() => {let now = new Date(); }
+console.log(now);  //not defined 
+
+// 参数变量是局部变量
+(now=new Date()) => "Good";
+console.log(now);    //not defined
+
+// 函数体内不使用 var 定义的变量是全局变量
+() => { now = new Date(); }
+console.log(now);  //ok
+
+
+//箭头函数体的闭包（ i=0 是默认参数）
+var Add = (i=0) => {return (() => (++i) )};
+var v = Add();
+v();           //1
+v();           //2
+
+//因为仅有一个返回，return 及括号（）也可以省略
+var Add = (i=0)=> ()=> (++i);
+
+箭头函数递归
+var fact = (x) => ( x==0 ?  1 : x*fact(x-1) );
+
+
+Promise 构造器主要用于包装返回值不是Promise 的函数
+const promise1 = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('foo');
+  }, 300);
+});
+
+const myPromise =(new Promise(myExecutorFunc)).then(Fulfilled, Rejected)
+
+const myPromise = (new Promise(myExecutorFunc))
+  .then(FulfilledA)
+  .then(FulfilledB)
+  .catch(RejectedAny);
+
+
+const promiseA = new Promise( (resolutionFunc,rejectionFunc) => {
+    resolutionFunc(777);
+});
+
+promiseA.then( (val) => console.log("asynchronous logging has val:",val) );
+console.log("immediate logging"); //这里可能会先于 then 执行
+
+// produces output in this order:
+// immediate logging
+// asynchronous logging has val: 777
+
+Promise.resolve(value)方法返回一个以给定值解析后的Promise 对象
+
+function myAsyncFunction(url) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", url);
+    xhr.onload = () => resolve(xhr.responseText);
+    xhr.onerror = () => reject(xhr.statusText);
+    xhr.send();
+  });
+};
+
+
+Ctrl + Shift + F 可以查找终端输出的内容。
+
+inet 172.29.78.90  netmask 255.255.240.0  broadcast 172.29.79.255
+
+route add 172.17.0.0 mask 255.255.0.0 172.29.78.90
+
+
+  1111 0000
+  0100 1110
+  0100 0000
+172.29.64.0
+
+PUT /megacorp/_doc/1
+{
+    "first_name" : "John",
+    "last_name" :  "Smith",
+    "age" :        25,
+    "about" :      "I love to go rock climbing",
+    "interests": [ "sports", "music" ]
+}
+
+PUT /megacorp/_doc/2
+{
+    "first_name" :  "Jane",
+    "last_name" :   "Smith",
+    "age" :         32,
+    "about" :       "I like to collect rock albums",
+    "interests":  [ "music" ]
+}
+
+PUT /megacorp/_doc/3
+{
+    "first_name" :  "Douglas",
+    "last_name" :   "Fir",
+    "age" :         35,
+    "about":        "I like to build cabinets",
+    "interests":  [ "forestry" ]
+}
+
+轻量搜索
+GET /megacorp/_doc/1
+GET /megacorp/_search
+GET /megacorp/_search?q=last_name:Smith
+
+查询表达式搜索
+GET /megacorp/_search
+{
+    "query" : {
+        "match" : {
+            "last_name" : "Smith"
+        }
+    }
+}
+
+GET /megacorp/_search
+{
+    "query" : {
+        "bool": {
+            "must": {
+                "match" : {
+                    "last_name" : "smith" 
+                }
+            },
+            "filter": {
+                "range" : {
+                    "age" : { "gt" : 30 } 
+                }
+            }
+        }
+    }
+}
+
+全文搜索
+GET /megacorp/_search
+{
+    "query" : {
+        "match" : {
+            "about" : "rock climbing"
+        }
+    }
+}
+
+短语搜索
+#匹配同时包含 “rock” 和 “climbing” ，并且 二者以短语 “rock climbing” 的形式紧挨着的雇员记录。
+GET /megacorp/_search
+{
+    "query" : {
+        "match_phrase" : {
+            "about" : "rock climbing"
+        }
+    }
+}
+
+高亮显示
+GET /megacorp/_search
+{
+    "query" : {
+        "match_phrase" : {
+            "about" : "rock climbing"
+        }
+    },
+    "highlight": {
+        "fields" : {
+            "about" : {}
+        }
+    }
+}
+
+挖掘出员工中最受欢迎的兴趣爱好
+GET /megacorp/employee/_search
+{
+  "aggs": {
+    "all_interests": {
+      "terms": { "field": "interests" }
+    }
+  }
+}
+
+
+
+创建分片
+PUT /blogs
+{
+   "settings" : {
+      "number_of_shards" : 3, //主分片数量
+      "number_of_replicas" : 1 //每个主分版的副本数量
+   }
+}
+查看集群健康
+GET /_cluster/health
+
+
+
+new start
+PUT /customer/_doc/1
+{
+  "name": "John Doe"
+}
+GET /customer/_doc/1
+
+
+
+sudo apt install -y curl wget openssl  make cmake gcc g++
+
+php 依赖
+sudo apt update
+sudo apt install -y \
+ autoconf \
+ dpkg-dev \
+ file \
+ g++ \
+ gcc \
+ libc6-dev \
+ make \
+ pkg-config \
+ re2c \
+ ca-certificates \
+ curl \
+ xz-utils \
+ libargon2-dev \
+ libcurl4-openssl-dev \
+ libedit-dev \
+ libonig-dev \
+ libsodium-dev \
+ libsqlite3-dev \
+ libssl-dev \
+ libxml2-dev \
+ zlib1g-dev \
+ libfreetype6-dev \
+ libjpeg-turbo8-dev \
+ libpng-dev \
+ libzip-dev \
+
+ 
+
+
+php7.3
+
+./configure \
+  --prefix=/d/usr/php \
+  --with-config-file-path=/d/usr/php/etc \
+  --with-mysqli \
+  --with-pdo-mysql \
+  --with-zlib \
+  --with-curl \
+  --with-gettext \
+  --with-openssl \
+  --with-mhash \
+  --with-pear   \
+  --enable-zip \
+  --with-readline \
+  --with-libedit  \
+  --enable-fpm \
+  --enable-xml \
+  --enable-bcmath \
+  --enable-shmop \
+  --enable-sysvsem \
+  --enable-mbregex \
+  --enable-mbstring \
+  --enable-ftp \
+  --enable-sockets \
+  --enable-soap \
+  --enable-pcntl \
+  --enable-debug \
+  --with-gd \
+  --with-freetype-dir \
+  --with-webp-dir \
+  --with-png-dir \
+  --with-jpeg-dir \
+  --with-pic \
+  --enable-mysqlnd \
+  --with-password-argon2 \
+  --with-sodium=shared       
+ 
+
+
+
+install libgd-dev  libzstd-dev   libpcre3-dev
+install libxml2 
+
+software=nginx1.9 && ./configure \
+ --prefix=/d/usr/$software \
+ --conf-path=/d/etc/$software/nginx.conf \
+ --with-http_ssl_module \
+ --with-select_module \
+ --with-poll_module \
+ --with-threads \
+ --with-file-aio \
+ --with-debug    
+
+
+
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin git@github.com:zbseoag/develop.git
+git push -u origin main
+
+powershell
+echo $profile
+
+禁用响铃
+sudo vi /etc/inputrc 文件中取消注释 set bell-style none
+
+sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak
+
+
+最后一个参数 !$ 
+!! 上一条命令
+
+composer create-project laravel/laravel example-app
+cd example-app
+php artisan serve
+
+docker network create -d bridge localhost
+docker run --name work --network localhost -p 80:80 -v /desktop/cnasanx/wwwroot:/var/www/html php:5.3.29-apache
+docker run --name mysql5.6 --network localhost -p 3306:3306  -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.6
+
+ServerName localhost
+docker.open work /etc/apache2/apache2.conf
+
+php -S 172.17.02:8081 -t /home/www-data
+
+
+curl -X POST 'localhost:9200/<PATH>?<QUERY_STRING>' -d '<BODY>'
+
+
+
+ubuntu2004.exe help
+ubuntu2004.exe config --default-user root
+https://github.com/xianyunyh/PHP-Interview
+https://github.com/opsnull/follow-me-install-kubernetes-cluster
+https://github.com/OMGZui/noteBook
+https://github.com/shuzheng/zheng
+https://github.com/lin-xin/vue-manage-system
+
+官网: http://googlehelper.net/
+中文乱码
+git config --global core.quotepath false
+
+sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /srv/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+
+
+C:\Users\zbseoag\AppData\Roaming\JetBrains\PhpStorm2020.3\ssl\cacerts
+
+
+cd /etc/init.d/
+vim my.init.script.sh
+chmod a+x my.init.script.sh
+update-rc.d my.init.script.sh defaults 90
+
+移除Ubuntu开机脚本
+sudo update-rc.d -f my.init.script.sh remove
+
+
+删除 snapd
+sudo apt autoremove --purge snapd
+
+dpkg -i|--install 		<file.deb> 		安装 dbg 包
+dpkg -L|--listfiles 		<package>  		列出属于指定软件包的文件
+dpkg -l|--list 			<package>		简明列出软件包状态
+dpkg -r|--remove 		<package>		仅卸载软件
+dpkg -P|--purge 		<package>		卸载软件清理配置
+dpkg -S|--search		<package>		查找包中包含的文件
+dpkg -c|--contents		<file.deb>		查看 deb 包内容
+dpkg --get-selections 		[package]		查找包名
+
+
+apt list	[package]	根据名称查找软件包
+apt search	<package>	搜索软件包描述
+apt show	<package>	显示软件包细节
+apt install 	<package> 	安装软件包
+apt reinstall	<package>	重装软件包
+apt update			更新件包列表
+apt upgrade			安装软件更新
+apt remove 	<package>	卸载软件包
+apt purge	<package>	卸载并清理
+apt autoremove			自动卸载所有自动安装的无用软件包
+apt autoclean			自动清理已下载的旧包文件
+apt autopurge			自动卸载并清理
+
+
+彻底卸载gedit
+$ sudo  apt-get  purge gedit gedit-plugins
+$ sudo apt-get autoremove
+
+CTRL  + A  |  E 移光标于首尾
+CTRL  + U  |  K 删光标前后所有字符
+CTRL  + H  |  D 删光标前后一个字符
+CTRL  + LEFT |  RIGHT 光标左右移动一个单词位
+CTRL  + S | Q	暂停与继续屏幕输出
+CTRL  + & | Y 撤消与重复
+CTRL  + W 删除光标前一个单词
+CTRL  + T	交换前后一个字符
+CTRL  + Z 转至后台运行
+CTRL  + D 结束输入或关闭终端
+CTRL  + L 清屏
+CTRL  + R 搜索历史命令
+ALT + . 补全上一条命令最后一个参数
+
+备用快捷键：
+CTRL  + B | F  代替左右键
+CTRL  + P | N	 代替上下键
+ESC + .   补全上一条命令最后一个参数
+
+
+apt -s autoremove
+vim /etc/docker/daemon.json
+{
+    "registry-mirrors":["http://hub-mirror.c.163.com"]
+}
+
+
+
+
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+
+
+sudo passwd root
+sudo apt purge firefox firefox-locale-en firefox-locale-zh-hans 
+
+sudo apt install gnome-tweak-tool gnome-shell-extensions
+sudo apt install gnome-shell-extension-dash-to-panel 
+
+sudo vim /etc/default/grub #修改 GRUB_TIMEOUT
+sudo update-grub
+   
+1. 从wheel组中删除 test用户
+gpasswd wheel -d test
+
+sudo usermod -aG root $USER
+
+RUN sed -i "s/archive.ubuntu./mirrors.aliyun./g" /etc/apt/sources.list
+RUN sed -i "s/deb.debian.org/mirrors.aliyun.com/g" /etc/apt/sources.list
+RUN sed -i "s/security.debian.org/mirrors.aliyun.com\/debian-security/g" /etc/apt/sources.list
+RUN sed -i "s/httpredir.debian.org/mirrors.aliyun.com\/debian-security/g" /etc/apt/sources.list
+
+
+docker build  -t zbseoag/php:8.0 .
+
+RUN sed -i 's#http://archive.ubuntu.com#http://mirrors.163.com#g' /etc/apt/sources.list
+
+
+主从复制
+replicaof <host> <port>
+replicaof no one #停止
+role #返回实例在复制中担任的角色
+
+
+客户端与服务器
+auth password #连接密码,是 requirepass 配置项
+quit #退出
+info [all|default|section] #以一种易于解释（parse）且易于阅读的格式
+shutdown [save|nosave] :关闭 redis 服务器,不给参数,就按配置文件中的持久化策略
+time #返回当前服务器时间
+client setname connection-name #设置连接名, 空字符串表示移除名字
+client getname #返回连接名
+client kill ip:port #关闭指定的客户端
+client list #返回所有连接到服务器的客户端信息和统计数据
+
+
+
+python  -m pip install --upgrade pip
+pip install requests
+
+
+配置选项
+config set parameter value
+config get parameter
+config resetstat #重置 info 命令中的某些统计数据
+config rewrite #将运行中的配置重写回配置文件
+
+
+
+
+
+
+swoole.use_shortname=On/Off 来开启 / 关闭短名
+
+创建协程
+//go() = Swoole\Coroutine::create
+go(function () {
+    co::sleep(0.5);
+});
+
+通道操作
+//Coroutine\Channel as chan
+$c = new chan(1);
+$c->push($data);
+
+延迟执行
+//defer() = Swoole\Coroutine::defer
+defer(function () use ($db) {
+    $db->close();
+});
+
+协程 System API
+Swoole\Coroutine => Swoole\Coroutine\System
+
+
+
+
+
+Redis 调试
+
+ping
+echo
+object subcommand [arguments [arguments]]
+object refcount <key> 返回给定 key 引用所储存的值的次数。此命令主要用于除错。
+object encoding <key> 返回给定 key 锁储存的值所使用的内部表示(representation)。
+object idletime <key> 返回给定 key 自储存以来的空闲时间(idle， 没有被读取也没有被写入)，以秒为单位。
+
+
+slowlog 的配置
+slowlog-log-slower-than 多少微秒以上算做慢查询  
+slowlog-max-len 最大记录条数
+
+#最新的日志会最先被打印,日志 id 在 redis 服务器重启的时候才会重置
+slowlog get #查看所有记录
+slowlog get length #显示指固定条数
+slowlog len #当前总条数
+slowlog reset #清空
+monitor #监控 redis 服务器接收到的命令
+debug object key #调试命令，它不应被客户端所使用
+debug segfault #执行一个不合法的内存访问从而让 redis 崩溃，仅在开发时用于 bug 模拟
+
+
+para meter  [pəˈræ  mɪtə(r)]
+proxy [ˈprɒk si]
+
+
+参数名称	用途
+-server	此标志用于控制代理是运行于服务器/客户端模式，每个 Consul 集群至少有一个服务器，正常情况下不超过5个，使用此标记的服务器参与 Raft一致性算法、选举等事务性工作
+-client	表示 Consul 绑定客户端接口的IP地址，默认值为：127.0.0.1，当你有多块网卡的时候，最好指定IP地址，不要使用默认值
+-bootstrap-expect	预期的服务器集群的数量，整数，如 -bootstrap-expect=3，表示集群服务器数量为3台，设置该参数后，Consul将等待指定数量的服务器全部加入集群可用后，才开始引导集群正式开始工作，此参数必须与 -server 一起使用
+-data-dir	存储数据的目录，该目录在 Consul 程序重启后数据不会丢失，指定此目录时，应确保运行 Consul 程序的用户对该目录具有读写权限
+-node	当前服务器在集群中的名称，该值在整个 Consul 集群中必须唯一，默认值为当前主机名称
+-bind	Consul 在当前服务器侦听的地址，如果您有多块网卡，请务必指定一个IP地址（IPv4/IPv6)，默认值为：0.0.0.0，也可用使用[::]
+-datacenter	代理服务器运行的数据中心的名称，同一个数据中心中的 Consul 节点必须位于同一个 LAN 网络上
+-ui	启用当前服务器内部的 WebUI 服务器和控制台界面
+-join	该参数指定当前服务器启动时，加入另外一个代理服务器的地址，在默认情况下，如果不指定该参数，则当前代理服务器不会加入任何节点。可以多次指定该参数，以加入多个代理服务器，
+-retry-join	用途和 -join 一致，当第一次加入失败后进行重试，每次加入失败后等待时间为 30秒
+-syslog	指定此标志意味着将记录 syslog，该参数在 Windows 平台不支持
+
+
+// 172.16.1.218
+consul agent -server -ui -bootstrap-expect=3 -data-dir=/home/zbseoag/consul -node=agent-1 -client=127.0.0.1 -bind=127.0.0.4 -datacenter=dc1
+
+// 172.16.1.219
+consul agent -server -ui -bootstrap-expect=3 -data-dir=/home/zbseoag/consul -node=agent-2 -client=127.0.0.2 -bind=127.0.0.5 -datacenter=dc1 -join 127.0.0.4
+
+// 172.16.1.220
+consul agent -server -ui -bootstrap-expect=3 -data-dir=/home/zbseoag/consul -node=agent-3 -client=127.0.0.3 -bind=127.0.0.6 -datacenter=dc1 -join 127.0.0.4
+
+
+
+eval script keycount key [key ...] arg [arg ...] 执行 lua 脚本。
+evalsha sha1 keycount key [key ...] arg [arg ...] 执行 lua 脚本。
+script exists script [script ...] 查看指定的脚本是否已经被保存在缓存当中。
+script flush 从脚本缓存中移除所有脚本。
+script kill 杀死当前正在运行的 lua 脚本。
+script load script 将脚本 script 添加到脚本缓存中，但并不立即执行这个脚本。
+
+删除名为登录的密钥环，重启，打开chrome 显示对话框时，什么都不输入直接点继续。
+
+sudo vim /etc/sudoers
+在 %sudo	ALL=(ALL:ALL) ALL 添加  username <TAB键> ALL=(ALL) NOPASSWD: ALL
+zbseoag   ALL=(ALL) NOPASSWD: ALL
+
+#[[ "${colors[@]}" =~ $color ]]
+
+git reset
+我的电脑
+win + i ：打开设置
+Win + 1、2、3 ：打开任务栏的程序
+Shift + 单击  ：打开任务栏程序的新窗口
+win + pause
+Ctrl + Shift + Esc 任务管理器
+win + e   资源管理器
+Win+A 操作中心
+
+sh zkServer.sh start
+sh zkCli.sh
+
+指定脚本解释器
+在 shell 脚本，#! 告诉系统其后路径所指定的程序即是解释此脚本文件的 Shell 解释器。#! 被称作shebang
+
+:<<EOF
+echo '这是多行注释'
+echo '这是多行注释'
+EOF
+
+echo -e "YES\c" # -e 开启转义 \c 不换行
+readonly rword
+字符长度： ${#text}
+
+text="heaao"
+echo `expr index "${text}" aa` #查找 aa 在 heaao 中的起始位置。
+
+nums=([2]=2 [0]=0 [1]=1)
+colors=(red yellow "dark blue")
+
+扩展数组
+colors=(1 2 3)
+colors=(a "${colors[@]}" b c)
+
+
+
+printf "%-5s %-5.2f \n" Name 100.254
+- 左对齐
+5 数字表示字符长度，浮点数可以带小数（%5.2f），表示保留小数位
+s 字符串
+f 浮点数
+
+
+echo -e "\033[前;背;特效m 字符串内容 \033[0m"
+echo -e "\033[0;31;5m string is here \033[0m"
+特效：0 关闭、1 设置高亮度、4 下划线、5 闪烁、7 反显
+
+let sum=one+=10
+sum=$[no1 + no2]
+sum=$((no1 + no2 + 8))
+
+sum=`expr 2 % 3`
+sum=$(expr $one \* 5) #乘法
+
+echo "scale=4;3/8" | bc
+echo "obase=2;$num" | bc
+
+num=11000001
+echo "obase=10;ibase=2;$num" | bc  #二进制数转十进制
+
+
+echo "10^10" | bc
+echo "sqrt(100)" | bc
+
+
+export 变量名...
+export 变量名=变量值 [...变量名n=变量值n]
+
+unset 变量名
+
+
+常见的环境变量
+
+$USER 查看账户信息
+$logname 登录相关信息
+$UID
+$Shell
+$HOME 家目录
+$pwd
+$PATH 用户所输入的命令是在哪些目录中查找
+$PS1
+$PS2
+$RANDOM 随机数
+
+$# ：命令行中位置参数的个数
+$* ：所有位置参数的内容
+$@ ：所有位置参数的内容
+$? ：上一条命令执行后返回的状态，当返回状态值为0时表示执行正常，非0表示执行异常或出错
+$$ ：当前所在进程的进程号
+$! ：后台运行的最后一个进程号
+$0 ：当前执行的进程/程序名
+
+
+条件测试
+test 条件表达式
+[ 条件表达式 ]
+
+-d：测试是否为目录
+-e：测试目录或文件是否存在
+-f：测试是否为文件
+-r：测试当前用户是否有权限读取
+-w：测试当前用户是否有权限写入
+-x：测试当前用户是否可执行该文件
+-L：测试是否为符号链接文件
+-nt：最后修改时间 new than 
+-ot：最后修改时间 old than
+
+
+字符串比较
+[ 字符串1 =、!= 、<、> 字符串2 ]
+[ -z|-n 字符串的空与非空 ]
+
+
+整数值比较
+[ 整数1 操作符 整数2 ]
+-eq：等于
+-ne：不等于
+-gt：大于
+-lt：小于
+-le：小于等于
+-ge：大于等于
+
+逻辑测试
+[ 表达式1 ] 操作符 [ 表达式2 ] ...
+
+-a 或 &&：与
+-o 或 ||：或
+!：否
+
+
+if [ null ];then
+
+elif [ null ];then
+
+else
+ 
+fi
+
+
+for arg in elem1 elem2 ... elemN
+do
+  
+done
+
+for(( i=1; i<=5; i++ ))
+do
+  
+done 
+
+
+while [ $i -le 10 ]
+do
+
+ i=`expr $i + 1`
+
+done
+
+while [[ ${x} -lt 10 ]]; do
+  echo $((x * x))
+  x=$((x + 1))
+done
+
+
+case "$1" in
+  'start'|'-start') echo stop;;
+  *) echo default;;
+esac
+
+
+until [ $var -gt 10 ]
+do
+  echo $var
+  var=$(( $var + 1 ))
+done 
+
+
+大括号扩展
+大括号扩展让生成任意的字符串成为可能。它跟 文件名扩展 很类似，举个例子：
+
+echo beg{i,a,u}n ### begin began begun
+大括号扩展还可以用来创建一个可被循环迭代的区间。
+
+echo {0..5} ### 0 1 2 3 4 5
+echo {00..8..2} ### 00 02 04 06 08
+
+
+bash -x script.sh
+sh -x script.sh
+
+set -x：在执行时候显示参数和命令。
+set +x：禁止调式
+set -v：当命令进入读取时候显示输入
+set +v：禁止打印输入
+
+for i in {1..5}
+do
+  set -x
+    echo $i
+  set +x
+done
+
+使用shebang调式方法
+#!/bin/bash -xv
+
+
+data="111,222,333,444,555,666"
+old=$IFS  #定义一个变量为默认IFS
+IFS=,        #设置IFS为逗号
+for i in $data
+do
+ echo $i
+done
+IFS=$old  #还原
+
+环境变量设置
+
+变量名：JAVA_HOME
+变量值：C:\Program Files\Java\jdk1.7.0
+
+//这里是你JDK的安装路径，可以更换
+变量名：CLASSPATH
+变量值：.;%JAVA_HOME%\lib\dt.jar;%JAVA_HOME%\lib\tools.jar; //记得前面有个"."
+变量名：Path
+变量值：%JAVA_HOME%\bin;%JAVA_HOME%\jre\bin;
+
+
+
+
+离职原因：
+公司是做跨境电商，受疫情影响，进出口都受不到同程度影响，我所在的进口事撤消了部分业务线。我本人也想换个环境，就出来了。
+
+
+高级到资深技术开发
+
+
+
+成员变量和方法作用域
+对于成员变量和方法的作用域，public，protected，private以及不写之间的区别：
+
+public : 表明该成员变量或者方法是对所有类或者对象都是可见的,所有类或者对象都可以直接访问
+
+private : 表明该成员变量或者方法是私有的,只有当前类对其具有访问权限,除此之外其他类或者对象都没有访问权限.子类也没有访问权限.
+
+protected : 表明成员变量或者方法对类自身,与同在一个包中的其他类可见,其他包下的类不可访问,除非是他的子类
+
+default : 表明该成员变量或者方法只有自己和其位于同一个包的内可见,其他包内的类不能访问,即便是它的子类
+
+
+Java中只有值传递，只不过传递的内容是对象的引用。
+
+8种基本数据类型
+Java中有8种基本数据类型分为三大类。
+
+字符类型 char
+布尔类型 boolean
+数值类型 byte、short、int、long、float、double
+
+Java中的数值类型都是有符号的。
+Java中还存在另外一种基本类型void，它也有对应的包装类 java.lang.Void，不过我们无法直接对它们进行操作。
+
+基本数据类型转换成包装类叫装箱
+包装类转换成基本数据类型叫拆箱
+
+
+
+三目运算符，第二和第三位操作数分别是基本类型和对象，对象会进行拆箱操作，由于该对象为null，所以在拆箱过程中调用null.booleanValue()的时候就报了NPE。
+
+Map<String,Boolean> map =  new HashMap<String, Boolean>();
+
+//这里会报错
+Boolean b = (map!=null ? map.get("test") : false);
+//改成
+Boolean b = (map!=null ? map.get("test") : Boolean.FALSE);
+
+
+在Java中，== 比较的是对象，而 equals 比较的是值。
+
+
+
+C#
+虚方法才能被子类重写。
+
+
+作为整体参与运算的一串二进制的位数称为字长，它一般是8的倍数，如：8位，16位，32位。
+一个数在计算机上的表示形式叫作机器数，在字长为8位时，5的机器数是00000101。
+
+在计算机中，5与-5 的原码相加不等于0
+
+原码表示法，编码简单，但运算时要单独考虑符号位和判别0，增加了运算规则的复杂性。
+补码：正数的原、反、补码相同，负数补码等于反码加1
+
+编译：用编译器把高级语言编写的源程序翻译成用机器指令表示的目标代码，再通过连接器将目标程序与相关库连接成一个完整的可执行程序。
+优点：执行速度快，产生的可执行程序可以独立运行。
+
+解释：用解释器将源程序进行翻译，解释一句，执行一句，直到结束。
+优点：移植到不同平台时，不必修改源程序，只要有跨平台的解释器即可。
+
+
+c primer plus
+c++ primer plus
+
+所有寄存器都是16位的。
+
+
+默认的Windows磁盘在WSL的访问方式是/mnt开头，可能不太方便，我们下面更换成是/开头的吧。
+
+打开这个文件：
+sudo vim /etc/wsl.conf
+添加下面三行内容，并保存此文件：
+[automount] 
+root = / 
+options = "metadata"
+
+
+
+
+debug
+r 查看、改变寄存器内容
+r ax 123
+
+d 查看内存中的内容
+d 2000:0
+
+e 改变内在中的内容
+e 2000:0 1 2 3
+e 2000:0 回车 1 空格 2空格...回车
+
+u 将机器指令翻译成汇编指令
+e 2000:0 b8 23 01 bb 03 00 89 d8 01 d8
+d 2000:0 f
+u 2000:0
+
+a 通过汇编指令写入机器指令
+a 073f:0100
+mov ax, 0123
+mov bx, 0003
+mov ax, bx
+add ax, bx
+
+t 执行机器指令
+
+jmp 段地址：偏移地址
+
+
+将段地址送入DS:数据->一般寄存器->段寄存器
+mov bx 1000
+mov ds, bx
+
+定义 1000 到 1010 的16个字段空间为栈
+mov ax 1000
+mov ss, ax
+mov sp, 0010
+
+物理地址 = 段地址 X 16 + 偏移地址
+将一级内存单元定义为一个段
+可以将起始地址为16的倍数，最大长度为64的一组地址连续的内在定义为一个段。
+将一段内存定义为一个段，用一个段地址指示段，用偏移地址访问段内的单元。
+
+数据段（ds），代码段（cs：ip），栈段（ss：sp）
+
+汇编程序：包含汇编指令和伪指令的文本。
+
+
+
+
+sudo dpkg -i mongodb-org-server_4.4.1_amd64.deb
+sudo dpkg -i mongodb-org-shell_4.4.1_amd64.deb
+
+sudo service mongod start
+sudo service mongod status
+
+mongo
+show dbs
+use <dbname>
+db.createCollection(<table>)
+show tables
+db.<table>.drop()
+db.<table>.remove({})
+db.<table>.insert({title: 'MongoDB 教程',  tags: ['mongodb', 'NoSQL'],likes: 100 })
+db.<table>.find().pretty()
+db.<table>.update({ "money": { $gt: 1 } } , { $set: { "by": "OK"} } );
+
+
+Mysql 8.0 版本
+use mysql;
+update user set host='%' where user='root';
+
+#查看 validate_password 密码验证插件是否安装
+show VARIABLES LIKE 'validate_password%';
+set global validate_password.policy=0;
+set global validate_password.length=3;
+
+#重新设置密码： 
+ALTER USER 'root'@'%' IDENTIFIED BY '123456';
+FLUSH PRIVILEGES;
+
+
+
+redis:
+
+ ### cluster 命令  ###
+
+cluster addslots slot [slot ...]
+添加哈希槽
+
+cluster delslots slot [slot ...]
+删除哈希槽
+
+
+cluster count-failure-reports node-id
+查看指定节点的故障报告个数
+
+
+cluster countkeysinslot slot
+返回连接节点负责的指定hash slot的key的数量
+
+
+cluster failover [force|takeover]
+在 slave 节点执行，让slave节点进行一次人工故障切换
+
+
+cluster forget node-id
+从群集节点的节点信息列表中移除指定节点
+
+cluster getkeysinslot slot count
+返回存储在连接节点的指定hash slot里面的key的列表
+
+cluster info
+关于redis集群的参数
+
+
+cluster keyslot key
+返回一个整数，用于标识指定键所散列到的哈希槽
+
+
+cluster meet ip port
+
+cluster nodes 
+
+cluster replicas node-id
+列出指定节点的副节点
+
+
+cluster replicate node-id
+重新配置一个节点成为指定master的salve节点
+
+
+cluster reset [hard|soft]
+
+
+cluster saveconfig
+强制保存 nodes.conf 到磁盘
+
+
+cluster set-config-epoch config-epoch
+为一个全新的节点设置指定的config epoch
+
+
+cluster setslot slot importing|migrating|stable|node [node-id]
+
+
+cluster slaves node-id
+列出指定节点的所有slave节点
+
+
+cluster slots
+返回哈希槽和redis实例映射关系
+
+
+readonly
+开启与 cluster 从节点连接的读请求
+
+
+readwrite
+禁止与redis cluster从节点连接的读请求
+
+
+### connection 命令 ###
+
+auth password
+请求密码
+
+echo message
+返回消息
+
+ping [message] ：测试一个连接
+
+quit ：关闭连接
+
+
+select index ：选择一个数据库，下标值从0开始
+
+swapdb index1 index2 ：交换数据库
+
+
+### 哈希 命令 ###
+
+hset key field value ： 添加或修改一个键值对到哈希集
+
+hsetnx key field value ： 绝对添加一个键值对到哈希集
+
+hmset key field value [field value ...] ： 批量添加键值对到哈希集
+
+hmget key field [field ...]  ：从哈希集中获取多个字段的值
+
+hkeys key ： 返回所有字段名
+
+hvals key ： 返回所有字段值
+
+hlen key ：哈希集中字段的数量
+
+
+hstrlen key field ： 返回字段值的长度
+
+hdel key field [field ...] ：从哈希中移除指定的域
+
+hexists key field ：field是否存在
+
+hget key field ： 返回哈希集中的字段值
+
+hgetall key ： 返回指定的哈希集
+
+hincrby key field increment ：哈希字段通过指定整型值自增
+
+hincrbyfloat key field increment ：哈希字段通过指定浮点值自增
+
+hscan key cursor [match pattern] [count count]
+
+
+###### key1
+
+del key [key ...] ： 批量删除key
+
+dump key ： 序列化给定 key 
+
+exists key [key ...] ： 返回key是否存在
+
+expire key seconds ：设置key的过期时长
+
+pexpire key milliseconds ：设置 key 毫秒级的过期时长
+
+expireat key timestamp ：设置 key 的过期时间点
+
+pexpireat key milliseconds-timestamp ：设置 key 毫秒级的过期时间点
+
+keys pattern ：按正则表达式搜索key
+
+pttl key ： 返回 key 毫秒级的剩余生存时间
+
+ttl key
+
+type key
+
+unlink key [key ...] ： 异步删除
+
+wait numslaves timeout ： 此命令阻塞当前客户端，直到所有以前的写命令都成功的传输和指定的slaves确认
+
+migrate host port key destination-db timeout [copy] [replace] ： 将 key 原子性地从当前实例传送到目标实例的指定数据库上，一旦传送成功， key 保证会出现在目标实例上，而当前实例上的 key 会被删除。
+
+move key db ： 把当前库中的key移动到指定库，不会覆盖
+
+
+object subcommand [arguments [arguments ...]] 
+
+persist key ：移除给定 key 的过期时间
+
+randomkey ： 返回一个随机的key
+
+rename key newkey ： 重命名，新名覆盖
+
+renamenx key newkey ：安全的重命名
+
+restore key ttl serialized-value [replace] ： 反序列化给定的序列化值，并将它和给定的 key 关联
+
+scan cursor [match pattern] [count count]
+
+scan 命令用于迭代当前数据库中的key集合。
+sscan 命令用于迭代set集合中的元素。
+hscan 命令用于迭代hash类型中的键值对。
+zscan 命令用于迭代sortset集合中的元素和元素对应的分值
+
+
+sort key [by pattern] [limit offset count] [get pattern] [asc|desc] [alpha] destination
+
+touch key [key ...] ： 修改指定 key 最后访问时间
+
+
+npm -v
+npm install npm -g
+npm update <package> -g
+npm install -g --force <package-name>
+npm update <package-name>
+npm view <package-name>
+npm info <package-name>
+npm show <package-name>
+npm config get cache
+npm cache clean
+npm install --cache-min 9999999 <package-name> 从缓存安装
+npm install --cache-min Infinity <package-name>
+npm-cache install <package-name>
+
+npm list -g
+npm list <package-name>
+npm uninstall <package-name>
+npm ls
+npm search <package-name>
+
+npm init
+npm adduser
+npm publish
+npm help <command>
+npm unpublish <package>@<version>
+
+在package.json所在目录下使用npm install . -g可先在本地安装当前命令行程序，可用于发布前的本地测试。
+
+npm install -g @vue/cli
+vue --version
+vue create hello-world
+cd hello-world
+npm run serve
+vue create --help
+
+npm install -g @vue/cli-service-global
+在开发环境模式下零配置为 .js 或 .vue 文件启动一个服务器
+vue serve [options] [entry]
+Options:
+  -o, --open  打开浏览器
+  -c, --copy  将本地 URL 复制到剪切板
+  -h, --help  输出用法信息
+
+
+在生产环境模式下零配置构建一个 .js 或 .vue 文件
+vue build [options] [entry]
+Options:
+  -t, --target <target>  构建目标 (app | lib | wc | wc-async, 默认值：app)
+  -n, --name <name>      库的名字或 Web Components 组件的名字 (默认值：入口文件名)
+  -d, --dest <dir>       输出目录 (默认值：dist)
+  -h, --help             输出用法信息
+
+
+
+创建一个由 `vue-cli-service` 提供支持的新项目
+vue create [options] <app-name>
+选项：
+  -p, --preset <presetName>       忽略提示符并使用已保存的或远程的预设选项
+  -d, --default                   忽略提示符并使用默认预设选项
+  -i, --inlinePreset <json>       忽略提示符并使用内联的 JSON 字符串预设选项
+  -m, --packageManager <command>  在安装依赖时使用指定的 npm 客户端
+  -r, --registry <url>            在安装依赖时使用指定的 npm registry
+  -g, --git [message]             强制 / 跳过 git 初始化，并可选的指定初始化提交信息
+  -n, --no-git                    跳过 git 初始化
+  -f, --force                     覆写目标目录可能存在的配置
+  -c, --clone                     使用 git clone 获取远程预设选项
+  -x, --proxy                     使用指定的代理创建项目
+  -b, --bare                      创建项目时省略默认组件中的新手指导信息
+  -h, --help                      输出使用帮助信息
+
+vue ui : 以图形化界面创建和管理项目
+
+
+npm install -g cnpm --registry=https://registry.npm.taobao.org
+cnpm sync <package-name>
+
+
+npm install -g @vue/cli-service
+
+
+
+
+流畅的python
+go 语言高级编程
+
+
+Export-Alias -Path "alias.ps1" -As Script
+Add-Content -Path $Profile -Value (Get-Content alias.ps1)
+$S = New-PSSession -ComputerName Server01
+Invoke-Command -Session $S -FilePath .\alias.ps1
+
+
+
+javac HelloWorld.java
+java HelloWorld 
+
+go run test.go
+go build hello.go
+
+
+
+# 构建项目中的服务容器
+docker-compose build [options] [service]
+--force-rm 删除构建过程中的临时容器
+--no-cache 构建镜像过程中不使用 cache（这将加长构建过程）
+--pull 始终尝试通过 pull 来获取更新版本的镜像
+
+
+
+给容器指定一个固定 IP 地址，而不是每次重启容器 IP 地址
+$ docker network create -d bridge --subnet 172.25.0.0/16 my-net
+$ docker run --network=my-net --ip=172.25.3.3 -itd --name=my-container busybox
+
+
+
+sysctl -w net.ipv4.ip_forward=1
+
+
+docker logs -f <container>
+
+docker volume create my_vol
+docker volume ls
+docker volume inspect my_vol
+docker volume rm my_vol
+docker volume prune #清理无主的数据卷
+
+docker inspect web
+
+
+# 加载数据卷到容器 /webapp 目录
+-v my_vol:/webapp
+--mount source=my_vol,target=/webapp
+
+# 加载主机 /host/webapp 目录到容器 /webapp 目录
+-v /host/webapp:/webapp 
+--mount type=bind,source=/host/webapp,target=/webapp,readonly
+
+# 主机挂载单个文件到容器中
+-v $HOME/.bash_history:/root/.bash_history \
+--mount type=bind,source=$HOME/.bash_history,target=/root/.bash_history 
+
+
+-P 表示随机映射一个 49000~49900 的端口到内部容器开放的网络端口
+-p 8080:80
+-p 127.0.0.1:5000:5000 # 指定地址和端口
+-p 127.0.0.1::5000 # 指定地址任意端口
+-p 127.0.0.1:5000:5000/udp # 指定 udp 方式
+
+# 当前映射的端口配置
+docker port <container> <port>
+
+
+docker network create -d bridge  <network>
+-d 网络类型: bridge | overlay
+
+docker run --network <network>
+
+
+container # ping <container>
+
+
+配置全部容器的 DNS 编辑 /etc/docker/daemon.json 文件
+# 每次启动的容器 DNS 自动配置为 114.114.114.114 和 8.8.8.8
+{
+  "dns" : [
+    "114.114.114.114",
+    "8.8.8.8"
+  ]
+}
+
+证明其已经生效
+$ docker run -it --rm ubuntu:18.04  cat etc/resolv.conf
+
+nameserver 114.114.114.114
+nameserver 8.8.8.8
+
+
+--hostname
+--dns
+--dns-search=DOMAIN 设定搜索域，当设定搜索域为 .example.com 时，在搜索一个名为 host 的主机时，DNS 不仅搜索 host，还会搜索 host.example.com
+
+
+docker run --restart=always -d --name=mysql_1 -e MYSQL_ROOT_PASSWORD=123456 -p 3306:3306 -p 33060:33060 mysql:8.0.20
+
+
+
+
+
+vim /etc/docker/daemon.json
+{
+  "registry-mirrors": [
+    "https://hub-mirror.c.163.com"
+  ]
+}
+
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+
+docker pull ubuntu
+docker run -it --rm ubuntu bash
+root@e7009c6ce357:/# cat /etc/os-release
+root@e7009c6ce357:/# exit
+
+docker image ls
+docker image ls -a
+docker image ls -q
+docker image ls <image>
+#镜像摘要
+docker image ls --digests
+docker image ls --filter since=<image>
+docker image ls --filter label=com.example.version=0.1
+
+# 列出镜像结果，并且只包含镜像ID和仓库名
+docker image ls --format "{{.ID}}: {{.Repository}}"
+
+#以表格等距显示，并且有标题行
+docker image ls --format "table {{.ID}}\t{{.Repository}}\t{{.Tag}}"
+
+
+
+#查看镜像、容器、数据卷所占用的空间
+docker system df
+
+虚悬镜像(dangling image)
+由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为 <none> 的镜像。
+docker image ls -f dangling=true
+# 删除虚悬镜像
+docker image prune
+
+
+docker image rm [选项] <镜像1> [<镜像2> ...]
+
+docker commit [选项] <容器> [<镜像>[:<标签>]]
+docker commit --author "Tao Wang"  --message "修改了默认网页" webserver  nginx:v2
+docker diff <container>
+docker history <镜像>[:<标签>]
+
+
+vim Dockerfile
+
+FROM debian:stretch
+
+RUN buildDeps='gcc libc6-dev make wget' \
+    && apt-get update \
+    && apt-get install -y $buildDeps \
+    && wget -O redis.tar.gz "http://download.redis.io/releases/redis-5.0.3.tar.gz" \
+    && mkdir -p /usr/src/redis \
+    && tar -xzf redis.tar.gz -C /usr/src/redis --strip-components=1 \
+    && make -C /usr/src/redis \
+    && make -C /usr/src/redis install \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm redis.tar.gz \
+    && rm -r /usr/src/redis \
+    && apt-get purge -y --auto-remove $buildDeps
+
+docker build  -t nginx:v3 .
+docker build https://github.com/twang2218/gitlab-ce-zh.git#:11.1
+docker build http://server/context.tar.gz
+docker build - < Dockerfile
+cat Dockerfile | docker build -
+docker build - < context.tar.gz
+
+
+COPY hom* /mydir/
+COPY hom?.txt /mydir/
+COPY --chown=<user>:<group> files* /mydir/
+
+FROM scratch
+ADD ubuntu-xenial-core-cloudimg-amd64-root.tar.gz /
+
+CMD ["nginx", "-g", "daemon off;"]
+
+
+FROM ubuntu:18.04
+RUN apt-get update \
+    && apt-get install -y curl \
+    && rm -rf /var/lib/apt/lists/*
+ENTRYPOINT [ "curl", "-s", "https://ip.cn" ]
+
+ENV VERSION=1.0 DEBUG=on \
+    NAME="Happy Feet"
+
+ARG <参数名>[=<默认值>]
+
+# 在运行时自动挂载为匿名卷，任何向 /data 中写入的信息都不会记录进容器存储层，从而保证了容器存储层的无状态化。
+VOLUME ["<路径1>", "<路径2>"...]
+VOLUME /data
+
+WORKDIR <工作目录路径>
+
+EXPOSE <端口1> [<端口2>...]
+
+USER <用户名>[:<用户组>]
+RUN groupadd -r redis && useradd -r -g redis redis
+USER redis
+
+如果以 root 执行的脚本，在执行期间希望改变身份，比如希望以某个已经建立好的用户来运行某个服务进程，不要使用 su 或者 sudo，这些都需要比较麻烦的配置，而且在 TTY 缺失的环境下经常出错。建议使用 gosu。
+# 建立 redis 用户，并使用 gosu 换另一个用户执行命令
+RUN groupadd -r redis && useradd -r -g redis redis
+# 下载 gosu
+RUN wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/1.7/gosu-amd64" \
+    && chmod +x /usr/local/bin/gosu \
+    && gosu nobody true
+# 设置 CMD，并以另外的用户执行
+CMD [ "exec", "gosu", "redis", "redis-server" ]
+
+
+vscode 关闭标题栏
+设置／窗口／Title Bar Style 设置 custom
+
+
+开机等待时间
+sudo gedit /etc/default/grub
+#GRUB_TIMEOUT=1
+GRUB_RECORDFAIL_TIMEOUT=1
+sudo update-grub
+
+
+dpkg --get-selections | grep firefox
+sudo apt-get purge firefox firefox-*
+
+sudo gedit /etc/sudoers
+zbseoag ALL=(ALL) NOPASSWD: ALL
+%admin ALL=(ALL) NOPASSWD: ALL
+
+Dash to Panel
+
+mount -t auto /dev/cdrom /mnt/cdrom
+vi /etc/apt/sources.list
+
+
+
+[rǒng yú]
+冗余
+[zǔ sè]  
+阻塞
+[kuàng jià]  
+框架
+
+1）sudo apt-get install open-vm-tools
+2）sudo apt-get install open-vm-tools-desktop
+
+
+在此处打开命令行
+
+计算机\HKEY_CLASSES_ROOT\Directory\Background\shell\cmd
+计算机\HKEY_CLASSES_ROOT\Directory\Background\shell\Powershell
+就在刚才位置的下面。 ShowBasedOnVelocityId   重命名为 HideBasedOnVelocityId
+
+
+"D:\Program Files\VMware Workstation\vmware-kvm.exe" –-preferences
+
+
+
+npm config set registry https://registry.npm.taobao.org
+npm config get registry
+
+npm install express -g #全局安装
+npm list -g
+
+在当前目录下执行 npm link 就可以在代码中用require加载全局模块了
+
+npm uninstall express
+npm ls
+npm update express
+npm search express
+
+
+#docker 安装
+sudo apt-get remove docker docker-engine docker.io containerd runc
+sudo apt-get update
+sudo apt-get install   apt-transport-https     ca-certificates     curl     gnupg-agent     software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo apt-key fingerprint 0EBFCD88
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io
+sudo usermod -aG docker zbseoag
+
+sudo mkdir -p /var/lib/mongo
+sudo mkdir -p /var/log/mongodb
+sudo chown zbseoag /var/lib/mongo     
+sudo chown zbseoag /var/log/mongodb   
+
+Run MongoDB.
+To run MongoDB, run the mongod process at the system prompt.
+mongod --dbpath /var/lib/mongo --logpath /var/log/mongodb/mongod.log --fork
+mongo
+
+http://localhost:27017/
+
+
+
+
+
+dpkg -l |grep ^rc|awk '{print $2}' |sudo xargs dpkg -P              清除残余的配置文件
+
+sudo apt-get install libtool  
+sudo apt install autoreconf  
+
+
+
+redis-cli> info replication
+
+
+redis-server 6400.conf --sentinel &&  redis-server 6401.conf --sentinel
+
+redis-cli --cluster-replicas 1 --cluster create 127.0.0.1:6300 127.0.0.1:6301 127.0.0.1:6302 127.0.0.1:6303 127.0.0.1:6304 127.0.0.1:6305
+
+redis-cli -c -h 127.0.0.1 -p 6305 
+
+
+subscribe channle
+unsubscribe channle
+
+psubscribe channle
+punsubscribe channle
+
+publish channle message
+
+multi
+  incr foo
+  incr bar
+exec | discard
+
+
+被 WATCH 的键会被监视，并会发觉这些键是否被改动过了。 如果有至少一个被监视的键在 EXEC 执行之前被修改了， 那么EXEC 返回nil-reply来表示事务已经失败。
+WATCH mykey  key1  key2  key3
+        val = GET mykey
+        val = val + 1
+MULTI
+        SET mykey $val
+EXEC  #不管事务是否成功执行， 对所有键的监视都会被取消。
+
+
+
+data.txt:
+SET Key0 Value0
+SET Key1 Value1
+...
+SET KeyN ValueN
+
+cat data.txt | redis-cli --pipe
+
+
+redis-cli config set notify-keyspace-events KEA
+redis-cli --csv psubscribe '__key*__:*' 
+...
+Reading messages... (press Ctrl-C to quit)
+
+
+另一个
+redis-cli
+> set foo 123
+
+
+sudo apt-get -y install socat logrotate init-system-helpers adduser
+
+sudo apt-get install -y erlang-base \
+  erlang-asn1 erlang-crypto erlang-eldap erlang-ftp erlang-inets \
+  erlang-mnesia erlang-os-mon erlang-parsetools erlang-public-key \
+  erlang-runtime-tools erlang-snmp erlang-ssl \
+  erlang-syntax-tools erlang-tftp erlang-tools erlang-xmerl
+
+sudo dpkg -i rabbitmq-server_3.8.3-1_all.deb
+
+
+ps -ef  |grep rabbitmq
+
+rabbitmq-server start
+lsof -i:5672
+
+rabbitmq-plugins enable rabbitmq_management
+http://localhost:15672
+guest : guest
+
+
+docker run -d --rm --name dede  php:5.6.15-apache
+docker cp dede:/usr/local/etc/php  /home/zbseoag/docker/volume/php56
+docker cp dede:/usr/src/php/php.ini-development /home/zbseoag/docker/volume/php56/php
+cd /home/zbseoag/docker/volume/php56/php && mv php.ini-development php.ini
+
+
+docker run -d  --name dede \
+-v /home/zbseoag/docker/volume/php56/apache2:/etc/apache2 \
+-v /home/zbseoag/docker/volume/php56/php:/usr/local/etc/php \
+-v /home/zbseoag/docker/volume/php56/www:/var/www/html \
+php:5.6.15-apache
+
+
+
+
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+php -r "if (hash_file('sha384', 'composer-setup.php') === 'e0012edf3e80b6978849f5eff0d4b4e4c79ff1609dd1e613307e16318854d24ae64f26d17af3ef0bf7cfb710ca74755a') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+php composer-setup.php  --filename=composer
+sudo mv  composer /usr/local/bin
+
+
+用户向入口脚本 web/index.php 发起请求。
+入口脚本加载应用配置并创建一个应用 实例去处理请求。
+应用通过请求组件解析请求的 路由。
+应用创建一个控制器实例去处理请求。
+控制器创建一个动作实例并针对操作执行过滤器。
+如果任何一个过滤器返回失败，则动作取消。
+如果所有过滤器都通过，动作将被执行。
+动作会加载一个数据模型，或许是来自数据库。
+动作会渲染一个视图，把数据模型提供给它。
+渲染结果返回给响应组件。
+响应组件发送渲染结果给用户浏览器。
+
+
+gem install jekyll
+jekyll new myblog --force
+cd myblog
+jekyll serve [--detach]  [--no-watch][--watch][--drafts]
+
+
+$ jekyll build [--drafts]
+# => 当前文件夹中的内容将会生成到 ./_site 文件夹中。
+
+# destination 文件夹会在站点建立时被清理，保留的文件和文件夹应在 <keep_files> 里指定
+$ jekyll build --source <source> --destination <destination>
+# => 指定源文件夹<source>中的内容将会生成到目标文件夹<destination>中。
+
+
+├── _config.yml
+├── _drafts
+|   ├── begin-with-the-crazy-ideas.textile
+|   └── on-simplicity-in-technology.markdown
+├── _includes
+|   ├── footer.html
+|   └── header.html
+├── _layouts
+|   ├── default.html
+|   └── post.html
+├── _posts
+|   ├── 2007-10-29-why-every-programmer-should-play-nethack.textile
+|   └── 2009-04-26-barcamp-boston-4-roundup.textile
+├── _site
+├── .jekyll-metadata
+└── index.html
+
+
+默认模板
+sudo gem install bundler
+xdg-open $(bundle info --path minima)
+
+
+---
+layout: post
+title: Blogging Like a Hacker
+permalink: /other
+published: false
+---
+
+
+
+http://dev.mysql.com/doc/index-other.html
+
+http://dev.mysql.com/doc/sakila/en/sakila-installation.html
+
+
+show global|session variables like 'vari_name'
+
+
+show global variables like 'slow_query_log%';
+show global variables like 'slow_query_log_file'
+show global variables like 'log_queries_not_using_indexes';
+show global variables like 'long_query_time';
+
+
+set global slow_query_log = on;
+set global slow_query_log_file = '/var/lib/mysql/aaa_slow_query.log';
+set global long_query_time = 1;
+set global log_queries_not_using_indexes = on;
+
+
+重复索引检测
+pt-duplicate-key-checker -h 127.0.0.1 -uroot -p '123456'
+
+
+/usr/sbin/mysqld --verbose --help | grep -A  l 'Default options'
+
+
+explain select max(payment_date) from payment;
+
+create index idx_paydate on payment(payment_date);
+
+select count(release_year='2006' or NULL) as '2006 year', count(release_year='2007' or NULL) as '2007 year' from film;
+
+EXPLAIN	select actor.first_name, actor.last_name,count(*) from film_actor inner join actor using(actor_id) GROUP BY film_actor.actor_id;
+
+
+在 MySQL 中，NULL 值与任何其它值的比较永远返回 NULL，即 NULL = NULL 返回 NULL。
+MySQL 为 NULL 值处理提供了三大运算符: IS NULL、IS NOT NULL、<=>
+
+
+
+mysql 加入自启动
+chkconfig mysqld on
+systemctl list-unit-files | grep mysql
+
+
+# 查看端口
+netstat -ln | grep 3306
+
+
+
+OLTP，也叫联机事务处理（Online Transaction Processing）
+
+OLAP，也叫联机分析处理（Online Analytical Processing）
+
+#all onde
+127.0.0.1:9200/_cat/nodes?
+127.0.0.1:9200/_cluster/status
+
+
+
+docker run -d --link elastic:elastic -p 5601:5601 --name kibana docker.elastic.co/kibana/kibana:7.6.2
+
+
+
+
+工厂模式：通过工厂类或者方法去创建对象
+单例模式：使某个类的对象仅允许创建一个。
+注册模式：全局共享和交换对象。
+适配器模式：将不同的函数接口封装成统一的标准
+策略模式：
+数据对象映射
+
+
+
+
+
+php7
+1、对函数的参数和返回值类型增加了限定。增加了类型之后，php的 jit（just in time 运行时，将指令转成二进制机器码） 可以准确判断变量类型，生成最佳机器指令。
+function test(int $a, string $b):int{    }
+
+2、错误异常，php7 可以使用 try/catch 捕获异常
+
+
+一个 Elasticsearch 集群可以包含多个索引 > 类型 > 文档 > 属性
+
+GET _search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+
+GET _count
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+
+
+2.了解 PHP 的 Composer 包依赖管理机制，了解 PSR 代码规范与接口规范；
+
+Composer 是一个 PHP 包依赖管理工具，先通过 composer.json 定义依赖的包，用命令下载这些依赖。然后开发者就可以引入包并使用了。
+每当安装完依赖后，Composer 将把安装时确切的版本号列表写入 composer.lock 文件。这将锁定该项目的特定版本。
+
+
+
+IO 多路复用是什么？有哪些 api？
+
+
+select 和 epoll 的区别？水平触发和边缘触发的区别是啥？使用的时候需要注意什么？
+
+epoll 储存描述符的数据结构是什么？
+select 有描述符限制吗？是多少？
+
+进程 / 线程 / 协程区别？go 和 swoole 的协程实现有啥区别？（分配资源的基本单位 / 运行和调度的基本单位 / 用户线程，M:N 模型和 N:1 模型）
+PHP（php 源代码，主流 php 框架源代码）
+
+
+描述一下 cli 模式下的几个生命周期？
+模块初始化，请求初始化 ， 请求关闭
+
+
+
+
+内存分配流程？为什么要这么设计？
+
+
+GC 的出现是为了解决什么问题？什么时候会触发 GC？说下大概流程
+
+
+
+php 里的数组是怎么实现的？（这里要注意下 php5 和 php7 实现的区别，优化了非常多）
+
+
+nginx 和 php-fpm 的通信机制？fast-cgi 和 cgi 区别？
+
+php-fpm 创建 worker 进程的规则是什么？不同场景下怎么选择？
+php 和 mysql 的通信机制？长链接和短链接啥区别？怎么实现的？连接池要怎么实现？
+swoole 协程的原理？（遇到阻塞时引发 php 栈和 c 栈的切换，细节可以参考下我的文章）
+依赖注入是什么？如何实现的？能解决什么问题？（代码层面不再依赖具体实现，解耦）
+mysql（高性能 mysql/mysql 技术内幕 innodb 储存引擎 / 数据库系统实现）
+innodb 的索引组织方式？（聚簇索引必须要很清楚，注意 innodb 聚簇索引叶子结点保存的是完整数据，innodb 普通索引叶子保存的是记录的主键，myisam 索引叶子保存的是记录的位置 / 偏移量）
+B + 树的结构和插入细节？为什么主键一般都要自增？和 B 树什么区别？为什么索引要使用 B + 树不是 B 树也不是其他的平衡树？为什么 redis 可以用跳表？（关键词：页的分裂，随机 IO，缓存体系）
+常见的优化（这里我就不展开了，主要考察覆盖索引查询和最左匹配，其实只要清楚 innodb 索引的结构，这些都不需要记忆，自然而然推导出来的）
+redolog/undolog/binlog 的区别？binlog 的几种格式？说下两阶段提交？
+事务隔离级别和不同级别会出现的问题，innodb 默认哪个级别？MVCC 怎么实现的？快照读和当前读有啥区别？幻读的问题怎么解决？
+死锁什么时候会出现？应用层应该怎么做避免死锁？mysql 是怎么处理死锁的呢？
+int 占多少字节？bigint 呢？int (3) 和 int (11) 有区别吗？可以往 int (3) 里存 1 亿吗？varchar 最长多少？
+sql 的执行流程（原始 sql-> 词法语法分析生成 AST-> 关系代数表达式（逻辑计划）-> 逻辑优化（谓词下推 / 常量传递）-> 物理查询优化（计算最佳 cost 路径，扫表还是使用索引，join 算法）-> 执行，仅做参考）
+redis（redis 源代码）
+sds 的结构是什么？为什么要存长度？跟 c 里的字符串有什么区别？（关键词：获取长度复杂度 O (1) 和 O (n)，二进制安全，保存 \0，跟 C 库字符串函数可以通用）
+hash 怎么实现的？怎么解决 hash 冲突？除了 hashTable 还有别的吗？
+zset 怎么实现的？跳表是怎么插入的？为什么选择跳表不用其他平衡二叉树？除了跳表还有别的吗？
+rehash 过程？会主动 rehash 吗？
+用 redis 可以实现队列吗？有什么优点和缺点？
+用 redis 怎么实现一个延时队列？
+rdb 和 aof 过程？rdb 为什么可以用创建子进程的方式进行？（这里考察一个 cow）这两种持久化方式会丢数据吗？
+redis 为什么快？（主要考察一个 IO 多路复用和单线程不加锁）
+一致性哈希是什么？节点较少时数据分布不均匀怎么办？
+简单说下几种 key 的淘汰策略，redis 里的 lru 算法，什么时候会触发？实现细节是什么？怎么保证淘汰合理的 key？
+lua 脚本的作用是什么？
+缓存击穿 / 穿透 / 雪崩的处理策略
+nginx
+LVS 和 Nginx 分别作用在 osi 哪一层？
+负载均衡算法
+数据结构
+布隆过滤器，什么时候用？优点是什么？
+
+
+
+简介
+Composer 是 PHP 的一个依赖管理工具。它允许你申明项目所依赖的代码库，并在项目中帮你自动安装这它们。
+
+系统要求
+PHP5.3.2 以上版本和一些 PHP 配置项，对于任何不兼容项，安装程序都会抛出警告。
+
+
+依赖管理
+它在每个项目的基础上进行管理，在你项目的某个目录中（例如 vendor）进行安装。默认情况下它不会在全局安装任何东西。
+Composer 这样为你解决问题：你有一个项目依赖于若干个库，其中一些库依赖于其他库。你声明你所依赖的库，Composer 会帮你寻找并自动安装它们。
+
+
+自动加载
+除了库的下载，Composer 还准备了一个自动加载文件 vendor/autoload.php，它可以加载 Composer 下载的库中所有的类文件。
+你可以在 composer.json 的 autoload 字段中增加自己的 autoloader。
+{
+    "autoload": {
+        "psr-4": {"Acme\\": "src/"}
+    }
+}
+
+composer.json ：项目安装
+在项目中使用 Composer，你只需要一个 composer.json 文件。该文件包含了项目的依赖和其它的一些元数据。
+
+require 声明依赖
+{
+    "require": {
+        "包名称": "版本号"
+    }
+}
+
+包版号
+通配符 *
+使用比较操作符指定有效的版本范围。多个范围用逗号隔开表示 AND，一个管道符号 | 将作为OR处理。AND 高于 OR。
+使用 ~ 指定最低版本，但允许版本号的最后一位数字上升，如：~1.2.3 表示 >=1.2.3 且 <1.3，即：只有版本号最后一位可以上升。
+
+
+注意：
+将 vendor 添加到 .gitignore 文件中，防止提交到服务器。
+
+
+composer.lock - 锁文件
+在安装依赖后，Composer 会把安装时确切的版本号列表写入 composer.lock 文件，这将锁定该项目的特定版本。
+请提交你应用程序的 composer.lock 到你的版本库中，因为 install 命令会检查锁文件是否存在，从而决定是否忽略 composer.json 文件去下载指定版本的依赖库。但对于库，并不一定建议提交锁文件。
+
+Packagist
+Packagist 是 Composer 的主要资源库。 一个 Composer 的库基本上是一个包的源：记录了可以得到包的地方。
+
+composer init
+
+php composer.phar install
+
+php composer.phar update
+
+如果只想安装或更新一个依赖，你可以白名单它们：
+php composer.phar update monolog/monolog [...]
+
+除了 PSR-4 自动加载，classmap 也是支持的。
+
+
+composer config --list -g
+composer config -g notify-on-install false
+
+引用本地自定义的包只更新加载器
+composer dump-autoload
+
+
+"autoload": {
+
+  "classmap": ["othsrc/","classsrc.php"],
+
+  "files": ["othsrc/filesrc.php"],
+
+  "psr-4": {"Foo\Bar\": "src"} 
+}
+
+
+
+全局配置
+所有项目都会使用该镜像地址：
+composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+取消配置
+composer config -g --unset repos.packagist
+
+调试
+composer -vvv require alibabacloud/sdk
+
+1. 建议先将Composer版本升级到最新：
+composer self-update
+2. 执行诊断命令：
+composer diagnose
+3. 清除缓存：
+composer clear
+4. 若项目之前已通过其他源安装，则需要更新 composer.lock 文件，执行命令：
+composer update --lock
+
+平台软件包
+Composer 将那些已经安装在系统上，但并不是由 Composer 安装的包视为一个虚拟的平台软件包。包括PHP本身，PHP扩展和一些系统库。
+
+composer show --platform 命令来获取可用的平台软件包的列表。
+
+
+
+
+为什么需要重视命名？
+好的命名即是注释，别人一看到你的命名就知道你的变量、方法或者类是做什么的！ 好的命名对于其他人（包括你自己）理解你的代码有着很大的帮助！
+好的代码本身就是注释，我们要尽量规范和美化自己的代码来减少不必要的注释。若编程语言足够有表达力，就不需要注释，尽量通过代码来阐述。
+
+常见命名规则以及适用场景
+
+驼峰命名法（CamelCase）：驼峰命名法应该我们最常见的一个，这种命名方式使用大小写混合的格式来区别各个单词，并且单词之间不使用空格隔开或者连接字符连接的命名方式。
+大驼峰命名法（UpperCamelCase）类名需要使用大驼峰命名法
+小驼峰命名法（lowerCamelCase）方法名、参数名、成员变量、局部变量需要使用小驼峰命名法。
+
+蛇形命名法（snake_case）：各个单词之间通过下划线连接，使用场景是命名所需要的单词比较多的时候。测试方法名、常量、枚举名称需要使用蛇形命名法
+串式命名法（kebab-case）：各个单词之间通过中横杠连接，建议项目文件夹名称使用串式命名法。
+
+Codelf:变量命名神器：https://unbug.github.io/codelf/
+
+
+
+linux 命令
+
+compgen -c 将列出你可以运行的所有命令。
+compgen -a 将列出你可以运行的所有别名。
+compgen -b 将列出你可以运行的所有 built-ins 。
+compgen -k 将列出你可以运行的所有关键字。
+compgen -A function 将列出你可以运行的所有函数。
+compgen -A function -abck 将逐一列出上所有内容。
+
+
+
+
+
+单点登录 Single /sing guo/ Sign /sai in/ On，简称就是SSO。在多个应用系统中，只需要登录一次，就可以访问其他相互信任的应用系统。
+
+
+同域下的单点登录: cookie 的域设置在同一级的域名下,再解决session 共享问题.
+
+不同域下的单点登录:
+
+CAS 是 Central Authentication Service的缩写，中央认证服务，一种独立开放指令协议, 旨在为 Web 应用系统提供一种可靠的单点登录方法。
+
+1.用户访问app系统，app系统是需要登录的，但用户现在没有登录。
+2.跳转到 CAS 服务器，即 SSO登录系统， SSO系统也没有登录，弹出用户登录页。
+3.用户填写用户名、密码，SSO系统进行认证后，将登录状态写入 SSO 的 session，浏览器中写入 SSO 域下的 Cookie。
+4.SSO系统登录完成后会生成一个ST（Service Ticket），然后跳转到app系统，同时将ST作为参数传递给app系统。
+5.app系统拿到 ST 后，从后台向 SSO 发送请求，验证ST是否有效。
+6.验证通过后，app系统将登录状态写入 session 并设置 app 域下的 Cookie。
+
+
+访问app2系统时的流程。
+
+1.用户访问app2系统，app2系统没有登录，跳转到SSO。
+2.由于 SSO 已经登录了，不需要重新登录认证。
+3.SSO生成ST，浏览器跳转到app2系统，并将ST作为参数传递给app2。
+4. app2拿到ST，后台访问SSO，验证ST是否有效。
+5.验证成功后，app2将登录状态写入session，并在app2域下写入Cookie。
+
+这样，app2系统不需要走登录流程，就已经是登录了。CAS 方式，app 和 app2在不同的域，它们之间不共享 session 也是没问题的。
+
+总结
+1.单点登录（SSO系统）是保障各业务系统的用户资源的安全 。
+2.各个业务系统获得的信息是，这个用户能不能访问我的资源。
+3.单点登录，资源都在各个业务系统这边，不在SSO那一方。 
+4.用户在给SSO服务器提供了用户名密码后，作为业务系统并不知道这件事。SSO随便给业务系统一个ST，那么业务系统是不能确定这个ST是用户伪造的，还是真的有效，所以要拿着这个ST去SSO服务器再问一下，这个用户给我的ST是否有效，是有效的我才能让这个用户访问。
+
+
+
+
+OAuth 是 Open Authority /wo fo ti/ 的缩写，这两者都是使用令牌的方式来代替用户密码访问应用。
+
+上面的流程大概为：
+
+用户输入网址进入业务系统Protected App，系统发现用户未登录，将用户重定向到单点登录系统CAS Server，并带上自身地址service参数
+用户浏览器重定向到单点登录系统，系统检查该用户是否登录，这是SSO(这里是CAS)系统的第一个接口，该接口如果用户未登录，则将用户重定向到登录界面，如果已登录，则设置全局session，并重定向到业务系统
+用户填写密码后提交登录，注意此时的登录界面是SSO系统提供的，只有SSO系统保存了用户的密码，
+SSO系统验证密码是否正确，若正确则重定向到业务系统，并带上SSO系统的签发的ticket
+浏览器重定向到业务系统的登录接口，这个登录接口是不需要密码的，而是带上SSO的ticket，业务系统拿着ticket请求SSO系统，获取用户信息。并设置局部session，表示登录成功返回给浏览器sessionId(tomcat中叫JSESSIONID)
+之后所有的交互用sessionId与业务系统交互即可
+OAuth2.0
+OAuth2.0有多种模式，这里讲的是OAuth2.0授权码模式，OAuth2.0的流程跟SSO差不多
+
+用户在某网站上点击使用微信授权，这里的某网站就类似业务系统，微信授权服务器就类似单点登录系统
+之后微信授权服务器返回一个确认授权页面，类似登录界面，这个页面当然是微信的而不是业务系统的
+用户确认授权，类似填写了账号和密码，提交后微信鉴权并返回一个ticket，并重定向业务系统。
+业务系统带上ticket访问微信服务器，微信服务器返回正式的token，业务系统就可以使用token获取用户信息了
+
+
+translate /chuan si lei te/
+
+
+子shell是嵌在圆括号()内部的命令序列，子Shell内部定义的变量为局部变量。
+
+COMMAND1
+COMMAND2
+(
+  IFS=:
+  PATH=/bin
+  unset TERMINFO
+  set -C
+  shift 5
+  COMMAND-3
+  COMMAND-4
+  exit 3 # 只是从子shell退出。
+)
+# 父shell不受影响，变量值没有更改。
+COMMAND5
+
+
+
+
+并发：指多个事件在同一段时间内进行。多道程序环境下，虽然程序只能是分时地交替执行，但从宏观来看，在一段时间内有多个程序在同时运行。
+并行：指多个事件在同一时间点进行。在多道程序环境下，并行性使多个程序同一时刻可在不同 CPU 上同时执行。
+
+串行：多个任务按顺序一个一个执行。
+并行：多个任务同时执行，异步是多个任务并行的前提条件。
+
+同步：等待同步结果返回，才能继续往下执行。
+异步：不必等待返回结果，接着往下执行。实现异步可以采用多线程技术或则交给另外的进程来处理。
+
+
+它通过强制事务排序，使之不可能相互冲突
+
+shutdown [/i 显示对话框 | /l 立即注销 | /s 关机 | /r 重启 | /a 中止关机 | /p 本地计算机 | /h 休眠 | /e 记录意外关闭 ] [/f 强制退出应用程序 ] [/m \\<ComputerName>] [/t <XXX>] [/d 原因 [p 计划 | u: 用户定义] <XX 主原因号，小于256的正整数>:<YY 次原因号，小于65536的正整数 > [/c comment 注释 ]]
+
+
+start [<Title 标题>] [/d <Path 启动目录>] [/i 传递启动环境 ] [{/min 最小化 | /max 最大化 }] [{/separate | /shared}] [ 优先级 {/low | /normal | /high | /realtime | /abovenormal | belownormal } ] [/affinity <HexAffinity>] [/wait 等待结束 ] [/elevate 以管理身份] [/b 在当前命令行，CTRL + BREAK 中断]  [ <Program 程序>  [<Parameter 程序运行参数>... ] ]
+
+
+
+
+docker volume create portainer_data
+docker run --network=host --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data -d portainer/portainer
+
+
+docker run --name=test1 --privileged -v /usr/bin/docker:/usr/bin/docker -v /var/run/docker.sock:/var/run/docker.sock -v etc:/etc -d nginx:1.9
+run --network=host --privileged -v /usr/bin/docker:/usr/bin/docker -v /var/run/docker.sock:/var/run/docker.sock -v etc:/etc -d test nginx:1.9
+
+
+docker run --network=host -v etc:/etc -v /e:/e -w /e -dit --name=php php:7.3-fpm bash
+
+docker cp test:/etc/mysql /etc/mysql
+
+docker run --rm -it --name=test -e MYSQL_ROOT_PASSWORD=123456 -d mysql:8.0
+
+
+docker run --network=host --name mysql -v database:/var/lib/mysql -v /etc/mysql:/etc/mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql:8.0
+
+docker run --network=host --name mysql  -e MYSQL_ROOT_PASSWORD=123456 -d mysql:8.0
+
+2，输入以下语句，进入mysql库：
+
+use mysql
+SHOW VARIABLES LIKE 'validate_password%';
+SET global validate_password.policy = LOW;
+SET global validate_password.length = 6;
+ALTER USER 'root'@'localhost' IDENTIFIED BY '123456';
+ALTER USER 'root'@'%' IDENTIFIED BY '123456';
+update user set host='%' where user ='root' limit 1;
+select host,user,plugin from user;
+update user set plugin='mysql_native_password' where user='root';
+FLUSH PRIVILEGES;
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%'WITH GRANT OPTION;
+
+
+
+
+如何保证消息不被重复消费？或者说，如何保证消息消费的幂等性？
+
+使用消息队列中间件时，都有可能会出现消息重复消费的问题，这很正常。
+这个问题通常不是 MQ 自己保证的，是由我们开发来保证的。
+在客户端消费消息的时候，都会有应答机制
+
+
+sudo iptables -P FORWARD ACCEPT
+
+任务管理器->服务->打开服务 -> Routing and Remote Access 
+打开 powershell 管理员身份运行：
+route add 172.17.0.0 mask 255.255.0.0 172.17.0.1
+
+
+route add 172.17.0.0 mask 255.255.0.0 172.19.48.1
+
+
+32 位
+8 8 8 + 6
+10.10.2.1
+
+网络号 子网号 + 主机号
+主机号不能全0（本网络）或全1(广播) 所以至少两位。
+
+b类，网络号16位 子网号占8位，主机号也占8位
+
+子网掩码：网络号全1，主机号全0
+全1.全1.0.0 => 255.255.0.0
+
+子网掩码与ip地址相与，得到子网网络地址
+
+1.1.3.10
+如果有8位子网号，则子网地址是： 1.1.3.0
+
+ip: 141.14.72.24 子网掩码：255.255.192.0 求网络地址
+解：141.14.X.0
+70  = 01001000
+192 = 11000000
+-------------------
+      01000000 = 64
+
+主机的IP地址是202.112.14.137 掩码 255.255.255.224，求网络地址和广播地址
+
+掩码 255.255.255.224 转二进制：
+
+11111111 11111111 11111111 11100000
+网络号有27位，主机号有5位
+
+IP地址&子网掩码
+
+11001010 01110000 00001110 10001001
+11111111 11111111 11111111 11100000
+------------------------------------------------------
+11001010 01110000 00001110 10000000
+
+即：202.112.14.128
+广播地址：网络地址的主机位全部变成1 ，100 11111 即159 即：202.112.14.159
+
+010011|00
+
+
+
+
+核心使用场景有3个：解耦、异步、削峰。
+
+解耦：A 系统需要调用 B C 两个系统的接口，现在如果 C 系统不要了，并新增加一个 E 系统，那么A系统就得修改代码。
+而且 A 系统要时时刻刻考虑它所依赖的几个系统如果挂了该咋办？要不要重发，要不要把消息存起来，等一系列问题。
+
+如果使用 MQ，A 系统产生一条数据，发送到 MQ 里面去，哪个系统需要数据自己去 MQ 里面消费。
+如果某个系统不需要数据了，就取消对 MQ 消息的消费即可。
+这样下来，A 系统压根儿不需要去考虑要给谁发送数据，不需要维护这个代码，也不需要考虑人家是否调用成功、失败超时等情况。
+
+总结：通过一个 MQ，Pub/Sub 发布订阅消息这么一个模型，A 系统就跟其它系统彻底解耦了。
+
+技巧：你需要去考虑一下你负责的系统中是否有类似的场景，就是一个系统或者一个模块，调用了多个系统或者模块，互相之间的调用很复杂，维护起来很麻烦。
+但是其实这个调用是不需要直接同步调用，如果用 MQ 给它异步化解耦，也是可以的，你就需要去考虑在你的项目里，是不是可以运用这个 MQ 去进行系统的解耦。
+
+异步：同步请求是要等待整个系统流程处理完成之后才返回结果，如果涉及到多个外部系统调用，往往很慢。有此场景做成异步体验会更好，如：发送短信验证码。
+
+削峰：一个系统只在某个时间段请求流量比较高，超出系统承载能力，但又没必要为了应对这一段时间的流量，而提升系统并发能力。
+那么可以考虑用将所有请求先暂存到 MQ 中，再从 MQ 中拉取，这样保证系统不会挂掉，而且高峰期一过，积压的消息也会很解决掉。
+
+缺点有以下几个：
+系统可用性降低：引入 MQ 之后，MQ 成为多个系统之间通信的桥梁， MQ 一挂，整套系统就崩溃了。所以要保证消息队列的高可用。
+
+系统复杂度提高：怎么保证消息没有重复消费？怎么处理消息丢失的情况？怎么保证消息传递的顺序性？
+
+一致性问题：
+A 系统处理完了直接返回成功了，人都以为你这个请求就成功了；
+但是问题是，要是 BCD 三个系统那里，BD 两个系统写库成功了，结果 C 系统写库失败了，咋整？你这数据就不一致了。
+
+
+所以消息队列实际是一种非常复杂的架构，你引入它有很多好处，但是也得针对它带来的坏处做各种额外的技术方案和架构来规避掉，做好之后，你会发现，系统复杂度提升了一个数量级，也许是复杂了 10 倍。
+但是关键时刻，用，还是得用的。
+
+
+docker network create network
+docker run -d --network network --name nginx-1 nginx:latest
+docker run -d --network network --name nginx-2 nginx:latest
+docker run -d --network network --name nginx-3 nginx:latest
+
+docker exec -it nginx-1 bash
+sed -i "s/deb.debian.org/mirrors.aliyun.com/g" /etc/apt/sources.list
+apt update
+apt install -y vim iputils-ping
+
+vim /etc/nginx/nginx.conf
+
+http {
+     upstream backend {
+     server nginx-2;
+     server nginx-3;
+
+   }
+
+    server {     
+      listen 80;
+      location / {
+      	proxy_pass http://backend;
+			}
+   }
+}
+
+
+
+echo 'nginx2' > /usr/share/nginx/html/index.html
+
+echo 'nginx3' > /usr/share/nginx/html/index.html
+
+
+
+docker.open nginx-1 /etc/nginx/nginx.conf
+docker.open nginx-2 /usr/share/nginx/html/index.html
+docker.open nginx-3 /usr/share/nginx/html/index.html
+
+
+使用 self:: 或者 __CLASS__ 对当前类的静态引用，取决于当前方法所在的类
+static  表示运行时最初调用的类来绕过限制
+
+
+
+
+
+yum  -y remove mari*
+
+jemalloc
+qpress
+
+yum localinstall *.rpm
+systemctl start mysqld
+
+firewall-cmd --zone=public --add-port=3306/tcp --permanent
+firewall-cmd --reload
+
+vi /etc/my.cnf
+[mysql]
+character_set_server = utf8
+bind-address = 0.0.0.0
+skip-name-resolve #跳过dns解析
+
+service mysql restart
+chkconfig mysqld off #禁用 mysql 开机启动
+cat /var/log/mysqld.log | grep "A temporary password" #查看默认密码
+mysql_secure_installation #初始化密码
+mysql -u root -p
+create user 'admin'@'%' identified by 'Abc_123456';
+crant all privileges on *.* to 'admin'@'%';
+flush privileges;
+
+重置密码
+vi /etc/my.cnf
+[mysqld]
+skip-grant-tables
+
+serivce mysqld restart
+
+mysql #进入mysql
+use mysql;
+update user set password = password('new-password') where usr = 'root';
+flush privileges;
+
+vi /etc/my.cnf
+[mysqld]
+skip-grant-tables #删除本行
+
+service mysql restart
+
+Percona XtraDB Cluster (PXC)集群
+基于 Galear 的面向 OLTP 的多主同步复制插件。
+解决 mysql 集群中的数据同步强一致性问题。
+是Mysql 集群方案中公认的优选方案之一。
+PXC 集群节点越多，同步速度越慢。
+PXC 节点硬件配置尽量相同，因为数据同步速度取决于配置最低的节点。
+只支持 innoDB引擎
+用到的商品 3306:数据库, 4444:全量同步, 4567:数据节点通信, 4568:增加同步,
+
+关闭 SeLinux
+vi /etc/selinux/config
+SELINUX=enforcing #换成 disabled
+reboot
+
+修改 wsrep.cnf
+server-id=1
+
+启动 pxc 集群
+systemctl start mysql@bootstrap.service #构建集群，其他节点直接 systemctl start mysql.service
+
+连接集群中的一台服务器
+show status like 'wsrep_cluster%';
+show status like '%WSREP%'
+
+集群信息
+队列，复制，流控，事务，状态
+
+vi /var/lib/mysql/grastate.dat
+safe_to_bootstrap:0   #只有为一的节点，是最后停止的节点，可以按主节点去启动
+所以，只能从最后安全退出的节点做为主节点启动，其他节点普通方式启动即可。
+如果集群中还有可运行的节点，则其他节点按照普通节点启动上线即可。
+
+mysql 中间件分为负载均衡和数据切分。
+
+yum search jdk
+yum install -y java-1.8.0-openjdk.x86_64
+ls -lrt /etc/alternatives/java
+vi /etc/profile
+export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.275.b01-1.el8_3.x86_64/
+source /etc/profile
+
+mycat 端口：8066数据服务，9066 管理端口
+chmod -R +x ./*.sh
+./startup_nowrap.sh
+
+
+
+
+
+
+mysql 启动失败：su: warning: cannot change directory to /nonexistent: No such file or directory
+
+# Ubuntu
+sudo service mysql stop
+sudo usermod -d /var/lib/mysql/ mysql
+sudo service mysql start
+
+
+docker run -d --name web -v my-vol:/usr/share/nginx/html  nginx:1.9
+--mount source=my-vol,target=/usr/share/nginx/html 
+
+route add 172.17.0.0/16 mask 255.255.255.0 172.23.89.36 -p
+
+
+apply、call、bind比较
+那么 apply、call、bind 三者相比较，之间又有什么异同呢？何时使用 apply、call，何时使用 bind 呢。简单的一个栗子：
+
+netsh interface portproxy delete v4tov4 listenport=80 listenaddress=*
+netsh interface portproxy delete v4tov4 listenport=80 listenaddress=0.0.0.0
+
+netsh interface portproxy add v4tov4 listenport=80 listenaddress=0.0.0.0 connectport=80 connectaddress=172.30.144.91 protocol=tcp
+netsh interface portproxy add v4tov4 listenport=80 listenaddress=* connectport=80 connectaddress=172.30.144.91 protocol=tcp
+
+
+
+var obj = {
+    x: 81,
+};
+ 
+var foo = {
+    getX: function() {
+        return this.x;
+    }
+}
+ 
+console.log(foo.getX.bind(obj)());  //81
+console.log(foo.getX.call(obj));    //81
+console.log(foo.getX.apply(obj));   //81
+三个输出的都是81，但是注意看使用 bind() 方法的，他后面多了对括号。
+也就是说，区别是，当你希望改变上下文环境之后并非立即执行，而是回调执行的时候，使用 bind() 方法。而 apply/call 则会立即执行函数。
+
+再总结一下：
+apply 、 call 、bind 三者都是用来改变函数的this对象的指向的；
+apply 、 call 、bind 三者第一个参数都是this要指向的对象，也就是想指定的上下文；
+apply 、 call 、bind 三者都可以利用后续参数传参；
+bind 是返回对应函数，便于稍后调用；apply 、call 则是立即调用 。
+
+func.call(this, arg1, arg2);
+func.apply(this, [arg1, arg2])
+
+
+箭头函数
+箭头函数表达式的语法比函数表达式更简洁，并且没有自己的this，arguments，super或new.target。箭头函数表达式更适用于那些本来需要匿名函数的地方，并且它不能用作构造函数。
+
+
+在箭头函数出现之前，每一个新函数根据它是被如何调用的来定义这个函数的this值：
+如果是该函数是一个构造函数，this指针指向一个新的对象
+在严格模式下的函数调用下，this指向undefined
+如果是该函数是一个对象的方法，则它的this指针指向这个对象
+This被证明是令人厌烦的面向对象风格的编程。
+
+
+(param1, …, paramN) => { statements }
+(param1, …, paramN) => expression 
+() => expression
+总结：只有一个参数或是一条语句时，小括号和大括号都是可选的。一条表达式表示返回。
+
+//加括号的函数体返回对象字面量
+params => ({foo: bar}) 
+
+//支持剩余参数和默认参数
+(param1, param2, ...rest) => { statements }
+(param1 = defaultValue1, param2, …, paramN = defaultValueN) => {statements }
+
+//同样支持参数列表解构
+let f = ([a, b] = [1, 2], {x: c} = { x: 3}) => a + b + c; //等于 1 + 2 + 3
+
+//参数解构
+array.map(({ "length": len }) => len); 
+
+
+function foo(n) {
+  var f = () => arguments[0] + n; // 隐式绑定 foo 函数的 arguments 对象. arguments[0] 是 n,即传给foo函数的第一个参数
+  return f();
+}
+
+function foo(arg) {
+  var f = (...args) => args[0];
+  return f(arg);
+}
+
+
+'use strict';
+var obj = {
+  b: () => {
+    console.log(this); //Window 对象
+  },
+  c: function() {
+    console.log( this); // Object 对象
+  }
+}
+
+'use strict';
+Object.defineProperty(obj, "name", {
+  get: () => {
+    console.log(this);//Window 对象
+  }
+});
+
+
+(() => 'foobar')(); //返回 "foobar"
+
+// 常规写法，let作用域
+() => {let now = new Date(); }
+console.log(now);  //not defined 
+
+// 参数变量是局部变量
+(now=new Date()) => "Good";
+console.log(now);    //not defined
+
+// 函数体内不使用 var 定义的变量是全局变量
+() => { now = new Date(); }
+console.log(now);  //ok
+
+
+//箭头函数体的闭包（ i=0 是默认参数）
+var Add = (i=0) => {return (() => (++i) )};
+var v = Add();
+v();           //1
+v();           //2
+
+//因为仅有一个返回，return 及括号（）也可以省略
+var Add = (i=0)=> ()=> (++i);
+
+箭头函数递归
+var fact = (x) => ( x==0 ?  1 : x*fact(x-1) );
+
+
+Promise 构造器主要用于包装返回值不是Promise 的函数
+const promise1 = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('foo');
+  }, 300);
+});
+
+const myPromise =(new Promise(myExecutorFunc)).then(Fulfilled, Rejected)
+
+const myPromise = (new Promise(myExecutorFunc))
+  .then(FulfilledA)
+  .then(FulfilledB)
+  .catch(RejectedAny);
+
+
+const promiseA = new Promise( (resolutionFunc,rejectionFunc) => {
+    resolutionFunc(777);
+});
+
+promiseA.then( (val) => console.log("asynchronous logging has val:",val) );
+console.log("immediate logging"); //这里可能会先于 then 执行
+
+// produces output in this order:
+// immediate logging
+// asynchronous logging has val: 777
+
+Promise.resolve(value)方法返回一个以给定值解析后的Promise 对象
+
+function myAsyncFunction(url) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", url);
+    xhr.onload = () => resolve(xhr.responseText);
+    xhr.onerror = () => reject(xhr.statusText);
+    xhr.send();
+  });
+};
+
+
+Ctrl + Shift + F 可以查找终端输出的内容。
+
+inet 172.29.78.90  netmask 255.255.240.0  broadcast 172.29.79.255
+
+route add 172.17.0.0 mask 255.255.0.0 172.29.78.90
+
+
+  1111 0000
+  0100 1110
+  0100 0000
+172.29.64.0
+
+PUT /megacorp/_doc/1
+{
+    "first_name" : "John",
+    "last_name" :  "Smith",
+    "age" :        25,
+    "about" :      "I love to go rock climbing",
+    "interests": [ "sports", "music" ]
+}
+
+PUT /megacorp/_doc/2
+{
+    "first_name" :  "Jane",
+    "last_name" :   "Smith",
+    "age" :         32,
+    "about" :       "I like to collect rock albums",
+    "interests":  [ "music" ]
+}
+
+PUT /megacorp/_doc/3
+{
+    "first_name" :  "Douglas",
+    "last_name" :   "Fir",
+    "age" :         35,
+    "about":        "I like to build cabinets",
+    "interests":  [ "forestry" ]
+}
+
+轻量搜索
+GET /megacorp/_doc/1
+GET /megacorp/_search
+GET /megacorp/_search?q=last_name:Smith
+
+查询表达式搜索
+GET /megacorp/_search
+{
+    "query" : {
+        "match" : {
+            "last_name" : "Smith"
+        }
+    }
+}
+
+GET /megacorp/_search
+{
+    "query" : {
+        "bool": {
+            "must": {
+                "match" : {
+                    "last_name" : "smith" 
+                }
+            },
+            "filter": {
+                "range" : {
+                    "age" : { "gt" : 30 } 
+                }
+            }
+        }
+    }
+}
+
+全文搜索
+GET /megacorp/_search
+{
+    "query" : {
+        "match" : {
+            "about" : "rock climbing"
+        }
+    }
+}
+
+短语搜索
+#匹配同时包含 “rock” 和 “climbing” ，并且 二者以短语 “rock climbing” 的形式紧挨着的雇员记录。
+GET /megacorp/_search
+{
+    "query" : {
+        "match_phrase" : {
+            "about" : "rock climbing"
+        }
+    }
+}
+
+高亮显示
+GET /megacorp/_search
+{
+    "query" : {
+        "match_phrase" : {
+            "about" : "rock climbing"
+        }
+    },
+    "highlight": {
+        "fields" : {
+            "about" : {}
+        }
+    }
+}
+
+挖掘出员工中最受欢迎的兴趣爱好
+GET /megacorp/employee/_search
+{
+  "aggs": {
+    "all_interests": {
+      "terms": { "field": "interests" }
+    }
+  }
+}
+
+
+
+创建分片
+PUT /blogs
+{
+   "settings" : {
+      "number_of_shards" : 3, //主分片数量
+      "number_of_replicas" : 1 //每个主分版的副本数量
+   }
+}
+查看集群健康
+GET /_cluster/health
+
+
+
+new start
+PUT /customer/_doc/1
+{
+  "name": "John Doe"
+}
+GET /customer/_doc/1
+
+
+
+sudo apt install -y curl wget openssl  make cmake gcc g++
+
+php 依赖
+sudo apt update
+sudo apt install -y \
+ autoconf \
+ dpkg-dev \
+ file \
+ g++ \
+ gcc \
+ libc6-dev \
+ make \
+ pkg-config \
+ re2c \
+ ca-certificates \
+ curl \
+ xz-utils \
+ libargon2-dev \
+ libcurl4-openssl-dev \
+ libedit-dev \
+ libonig-dev \
+ libsodium-dev \
+ libsqlite3-dev \
+ libssl-dev \
+ libxml2-dev \
+ zlib1g-dev \
+ libfreetype6-dev \
+ libjpeg-turbo8-dev \
+ libpng-dev \
+ libzip-dev \
+
+ 
+
+php7.3
+
+./configure \
+  --prefix=/d/usr/php \
+  --with-config-file-path=/d/usr/php/etc \
+  --with-mysqli \
+  --with-pdo-mysql \
+  --with-zlib \
+  --with-curl \
+  --with-gettext \
+  --with-openssl \
+  --with-mhash \
+  --with-pear   \
+  --enable-zip \
+  --with-readline \
+  --with-libedit  \
+  --enable-fpm \
+  --enable-xml \
+  --enable-bcmath \
+  --enable-shmop \
+  --enable-sysvsem \
+  --enable-mbregex \
+  --enable-mbstring \
+  --enable-ftp \
+  --enable-sockets \
+  --enable-soap \
+  --enable-pcntl \
+  --enable-debug \
+  --with-gd \
+  --with-freetype-dir \
+  --with-webp-dir \
+  --with-png-dir \
+  --with-jpeg-dir \
+  --with-pic \
+  --enable-mysqlnd \
+  --with-password-argon2 \
+  --with-sodium=shared       
+ 
+
+install libgd-dev  libzstd-dev   libpcre3-dev
+install libxml2 
+
+software=nginx1.9 && ./configure \
+ --prefix=/d/usr/$software \
+ --conf-path=/d/etc/$software/nginx.conf \
+ --with-http_ssl_module \
+ --with-select_module \
+ --with-poll_module \
+ --with-threads \
+ --with-file-aio \
+ --with-debug    
+
+
+
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin git@github.com:zbseoag/develop.git
+git push -u origin main
+
+powershell
+echo $profile
+
+禁用响铃
+sudo vi /etc/inputrc 文件中取消注释 set bell-style none
+
+sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak
+
+
+最后一个参数 !$ 
+!! 上一条命令
+
+composer create-project laravel/laravel example-app
+cd example-app
+php artisan serve
+
+docker network create -d bridge localhost
+docker run --name work --network localhost -p 80:80 -v /desktop/cnasanx/wwwroot:/var/www/html php:5.3.29-apache
+docker run --name mysql5.6 --network localhost -p 3306:3306  -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.6
+
+ServerName localhost
+docker.open work /etc/apache2/apache2.conf
+
+php -S 172.17.02:8081 -t /home/www-data
+
+
+curl -X POST 'localhost:9200/<PATH>?<QUERY_STRING>' -d '<BODY>'
+
+
+
+ubuntu2004.exe help
+ubuntu2004.exe config --default-user root
+https://github.com/xianyunyh/PHP-Interview
+https://github.com/opsnull/follow-me-install-kubernetes-cluster
+https://github.com/OMGZui/noteBook
+https://github.com/shuzheng/zheng
+https://github.com/lin-xin/vue-manage-system
+
+官网: http://googlehelper.net/
+
+
+sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /srv/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+
+
+C:\Users\zbseoag\AppData\Roaming\JetBrains\PhpStorm2020.3\ssl\cacerts
+
+
+cd /etc/init.d/
+vim my.init.script.sh
+chmod a+x my.init.script.sh
+update-rc.d my.init.script.sh defaults 90
+
+移除Ubuntu开机脚本
+sudo update-rc.d -f my.init.script.sh remove
+
+
+删除 snapd
+sudo apt autoremove --purge snapd
+
+dpkg -i|--install 		<file.deb> 		安装 dbg 包
+dpkg -L|--listfiles 		<package>  		列出属于指定软件包的文件
+dpkg -l|--list 			<package>		简明列出软件包状态
+dpkg -r|--remove 		<package>		仅卸载软件
+dpkg -P|--purge 		<package>		卸载软件清理配置
+dpkg -S|--search		<package>		查找包中包含的文件
+dpkg -c|--contents		<file.deb>		查看 deb 包内容
+dpkg --get-selections 		[package]		查找包名
+
+
+apt list	[package]	根据名称查找软件包
+apt search	<package>	搜索软件包描述
+apt show	<package>	显示软件包细节
+apt install 	<package> 	安装软件包
+apt reinstall	<package>	重装软件包
+apt update			更新件包列表
+apt upgrade			安装软件更新
+apt remove 	<package>	卸载软件包
+apt purge	<package>	卸载并清理
+apt autoremove			自动卸载所有自动安装的无用软件包
+apt autoclean			自动清理已下载的旧包文件
+apt autopurge			自动卸载并清理
+
+
+彻底卸载gedit
+$ sudo  apt-get  purge gedit gedit-plugins
+$ sudo apt-get autoremove
+
+CTRL  + A  |  E 移光标于首尾
+CTRL  + U  |  K 删光标前后所有字符
+CTRL  + H  |  D 删光标前后一个字符
+CTRL  + LEFT |  RIGHT 光标左右移动一个单词位
+CTRL  + S | Q	暂停与继续屏幕输出
+CTRL  + & | Y 撤消与重复
+CTRL  + W 删除光标前一个单词
+CTRL  + T	交换前后一个字符
+CTRL  + Z 转至后台运行
+CTRL  + D 结束输入或关闭终端
+CTRL  + L 清屏
+CTRL  + R 搜索历史命令
+ALT + . 补全上一条命令最后一个参数
+
+备用快捷键：
+CTRL  + B | F  代替左右键
+CTRL  + P | N	 代替上下键
+ESC + .   补全上一条命令最后一个参数
+
+
+apt -s autoremove
+vim /etc/docker/daemon.json
+{
+    "registry-mirrors":["http://hub-mirror.c.163.com"]
+}
+
+
+
+
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+
+
+sudo passwd root
+sudo apt purge firefox firefox-locale-en firefox-locale-zh-hans 
+
+sudo apt install gnome-tweak-tool gnome-shell-extensions
+sudo apt install gnome-shell-extension-dash-to-panel 
+
+sudo vim /etc/default/grub #修改 GRUB_TIMEOUT
+sudo update-grub
+   
+1. 从wheel组中删除 test用户
+gpasswd wheel -d test
+
+sudo usermod -aG root $USER
+
+RUN sed -i "s/archive.ubuntu./mirrors.aliyun./g" /etc/apt/sources.list
+RUN sed -i "s/deb.debian.org/mirrors.aliyun.com/g" /etc/apt/sources.list
+RUN sed -i "s/security.debian.org/mirrors.aliyun.com\/debian-security/g" /etc/apt/sources.list
+RUN sed -i "s/httpredir.debian.org/mirrors.aliyun.com\/debian-security/g" /etc/apt/sources.list
+
+
+docker build  -t zbseoag/php:8.0 .
+
+RUN sed -i 's#http://archive.ubuntu.com#http://mirrors.163.com#g' /etc/apt/sources.list
+
+
+主从复制
+replicaof <host> <port>
+replicaof no one #停止
+role #返回实例在复制中担任的角色
+
+
+客户端与服务器
+auth password #连接密码,是 requirepass 配置项
+quit #退出
+info [all|default|section] #以一种易于解释（parse）且易于阅读的格式
+shutdown [save|nosave] :关闭 redis 服务器,不给参数,就按配置文件中的持久化策略
+time #返回当前服务器时间
+client setname connection-name #设置连接名, 空字符串表示移除名字
+client getname #返回连接名
+client kill ip:port #关闭指定的客户端
+client list #返回所有连接到服务器的客户端信息和统计数据
+
+
+
+python  -m pip install --upgrade pip
+pip install requests
+
+
+配置选项
+config set parameter value
+config get parameter
+config resetstat #重置 info 命令中的某些统计数据
+config rewrite #将运行中的配置重写回配置文件
+
+
+
+
+
+
+swoole.use_shortname=On/Off 来开启 / 关闭短名
+
+创建协程
+//go() = Swoole\Coroutine::create
+go(function () {
+    co::sleep(0.5);
+});
+
+通道操作
+//Coroutine\Channel as chan
+$c = new chan(1);
+$c->push($data);
+
+延迟执行
+//defer() = Swoole\Coroutine::defer
+defer(function () use ($db) {
+    $db->close();
+});
+
+协程 System API
+Swoole\Coroutine => Swoole\Coroutine\System
+
+
+
+
+
+Redis 调试
+
+ping
+echo
+object subcommand [arguments [arguments]]
+object refcount <key> 返回给定 key 引用所储存的值的次数。此命令主要用于除错。
+object encoding <key> 返回给定 key 锁储存的值所使用的内部表示(representation)。
+object idletime <key> 返回给定 key 自储存以来的空闲时间(idle， 没有被读取也没有被写入)，以秒为单位。
+
+
+slowlog 的配置
+slowlog-log-slower-than 多少微秒以上算做慢查询  
+slowlog-max-len 最大记录条数
+
+#最新的日志会最先被打印,日志 id 在 redis 服务器重启的时候才会重置
+slowlog get #查看所有记录
+slowlog get length #显示指固定条数
+slowlog len #当前总条数
+slowlog reset #清空
+monitor #监控 redis 服务器接收到的命令
+debug object key #调试命令，它不应被客户端所使用
+debug segfault #执行一个不合法的内存访问从而让 redis 崩溃，仅在开发时用于 bug 模拟
+
+
+para meter  [pəˈræ  mɪtə(r)]
+proxy [ˈprɒk si]
+
+
+参数名称	用途
+-server	此标志用于控制代理是运行于服务器/客户端模式，每个 Consul 集群至少有一个服务器，正常情况下不超过5个，使用此标记的服务器参与 Raft一致性算法、选举等事务性工作
+-client	表示 Consul 绑定客户端接口的IP地址，默认值为：127.0.0.1，当你有多块网卡的时候，最好指定IP地址，不要使用默认值
+-bootstrap-expect	预期的服务器集群的数量，整数，如 -bootstrap-expect=3，表示集群服务器数量为3台，设置该参数后，Consul将等待指定数量的服务器全部加入集群可用后，才开始引导集群正式开始工作，此参数必须与 -server 一起使用
+-data-dir	存储数据的目录，该目录在 Consul 程序重启后数据不会丢失，指定此目录时，应确保运行 Consul 程序的用户对该目录具有读写权限
+-node	当前服务器在集群中的名称，该值在整个 Consul 集群中必须唯一，默认值为当前主机名称
+-bind	Consul 在当前服务器侦听的地址，如果您有多块网卡，请务必指定一个IP地址（IPv4/IPv6)，默认值为：0.0.0.0，也可用使用[::]
+-datacenter	代理服务器运行的数据中心的名称，同一个数据中心中的 Consul 节点必须位于同一个 LAN 网络上
+-ui	启用当前服务器内部的 WebUI 服务器和控制台界面
+-join	该参数指定当前服务器启动时，加入另外一个代理服务器的地址，在默认情况下，如果不指定该参数，则当前代理服务器不会加入任何节点。可以多次指定该参数，以加入多个代理服务器，
+-retry-join	用途和 -join 一致，当第一次加入失败后进行重试，每次加入失败后等待时间为 30秒
+-syslog	指定此标志意味着将记录 syslog，该参数在 Windows 平台不支持
+
+
+// 172.16.1.218
+consul agent -server -ui -bootstrap-expect=3 -data-dir=/home/zbseoag/consul -node=agent-1 -client=127.0.0.1 -bind=127.0.0.4 -datacenter=dc1
+
+// 172.16.1.219
+consul agent -server -ui -bootstrap-expect=3 -data-dir=/home/zbseoag/consul -node=agent-2 -client=127.0.0.2 -bind=127.0.0.5 -datacenter=dc1 -join 127.0.0.4
+
+// 172.16.1.220
+consul agent -server -ui -bootstrap-expect=3 -data-dir=/home/zbseoag/consul -node=agent-3 -client=127.0.0.3 -bind=127.0.0.6 -datacenter=dc1 -join 127.0.0.4
+
+
+
+eval script keycount key [key ...] arg [arg ...] 执行 lua 脚本。
+evalsha sha1 keycount key [key ...] arg [arg ...] 执行 lua 脚本。
+script exists script [script ...] 查看指定的脚本是否已经被保存在缓存当中。
+script flush 从脚本缓存中移除所有脚本。
+script kill 杀死当前正在运行的 lua 脚本。
+script load script 将脚本 script 添加到脚本缓存中，但并不立即执行这个脚本。
+
+删除名为登录的密钥环，重启，打开chrome 显示对话框时，什么都不输入直接点继续。
+
+sudo vim /etc/sudoers
+在 %sudo	ALL=(ALL:ALL) ALL 添加  username <TAB键> ALL=(ALL) NOPASSWD: ALL
+zbseoag   ALL=(ALL) NOPASSWD: ALL
+
+#[[ "${colors[@]}" =~ $color ]]
+
+git reset
+我的电脑
+win + i ：打开设置
+Win + 1、2、3 ：打开任务栏的程序
+Shift + 单击  ：打开任务栏程序的新窗口
+win + pause
+Ctrl + Shift + Esc 任务管理器
+win + e   资源管理器
+Win+A 操作中心
+
+sh zkServer.sh start
+sh zkCli.sh
+
+指定脚本解释器
+在 shell 脚本，#! 告诉系统其后路径所指定的程序即是解释此脚本文件的 Shell 解释器。#! 被称作shebang
+
+:<<EOF
+echo '这是多行注释'
+echo '这是多行注释'
+EOF
+
+echo -e "YES\c" # -e 开启转义 \c 不换行
+readonly rword
+字符长度： ${#text}
+
+text="heaao"
+echo `expr index "${text}" aa` #查找 aa 在 heaao 中的起始位置。
+
+nums=([2]=2 [0]=0 [1]=1)
+colors=(red yellow "dark blue")
+
+扩展数组
+colors=(1 2 3)
+colors=(a "${colors[@]}" b c)
+
+
+
+printf "%-5s %-5.2f \n" Name 100.254
+- 左对齐
+5 数字表示字符长度，浮点数可以带小数（%5.2f），表示保留小数位
+s 字符串
+f 浮点数
+
+
+echo -e "\033[前;背;特效m 字符串内容 \033[0m"
+echo -e "\033[0;31;5m string is here \033[0m"
+特效：0 关闭、1 设置高亮度、4 下划线、5 闪烁、7 反显
+
+let sum=one+=10
+sum=$[no1 + no2]
+sum=$((no1 + no2 + 8))
+
+sum=`expr 2 % 3`
+sum=$(expr $one \* 5) #乘法
+
+echo "scale=4;3/8" | bc
+echo "obase=2;$num" | bc
+
+num=11000001
+echo "obase=10;ibase=2;$num" | bc  #二进制数转十进制
+
+
+echo "10^10" | bc
+echo "sqrt(100)" | bc
+
+
+export 变量名...
+export 变量名=变量值 [...变量名n=变量值n]
+
+unset 变量名
+
+
+常见的环境变量
+
+$USER 查看账户信息
+$logname 登录相关信息
+$UID
+$Shell
+$HOME 家目录
+$pwd
+$PATH 用户所输入的命令是在哪些目录中查找
+$PS1
+$PS2
+$RANDOM 随机数
+
+$# ：命令行中位置参数的个数
+$* ：所有位置参数的内容
+$@ ：所有位置参数的内容
+$? ：上一条命令执行后返回的状态，当返回状态值为0时表示执行正常，非0表示执行异常或出错
+$$ ：当前所在进程的进程号
+$! ：后台运行的最后一个进程号
+$0 ：当前执行的进程/程序名
+
+
+条件测试
+test 条件表达式
+[ 条件表达式 ]
+
+-d：测试是否为目录
+-e：测试目录或文件是否存在
+-f：测试是否为文件
+-r：测试当前用户是否有权限读取
+-w：测试当前用户是否有权限写入
+-x：测试当前用户是否可执行该文件
+-L：测试是否为符号链接文件
+-nt：最后修改时间 new than 
+-ot：最后修改时间 old than
+
+
+字符串比较
+[ 字符串1 =、!= 、<、> 字符串2 ]
+[ -z|-n 字符串的空与非空 ]
+
+
+整数值比较
+[ 整数1 操作符 整数2 ]
+-eq：等于
+-ne：不等于
+-gt：大于
+-lt：小于
+-le：小于等于
+-ge：大于等于
+
+逻辑测试
+[ 表达式1 ] 操作符 [ 表达式2 ] ...
+
+-a 或 &&：与
+-o 或 ||：或
+!：否
+
+
+if [ null ];then
+
+elif [ null ];then
+
+else
+ 
+fi
+
+
+for arg in elem1 elem2 ... elemN
+do
+  
+done
+
+for(( i=1; i<=5; i++ ))
+do
+  
+done 
+
+
+while [ $i -le 10 ]
+do
+
+ i=`expr $i + 1`
+
+done
+
+while [[ ${x} -lt 10 ]]; do
+  echo $((x * x))
+  x=$((x + 1))
+done
+
+
+case "$1" in
+  'start'|'-start') echo stop;;
+  *) echo default;;
+esac
+
+
+until [ $var -gt 10 ]
+do
+  echo $var
+  var=$(( $var + 1 ))
+done 
+
+
+大括号扩展
+大括号扩展让生成任意的字符串成为可能。它跟 文件名扩展 很类似，举个例子：
+
+echo beg{i,a,u}n ### begin began begun
+大括号扩展还可以用来创建一个可被循环迭代的区间。
+
+echo {0..5} ### 0 1 2 3 4 5
+echo {00..8..2} ### 00 02 04 06 08
+
+
+bash -x script.sh
+sh -x script.sh
+
+set -x：在执行时候显示参数和命令。
+set +x：禁止调式
+set -v：当命令进入读取时候显示输入
+set +v：禁止打印输入
+
+for i in {1..5}
+do
+  set -x
+    echo $i
+  set +x
+done
+
+使用shebang调式方法
+#!/bin/bash -xv
+
+
+data="111,222,333,444,555,666"
+old=$IFS  #定义一个变量为默认IFS
+IFS=,        #设置IFS为逗号
+for i in $data
+do
+ echo $i
+done
+IFS=$old  #还原
+
+环境变量设置
+
+变量名：JAVA_HOME
+变量值：C:\Program Files\Java\jdk1.7.0
+
+//这里是你JDK的安装路径，可以更换
+变量名：CLASSPATH
+变量值：.;%JAVA_HOME%\lib\dt.jar;%JAVA_HOME%\lib\tools.jar; //记得前面有个"."
+变量名：Path
+变量值：%JAVA_HOME%\bin;%JAVA_HOME%\jre\bin;
+
+
+
+
+离职原因：
+公司是做跨境电商，受疫情影响，进出口都受不到同程度影响，我所在的进口事撤消了部分业务线。我本人也想换个环境，就出来了。
+
+
+高级到资深技术开发
+
+
+
+成员变量和方法作用域
+对于成员变量和方法的作用域，public，protected，private以及不写之间的区别：
+
+public : 表明该成员变量或者方法是对所有类或者对象都是可见的,所有类或者对象都可以直接访问
+
+private : 表明该成员变量或者方法是私有的,只有当前类对其具有访问权限,除此之外其他类或者对象都没有访问权限.子类也没有访问权限.
+
+protected : 表明成员变量或者方法对类自身,与同在一个包中的其他类可见,其他包下的类不可访问,除非是他的子类
+
+default : 表明该成员变量或者方法只有自己和其位于同一个包的内可见,其他包内的类不能访问,即便是它的子类
+
+
+Java中只有值传递，只不过传递的内容是对象的引用。
+
+8种基本数据类型
+Java中有8种基本数据类型分为三大类。
+
+字符类型 char
+布尔类型 boolean
+数值类型 byte、short、int、long、float、double
+
+Java中的数值类型都是有符号的。
+Java中还存在另外一种基本类型void，它也有对应的包装类 java.lang.Void，不过我们无法直接对它们进行操作。
+
+基本数据类型转换成包装类叫装箱
+包装类转换成基本数据类型叫拆箱
+
+
+
+三目运算符，第二和第三位操作数分别是基本类型和对象，对象会进行拆箱操作，由于该对象为null，所以在拆箱过程中调用null.booleanValue()的时候就报了NPE。
+
+Map<String,Boolean> map =  new HashMap<String, Boolean>();
+
+//这里会报错
+Boolean b = (map!=null ? map.get("test") : false);
+//改成
+Boolean b = (map!=null ? map.get("test") : Boolean.FALSE);
+
+
+在Java中，== 比较的是对象，而 equals 比较的是值。
+
+
+
+C#
+虚方法才能被子类重写。
+
+
+作为整体参与运算的一串二进制的位数称为字长，它一般是8的倍数，如：8位，16位，32位。
+一个数在计算机上的表示形式叫作机器数，在字长为8位时，5的机器数是00000101。
+
+在计算机中，5与-5 的原码相加不等于0
+
+原码表示法，编码简单，但运算时要单独考虑符号位和判别0，增加了运算规则的复杂性。
+补码：正数的原、反、补码相同，负数补码等于反码加1
+
+编译：用编译器把高级语言编写的源程序翻译成用机器指令表示的目标代码，再通过连接器将目标程序与相关库连接成一个完整的可执行程序。
+优点：执行速度快，产生的可执行程序可以独立运行。
+
+解释：用解释器将源程序进行翻译，解释一句，执行一句，直到结束。
+优点：移植到不同平台时，不必修改源程序，只要有跨平台的解释器即可。
+
+
+c primer plus
+c++ primer plus
+
+所有寄存器都是16位的。
+
+
+默认的Windows磁盘在WSL的访问方式是/mnt开头，可能不太方便，我们下面更换成是/开头的吧。
+
+打开这个文件：
+sudo vim /etc/wsl.conf
+添加下面三行内容，并保存此文件：
+[automount] 
+root = / 
+options = "metadata"
+
+
+
+
+debug
+r 查看、改变寄存器内容
+r ax 123
+
+d 查看内存中的内容
+d 2000:0
+
+e 改变内在中的内容
+e 2000:0 1 2 3
+e 2000:0 回车 1 空格 2空格...回车
+
+u 将机器指令翻译成汇编指令
+e 2000:0 b8 23 01 bb 03 00 89 d8 01 d8
+d 2000:0 f
+u 2000:0
+
+a 通过汇编指令写入机器指令
+a 073f:0100
+mov ax, 0123
+mov bx, 0003
+mov ax, bx
+add ax, bx
+
+t 执行机器指令
+
+jmp 段地址：偏移地址
+
+
+将段地址送入DS:数据->一般寄存器->段寄存器
+mov bx 1000
+mov ds, bx
+
+定义 1000 到 1010 的16个字段空间为栈
+mov ax 1000
+mov ss, ax
+mov sp, 0010
+
+物理地址 = 段地址 X 16 + 偏移地址
+将一级内存单元定义为一个段
+可以将起始地址为16的倍数，最大长度为64的一组地址连续的内在定义为一个段。
+将一段内存定义为一个段，用一个段地址指示段，用偏移地址访问段内的单元。
+
+数据段（ds），代码段（cs：ip），栈段（ss：sp）
+
+汇编程序：包含汇编指令和伪指令的文本。
+
+
+
+
+sudo dpkg -i mongodb-org-server_4.4.1_amd64.deb
+sudo dpkg -i mongodb-org-shell_4.4.1_amd64.deb
+
+sudo service mongod start
+sudo service mongod status
+
+mongo
+show dbs
+use <dbname>
+db.createCollection(<table>)
+show tables
+db.<table>.drop()
+db.<table>.remove({})
+db.<table>.insert({title: 'MongoDB 教程',  tags: ['mongodb', 'NoSQL'],likes: 100 })
+db.<table>.find().pretty()
+db.<table>.update({ "money": { $gt: 1 } } , { $set: { "by": "OK"} } );
+
+
+Mysql 8.0 版本
+use mysql;
+update user set host='%' where user='root';
+
+#查看 validate_password 密码验证插件是否安装
+show VARIABLES LIKE 'validate_password%';
+set global validate_password.policy=0;
+set global validate_password.length=3;
+
+#重新设置密码： 
+ALTER USER 'root'@'%' IDENTIFIED BY '123456';
+FLUSH PRIVILEGES;
+
+
+
+redis:
+
+ ### cluster 命令  ###
+
+cluster addslots slot [slot ...]
+添加哈希槽
+
+cluster delslots slot [slot ...]
+删除哈希槽
+
+
+cluster count-failure-reports node-id
+查看指定节点的故障报告个数
+
+
+cluster countkeysinslot slot
+返回连接节点负责的指定hash slot的key的数量
+
+
+cluster failover [force|takeover]
+在 slave 节点执行，让slave节点进行一次人工故障切换
+
+
+cluster forget node-id
+从群集节点的节点信息列表中移除指定节点
+
+cluster getkeysinslot slot count
+返回存储在连接节点的指定hash slot里面的key的列表
+
+cluster info
+关于redis集群的参数
+
+
+cluster keyslot key
+返回一个整数，用于标识指定键所散列到的哈希槽
+
+
+cluster meet ip port
+
+cluster nodes 
+
+cluster replicas node-id
+列出指定节点的副节点
+
+
+cluster replicate node-id
+重新配置一个节点成为指定master的salve节点
+
+
+cluster reset [hard|soft]
+
+
+cluster saveconfig
+强制保存 nodes.conf 到磁盘
+
+
+cluster set-config-epoch config-epoch
+为一个全新的节点设置指定的config epoch
+
+
+cluster setslot slot importing|migrating|stable|node [node-id]
+
+
+cluster slaves node-id
+列出指定节点的所有slave节点
+
+
+cluster slots
+返回哈希槽和redis实例映射关系
+
+
+readonly
+开启与 cluster 从节点连接的读请求
+
+
+readwrite
+禁止与redis cluster从节点连接的读请求
+
+
+### connection 命令 ###
+
+auth password
+请求密码
+
+echo message
+返回消息
+
+ping [message] ：测试一个连接
+
+quit ：关闭连接
+
+
+select index ：选择一个数据库，下标值从0开始
+
+swapdb index1 index2 ：交换数据库
+
+
+### 哈希 命令 ###
+
+hset key field value ： 添加或修改一个键值对到哈希集
+
+hsetnx key field value ： 绝对添加一个键值对到哈希集
+
+hmset key field value [field value ...] ： 批量添加键值对到哈希集
+
+hmget key field [field ...]  ：从哈希集中获取多个字段的值
+
+hkeys key ： 返回所有字段名
+
+hvals key ： 返回所有字段值
+
+hlen key ：哈希集中字段的数量
+
+
+hstrlen key field ： 返回字段值的长度
+
+hdel key field [field ...] ：从哈希中移除指定的域
+
+hexists key field ：field是否存在
+
+hget key field ： 返回哈希集中的字段值
+
+hgetall key ： 返回指定的哈希集
+
+hincrby key field increment ：哈希字段通过指定整型值自增
+
+hincrbyfloat key field increment ：哈希字段通过指定浮点值自增
+
+hscan key cursor [match pattern] [count count]
+
+
+###### key1
+
+del key [key ...] ： 批量删除key
+
+dump key ： 序列化给定 key 
+
+exists key [key ...] ： 返回key是否存在
+
+expire key seconds ：设置key的过期时长
+
+pexpire key milliseconds ：设置 key 毫秒级的过期时长
+
+expireat key timestamp ：设置 key 的过期时间点
+
+pexpireat key milliseconds-timestamp ：设置 key 毫秒级的过期时间点
+
+keys pattern ：按正则表达式搜索key
+
+pttl key ： 返回 key 毫秒级的剩余生存时间
+
+ttl key
+
+type key
+
+unlink key [key ...] ： 异步删除
+
+wait numslaves timeout ： 此命令阻塞当前客户端，直到所有以前的写命令都成功的传输和指定的slaves确认
+
+migrate host port key destination-db timeout [copy] [replace] ： 将 key 原子性地从当前实例传送到目标实例的指定数据库上，一旦传送成功， key 保证会出现在目标实例上，而当前实例上的 key 会被删除。
+
+move key db ： 把当前库中的key移动到指定库，不会覆盖
+
+
+object subcommand [arguments [arguments ...]] 
+
+persist key ：移除给定 key 的过期时间
+
+randomkey ： 返回一个随机的key
+
+rename key newkey ： 重命名，新名覆盖
+
+renamenx key newkey ：安全的重命名
+
+restore key ttl serialized-value [replace] ： 反序列化给定的序列化值，并将它和给定的 key 关联
+
+scan cursor [match pattern] [count count]
+
+scan 命令用于迭代当前数据库中的key集合。
+sscan 命令用于迭代set集合中的元素。
+hscan 命令用于迭代hash类型中的键值对。
+zscan 命令用于迭代sortset集合中的元素和元素对应的分值
+
+
+sort key [by pattern] [limit offset count] [get pattern] [asc|desc] [alpha] destination
+
+touch key [key ...] ： 修改指定 key 最后访问时间
+
+
+npm -v
+npm install npm -g
+npm update <package> -g
+npm install -g --force <package-name>
+npm update <package-name>
+npm view <package-name>
+npm info <package-name>
+npm show <package-name>
+npm config get cache
+npm cache clean
+npm install --cache-min 9999999 <package-name> 从缓存安装
+npm install --cache-min Infinity <package-name>
+npm-cache install <package-name>
+
+npm list -g
+npm list <package-name>
+npm uninstall <package-name>
+npm ls
+npm search <package-name>
+
+npm init
+npm adduser
+npm publish
+npm help <command>
+npm unpublish <package>@<version>
+
+在package.json所在目录下使用npm install . -g可先在本地安装当前命令行程序，可用于发布前的本地测试。
+
+npm install -g @vue/cli
+vue --version
+vue create hello-world
+cd hello-world
+npm run serve
+vue create --help
+
+npm install -g @vue/cli-service-global
+在开发环境模式下零配置为 .js 或 .vue 文件启动一个服务器
+vue serve [options] [entry]
+Options:
+  -o, --open  打开浏览器
+  -c, --copy  将本地 URL 复制到剪切板
+  -h, --help  输出用法信息
+
+
+在生产环境模式下零配置构建一个 .js 或 .vue 文件
+vue build [options] [entry]
+Options:
+  -t, --target <target>  构建目标 (app | lib | wc | wc-async, 默认值：app)
+  -n, --name <name>      库的名字或 Web Components 组件的名字 (默认值：入口文件名)
+  -d, --dest <dir>       输出目录 (默认值：dist)
+  -h, --help             输出用法信息
+
+
+
+创建一个由 `vue-cli-service` 提供支持的新项目
+vue create [options] <app-name>
+选项：
+  -p, --preset <presetName>       忽略提示符并使用已保存的或远程的预设选项
+  -d, --default                   忽略提示符并使用默认预设选项
+  -i, --inlinePreset <json>       忽略提示符并使用内联的 JSON 字符串预设选项
+  -m, --packageManager <command>  在安装依赖时使用指定的 npm 客户端
+  -r, --registry <url>            在安装依赖时使用指定的 npm registry
+  -g, --git [message]             强制 / 跳过 git 初始化，并可选的指定初始化提交信息
+  -n, --no-git                    跳过 git 初始化
+  -f, --force                     覆写目标目录可能存在的配置
+  -c, --clone                     使用 git clone 获取远程预设选项
+  -x, --proxy                     使用指定的代理创建项目
+  -b, --bare                      创建项目时省略默认组件中的新手指导信息
+  -h, --help                      输出使用帮助信息
+
+vue ui : 以图形化界面创建和管理项目
+
+
+npm install -g cnpm --registry=https://registry.npm.taobao.org
+cnpm sync <package-name>
+
+
+npm install -g @vue/cli-service
+
+
+
+
+流畅的python
+go 语言高级编程
+
+
+Export-Alias -Path "alias.ps1" -As Script
+Add-Content -Path $Profile -Value (Get-Content alias.ps1)
+$S = New-PSSession -ComputerName Server01
+Invoke-Command -Session $S -FilePath .\alias.ps1
+
+
+
+javac HelloWorld.java
+java HelloWorld 
+
+go run test.go
+go build hello.go
+
+
+
+# 构建项目中的服务容器
+docker-compose build [options] [service]
+--force-rm 删除构建过程中的临时容器
+--no-cache 构建镜像过程中不使用 cache（这将加长构建过程）
+--pull 始终尝试通过 pull 来获取更新版本的镜像
+
+
+
+给容器指定一个固定 IP 地址，而不是每次重启容器 IP 地址
+$ docker network create -d bridge --subnet 172.25.0.0/16 my-net
+$ docker run --network=my-net --ip=172.25.3.3 -itd --name=my-container busybox
+
+
+
+sysctl -w net.ipv4.ip_forward=1
+
+
+docker logs -f <container>
+
+docker volume create my_vol
+docker volume ls
+docker volume inspect my_vol
+docker volume rm my_vol
+docker volume prune #清理无主的数据卷
+
+docker inspect web
+
+
+# 加载数据卷到容器 /webapp 目录
+-v my_vol:/webapp
+--mount source=my_vol,target=/webapp
+
+# 加载主机 /host/webapp 目录到容器 /webapp 目录
+-v /host/webapp:/webapp 
+--mount type=bind,source=/host/webapp,target=/webapp,readonly
+
+# 主机挂载单个文件到容器中
+-v $HOME/.bash_history:/root/.bash_history \
+--mount type=bind,source=$HOME/.bash_history,target=/root/.bash_history 
+
+
+-P 表示随机映射一个 49000~49900 的端口到内部容器开放的网络端口
+-p 8080:80
+-p 127.0.0.1:5000:5000 # 指定地址和端口
+-p 127.0.0.1::5000 # 指定地址任意端口
+-p 127.0.0.1:5000:5000/udp # 指定 udp 方式
+
+# 当前映射的端口配置
+docker port <container> <port>
+
+
+docker network create -d bridge  <network>
+-d 网络类型: bridge | overlay
+
+docker run --network <network>
+
+
+container # ping <container>
+
+
+配置全部容器的 DNS 编辑 /etc/docker/daemon.json 文件
+# 每次启动的容器 DNS 自动配置为 114.114.114.114 和 8.8.8.8
+{
+  "dns" : [
+    "114.114.114.114",
+    "8.8.8.8"
+  ]
+}
+
+证明其已经生效
+$ docker run -it --rm ubuntu:18.04  cat etc/resolv.conf
+
+nameserver 114.114.114.114
+nameserver 8.8.8.8
+
+
+--hostname
+--dns
+--dns-search=DOMAIN 设定搜索域，当设定搜索域为 .example.com 时，在搜索一个名为 host 的主机时，DNS 不仅搜索 host，还会搜索 host.example.com
+
+
+docker run --restart=always -d --name=mysql_1 -e MYSQL_ROOT_PASSWORD=123456 -p 3306:3306 -p 33060:33060 mysql:8.0.20
+
+
+
+
+
+vim /etc/docker/daemon.json
+{
+  "registry-mirrors": [
+    "https://hub-mirror.c.163.com"
+  ]
+}
+
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+
+docker pull ubuntu
+docker run -it --rm ubuntu bash
+root@e7009c6ce357:/# cat /etc/os-release
+root@e7009c6ce357:/# exit
+
+docker image ls
+docker image ls -a
+docker image ls -q
+docker image ls <image>
+#镜像摘要
+docker image ls --digests
+docker image ls --filter since=<image>
+docker image ls --filter label=com.example.version=0.1
+
+# 列出镜像结果，并且只包含镜像ID和仓库名
+docker image ls --format "{{.ID}}: {{.Repository}}"
+
+#以表格等距显示，并且有标题行
+docker image ls --format "table {{.ID}}\t{{.Repository}}\t{{.Tag}}"
+
+
+
+#查看镜像、容器、数据卷所占用的空间
+docker system df
+
+虚悬镜像(dangling image)
+由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为 <none> 的镜像。
+docker image ls -f dangling=true
+# 删除虚悬镜像
+docker image prune
+
+
+docker image rm [选项] <镜像1> [<镜像2> ...]
+
+docker commit [选项] <容器> [<镜像>[:<标签>]]
+docker commit --author "Tao Wang"  --message "修改了默认网页" webserver  nginx:v2
+docker diff <container>
+docker history <镜像>[:<标签>]
+
+
+vim Dockerfile
+
+FROM debian:stretch
+
+RUN buildDeps='gcc libc6-dev make wget' \
+    && apt-get update \
+    && apt-get install -y $buildDeps \
+    && wget -O redis.tar.gz "http://download.redis.io/releases/redis-5.0.3.tar.gz" \
+    && mkdir -p /usr/src/redis \
+    && tar -xzf redis.tar.gz -C /usr/src/redis --strip-components=1 \
+    && make -C /usr/src/redis \
+    && make -C /usr/src/redis install \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm redis.tar.gz \
+    && rm -r /usr/src/redis \
+    && apt-get purge -y --auto-remove $buildDeps
+
+docker build  -t nginx:v3 .
+docker build https://github.com/twang2218/gitlab-ce-zh.git#:11.1
+docker build http://server/context.tar.gz
+docker build - < Dockerfile
+cat Dockerfile | docker build -
+docker build - < context.tar.gz
+
+
+COPY hom* /mydir/
+COPY hom?.txt /mydir/
+COPY --chown=<user>:<group> files* /mydir/
+
+FROM scratch
+ADD ubuntu-xenial-core-cloudimg-amd64-root.tar.gz /
+
+CMD ["nginx", "-g", "daemon off;"]
+
+
+FROM ubuntu:18.04
+RUN apt-get update \
+    && apt-get install -y curl \
+    && rm -rf /var/lib/apt/lists/*
+ENTRYPOINT [ "curl", "-s", "https://ip.cn" ]
+
+ENV VERSION=1.0 DEBUG=on \
+    NAME="Happy Feet"
+
+ARG <参数名>[=<默认值>]
+
+# 在运行时自动挂载为匿名卷，任何向 /data 中写入的信息都不会记录进容器存储层，从而保证了容器存储层的无状态化。
+VOLUME ["<路径1>", "<路径2>"...]
+VOLUME /data
+
+WORKDIR <工作目录路径>
+
+EXPOSE <端口1> [<端口2>...]
+
+USER <用户名>[:<用户组>]
+RUN groupadd -r redis && useradd -r -g redis redis
+USER redis
+
+如果以 root 执行的脚本，在执行期间希望改变身份，比如希望以某个已经建立好的用户来运行某个服务进程，不要使用 su 或者 sudo，这些都需要比较麻烦的配置，而且在 TTY 缺失的环境下经常出错。建议使用 gosu。
+# 建立 redis 用户，并使用 gosu 换另一个用户执行命令
+RUN groupadd -r redis && useradd -r -g redis redis
+# 下载 gosu
+RUN wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/1.7/gosu-amd64" \
+    && chmod +x /usr/local/bin/gosu \
+    && gosu nobody true
+# 设置 CMD，并以另外的用户执行
+CMD [ "exec", "gosu", "redis", "redis-server" ]
+
+
+vscode 关闭标题栏
+设置／窗口／Title Bar Style 设置 custom
+
+
+开机等待时间
+sudo gedit /etc/default/grub
+#GRUB_TIMEOUT=1
+GRUB_RECORDFAIL_TIMEOUT=1
+sudo update-grub
+
+
+dpkg --get-selections | grep firefox
+sudo apt-get purge firefox firefox-*
+
+sudo gedit /etc/sudoers
+zbseoag ALL=(ALL) NOPASSWD: ALL
+%admin ALL=(ALL) NOPASSWD: ALL
+
+Dash to Panel
+
+mount -t auto /dev/cdrom /mnt/cdrom
+vi /etc/apt/sources.list
+
+
+
+[rǒng yú]
+冗余
+[zǔ sè]  
+阻塞
+[kuàng jià]  
+框架
+
+1）sudo apt-get install open-vm-tools
+2）sudo apt-get install open-vm-tools-desktop
+
+
+在此处打开命令行
+
+计算机\HKEY_CLASSES_ROOT\Directory\Background\shell\cmd
+计算机\HKEY_CLASSES_ROOT\Directory\Background\shell\Powershell
+就在刚才位置的下面。 ShowBasedOnVelocityId   重命名为 HideBasedOnVelocityId
+
+
+"D:\Program Files\VMware Workstation\vmware-kvm.exe" –-preferences
+
+
+
+npm config set registry https://registry.npm.taobao.org
+npm config get registry
+
+npm install express -g #全局安装
+npm list -g
+
+在当前目录下执行 npm link 就可以在代码中用require加载全局模块了
+
+npm uninstall express
+npm ls
+npm update express
+npm search express
+
+
+#docker 安装
+sudo apt-get remove docker docker-engine docker.io containerd runc
+sudo apt-get update
+sudo apt-get install   apt-transport-https     ca-certificates     curl     gnupg-agent     software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo apt-key fingerprint 0EBFCD88
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io
+sudo usermod -aG docker zbseoag
+
+sudo mkdir -p /var/lib/mongo
+sudo mkdir -p /var/log/mongodb
+sudo chown zbseoag /var/lib/mongo     
+sudo chown zbseoag /var/log/mongodb   
+
+Run MongoDB.
+To run MongoDB, run the mongod process at the system prompt.
+mongod --dbpath /var/lib/mongo --logpath /var/log/mongodb/mongod.log --fork
+mongo
+
+http://localhost:27017/
+
+
+
+
+
+dpkg -l |grep ^rc|awk '{print $2}' |sudo xargs dpkg -P              清除残余的配置文件
+
+sudo apt-get install libtool  
+sudo apt install autoreconf  
+
+
+
+redis-cli> info replication
+
+
+redis-server 6400.conf --sentinel &&  redis-server 6401.conf --sentinel
+
+redis-cli --cluster-replicas 1 --cluster create 127.0.0.1:6300 127.0.0.1:6301 127.0.0.1:6302 127.0.0.1:6303 127.0.0.1:6304 127.0.0.1:6305
+
+redis-cli -c -h 127.0.0.1 -p 6305 
+
+
+subscribe channle
+unsubscribe channle
+
+psubscribe channle
+punsubscribe channle
+
+publish channle message
+
+multi
+  incr foo
+  incr bar
+exec | discard
+
+
+被 WATCH 的键会被监视，并会发觉这些键是否被改动过了。 如果有至少一个被监视的键在 EXEC 执行之前被修改了， 那么EXEC 返回nil-reply来表示事务已经失败。
+WATCH mykey  key1  key2  key3
+        val = GET mykey
+        val = val + 1
+MULTI
+        SET mykey $val
+EXEC  #不管事务是否成功执行， 对所有键的监视都会被取消。
+
+
+
+data.txt:
+SET Key0 Value0
+SET Key1 Value1
+...
+SET KeyN ValueN
+
+cat data.txt | redis-cli --pipe
+
+
+redis-cli config set notify-keyspace-events KEA
+redis-cli --csv psubscribe '__key*__:*' 
+...
+Reading messages... (press Ctrl-C to quit)
+
+
+另一个
+redis-cli
+> set foo 123
+
+
+sudo apt-get -y install socat logrotate init-system-helpers adduser
+
+sudo apt-get install -y erlang-base \
+  erlang-asn1 erlang-crypto erlang-eldap erlang-ftp erlang-inets \
+  erlang-mnesia erlang-os-mon erlang-parsetools erlang-public-key \
+  erlang-runtime-tools erlang-snmp erlang-ssl \
+  erlang-syntax-tools erlang-tftp erlang-tools erlang-xmerl
+
+sudo dpkg -i rabbitmq-server_3.8.3-1_all.deb
+
+
+ps -ef  |grep rabbitmq
+
+rabbitmq-server start
+lsof -i:5672
+
+rabbitmq-plugins enable rabbitmq_management
+http://localhost:15672
+guest : guest
+
+
+docker run -d --rm --name dede  php:5.6.15-apache
+docker cp dede:/usr/local/etc/php  /home/zbseoag/docker/volume/php56
+docker cp dede:/usr/src/php/php.ini-development /home/zbseoag/docker/volume/php56/php
+cd /home/zbseoag/docker/volume/php56/php && mv php.ini-development php.ini
+
+
+docker run -d  --name dede \
+-v /home/zbseoag/docker/volume/php56/apache2:/etc/apache2 \
+-v /home/zbseoag/docker/volume/php56/php:/usr/local/etc/php \
+-v /home/zbseoag/docker/volume/php56/www:/var/www/html \
+php:5.6.15-apache
+
+
+
+
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+php -r "if (hash_file('sha384', 'composer-setup.php') === 'e0012edf3e80b6978849f5eff0d4b4e4c79ff1609dd1e613307e16318854d24ae64f26d17af3ef0bf7cfb710ca74755a') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+php composer-setup.php  --filename=composer
+sudo mv  composer /usr/local/bin
+
+
+用户向入口脚本 web/index.php 发起请求。
+入口脚本加载应用配置并创建一个应用 实例去处理请求。
+应用通过请求组件解析请求的 路由。
+应用创建一个控制器实例去处理请求。
+控制器创建一个动作实例并针对操作执行过滤器。
+如果任何一个过滤器返回失败，则动作取消。
+如果所有过滤器都通过，动作将被执行。
+动作会加载一个数据模型，或许是来自数据库。
+动作会渲染一个视图，把数据模型提供给它。
+渲染结果返回给响应组件。
+响应组件发送渲染结果给用户浏览器。
+
+
+gem install jekyll
+jekyll new myblog --force
+cd myblog
+jekyll serve [--detach]  [--no-watch][--watch][--drafts]
+
+
+$ jekyll build [--drafts]
+# => 当前文件夹中的内容将会生成到 ./_site 文件夹中。
+
+# destination 文件夹会在站点建立时被清理，保留的文件和文件夹应在 <keep_files> 里指定
+$ jekyll build --source <source> --destination <destination>
+# => 指定源文件夹<source>中的内容将会生成到目标文件夹<destination>中。
+
+
+├── _config.yml
+├── _drafts
+|   ├── begin-with-the-crazy-ideas.textile
+|   └── on-simplicity-in-technology.markdown
+├── _includes
+|   ├── footer.html
+|   └── header.html
+├── _layouts
+|   ├── default.html
+|   └── post.html
+├── _posts
+|   ├── 2007-10-29-why-every-programmer-should-play-nethack.textile
+|   └── 2009-04-26-barcamp-boston-4-roundup.textile
+├── _site
+├── .jekyll-metadata
+└── index.html
+
+
+默认模板
+sudo gem install bundler
+xdg-open $(bundle info --path minima)
+
+
+---
+layout: post
+title: Blogging Like a Hacker
+permalink: /other
+published: false
+---
+
+
+
+http://dev.mysql.com/doc/index-other.html
+
+http://dev.mysql.com/doc/sakila/en/sakila-installation.html
+
+
+show global|session variables like 'vari_name'
+
+
+show global variables like 'slow_query_log%';
+show global variables like 'slow_query_log_file'
+show global variables like 'log_queries_not_using_indexes';
+show global variables like 'long_query_time';
+
+
+set global slow_query_log = on;
+set global slow_query_log_file = '/var/lib/mysql/aaa_slow_query.log';
+set global long_query_time = 1;
+set global log_queries_not_using_indexes = on;
+
+
+重复索引检测
+pt-duplicate-key-checker -h 127.0.0.1 -uroot -p '123456'
+
+
+/usr/sbin/mysqld --verbose --help | grep -A  l 'Default options'
+
+
+explain select max(payment_date) from payment;
+
+create index idx_paydate on payment(payment_date);
+
+select count(release_year='2006' or NULL) as '2006 year', count(release_year='2007' or NULL) as '2007 year' from film;
+
+EXPLAIN	select actor.first_name, actor.last_name,count(*) from film_actor inner join actor using(actor_id) GROUP BY film_actor.actor_id;
+
+
+在 MySQL 中，NULL 值与任何其它值的比较永远返回 NULL，即 NULL = NULL 返回 NULL。
+MySQL 为 NULL 值处理提供了三大运算符: IS NULL、IS NOT NULL、<=>
+
+
+
+mysql 加入自启动
+chkconfig mysqld on
+systemctl list-unit-files | grep mysql
+
+
+# 查看端口
+netstat -ln | grep 3306
+
+
+
+OLTP，也叫联机事务处理（Online Transaction Processing）
+
+OLAP，也叫联机分析处理（Online Analytical Processing）
+
+#all onde
+127.0.0.1:9200/_cat/nodes?
+127.0.0.1:9200/_cluster/status
+
+
+
+docker run -d --link elastic:elastic -p 5601:5601 --name kibana docker.elastic.co/kibana/kibana:7.6.2
+
+
+
+
+工厂模式：通过工厂类或者方法去创建对象
+单例模式：使某个类的对象仅允许创建一个。
+注册模式：全局共享和交换对象。
+适配器模式：将不同的函数接口封装成统一的标准
+策略模式：
+数据对象映射
+
+
+
+
+
+php7
+1、对函数的参数和返回值类型增加了限定。增加了类型之后，php的 jit（just in time 运行时，将指令转成二进制机器码） 可以准确判断变量类型，生成最佳机器指令。
+function test(int $a, string $b):int{    }
+
+2、错误异常，php7 可以使用 try/catch 捕获异常
+
+
+一个 Elasticsearch 集群可以包含多个索引 > 类型 > 文档 > 属性
+
+GET _search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+
+GET _count
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+
+
+2.了解 PHP 的 Composer 包依赖管理机制，了解 PSR 代码规范与接口规范；
+
+Composer 是一个 PHP 包依赖管理工具，先通过 composer.json 定义依赖的包，用命令下载这些依赖。然后开发者就可以引入包并使用了。
+每当安装完依赖后，Composer 将把安装时确切的版本号列表写入 composer.lock 文件。这将锁定该项目的特定版本。
+
+
+
+IO 多路复用是什么？有哪些 api？
+
+
+select 和 epoll 的区别？水平触发和边缘触发的区别是啥？使用的时候需要注意什么？
+
+epoll 储存描述符的数据结构是什么？
+select 有描述符限制吗？是多少？
+
+进程 / 线程 / 协程区别？go 和 swoole 的协程实现有啥区别？（分配资源的基本单位 / 运行和调度的基本单位 / 用户线程，M:N 模型和 N:1 模型）
+PHP（php 源代码，主流 php 框架源代码）
+
+
+描述一下 cli 模式下的几个生命周期？
+模块初始化，请求初始化 ， 请求关闭
+
+
+
+
+内存分配流程？为什么要这么设计？
+
+
+GC 的出现是为了解决什么问题？什么时候会触发 GC？说下大概流程
+
+
+
+php 里的数组是怎么实现的？（这里要注意下 php5 和 php7 实现的区别，优化了非常多）
+
+
+nginx 和 php-fpm 的通信机制？fast-cgi 和 cgi 区别？
+
+php-fpm 创建 worker 进程的规则是什么？不同场景下怎么选择？
+php 和 mysql 的通信机制？长链接和短链接啥区别？怎么实现的？连接池要怎么实现？
+swoole 协程的原理？（遇到阻塞时引发 php 栈和 c 栈的切换，细节可以参考下我的文章）
+依赖注入是什么？如何实现的？能解决什么问题？（代码层面不再依赖具体实现，解耦）
+mysql（高性能 mysql/mysql 技术内幕 innodb 储存引擎 / 数据库系统实现）
+innodb 的索引组织方式？（聚簇索引必须要很清楚，注意 innodb 聚簇索引叶子结点保存的是完整数据，innodb 普通索引叶子保存的是记录的主键，myisam 索引叶子保存的是记录的位置 / 偏移量）
+B + 树的结构和插入细节？为什么主键一般都要自增？和 B 树什么区别？为什么索引要使用 B + 树不是 B 树也不是其他的平衡树？为什么 redis 可以用跳表？（关键词：页的分裂，随机 IO，缓存体系）
+常见的优化（这里我就不展开了，主要考察覆盖索引查询和最左匹配，其实只要清楚 innodb 索引的结构，这些都不需要记忆，自然而然推导出来的）
+redolog/undolog/binlog 的区别？binlog 的几种格式？说下两阶段提交？
+事务隔离级别和不同级别会出现的问题，innodb 默认哪个级别？MVCC 怎么实现的？快照读和当前读有啥区别？幻读的问题怎么解决？
+死锁什么时候会出现？应用层应该怎么做避免死锁？mysql 是怎么处理死锁的呢？
+int 占多少字节？bigint 呢？int (3) 和 int (11) 有区别吗？可以往 int (3) 里存 1 亿吗？varchar 最长多少？
+sql 的执行流程（原始 sql-> 词法语法分析生成 AST-> 关系代数表达式（逻辑计划）-> 逻辑优化（谓词下推 / 常量传递）-> 物理查询优化（计算最佳 cost 路径，扫表还是使用索引，join 算法）-> 执行，仅做参考）
+redis（redis 源代码）
+sds 的结构是什么？为什么要存长度？跟 c 里的字符串有什么区别？（关键词：获取长度复杂度 O (1) 和 O (n)，二进制安全，保存 \0，跟 C 库字符串函数可以通用）
+hash 怎么实现的？怎么解决 hash 冲突？除了 hashTable 还有别的吗？
+zset 怎么实现的？跳表是怎么插入的？为什么选择跳表不用其他平衡二叉树？除了跳表还有别的吗？
+rehash 过程？会主动 rehash 吗？
+用 redis 可以实现队列吗？有什么优点和缺点？
+用 redis 怎么实现一个延时队列？
+rdb 和 aof 过程？rdb 为什么可以用创建子进程的方式进行？（这里考察一个 cow）这两种持久化方式会丢数据吗？
+redis 为什么快？（主要考察一个 IO 多路复用和单线程不加锁）
+一致性哈希是什么？节点较少时数据分布不均匀怎么办？
+简单说下几种 key 的淘汰策略，redis 里的 lru 算法，什么时候会触发？实现细节是什么？怎么保证淘汰合理的 key？
+lua 脚本的作用是什么？
+缓存击穿 / 穿透 / 雪崩的处理策略
+nginx
+LVS 和 Nginx 分别作用在 osi 哪一层？
+负载均衡算法
+数据结构
+布隆过滤器，什么时候用？优点是什么？
+
+
+
+简介
+Composer 是 PHP 的一个依赖管理工具。它允许你申明项目所依赖的代码库，并在项目中帮你自动安装这它们。
+
+系统要求
+PHP5.3.2 以上版本和一些 PHP 配置项，对于任何不兼容项，安装程序都会抛出警告。
+
+
+依赖管理
+它在每个项目的基础上进行管理，在你项目的某个目录中（例如 vendor）进行安装。默认情况下它不会在全局安装任何东西。
+Composer 这样为你解决问题：你有一个项目依赖于若干个库，其中一些库依赖于其他库。你声明你所依赖的库，Composer 会帮你寻找并自动安装它们。
+
+
+自动加载
+除了库的下载，Composer 还准备了一个自动加载文件 vendor/autoload.php，它可以加载 Composer 下载的库中所有的类文件。
+你可以在 composer.json 的 autoload 字段中增加自己的 autoloader。
+{
+    "autoload": {
+        "psr-4": {"Acme\\": "src/"}
+    }
+}
+
+composer.json ：项目安装
+在项目中使用 Composer，你只需要一个 composer.json 文件。该文件包含了项目的依赖和其它的一些元数据。
+
+require 声明依赖
+{
+    "require": {
+        "包名称": "版本号"
+    }
+}
+
+包版号
+通配符 *
+使用比较操作符指定有效的版本范围。多个范围用逗号隔开表示 AND，一个管道符号 | 将作为OR处理。AND 高于 OR。
+使用 ~ 指定最低版本，但允许版本号的最后一位数字上升，如：~1.2.3 表示 >=1.2.3 且 <1.3，即：只有版本号最后一位可以上升。
+
+
+注意：
+将 vendor 添加到 .gitignore 文件中，防止提交到服务器。
+
+
+composer.lock - 锁文件
+在安装依赖后，Composer 会把安装时确切的版本号列表写入 composer.lock 文件，这将锁定该项目的特定版本。
+请提交你应用程序的 composer.lock 到你的版本库中，因为 install 命令会检查锁文件是否存在，从而决定是否忽略 composer.json 文件去下载指定版本的依赖库。但对于库，并不一定建议提交锁文件。
+
+Packagist
+Packagist 是 Composer 的主要资源库。 一个 Composer 的库基本上是一个包的源：记录了可以得到包的地方。
+
+composer init
+
+php composer.phar install
+
+php composer.phar update
+
+如果只想安装或更新一个依赖，你可以白名单它们：
+php composer.phar update monolog/monolog [...]
+
+除了 PSR-4 自动加载，classmap 也是支持的。
+
+
+composer config --list -g
+composer config -g notify-on-install false
+
+引用本地自定义的包只更新加载器
+composer dump-autoload
+
+
+"autoload": {
+
+  "classmap": ["othsrc/","classsrc.php"],
+
+  "files": ["othsrc/filesrc.php"],
+
+  "psr-4": {"Foo\Bar\": "src"} 
+}
+
+
+
+全局配置
+所有项目都会使用该镜像地址：
+composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+取消配置
+composer config -g --unset repos.packagist
+
+调试
+composer -vvv require alibabacloud/sdk
+
+1. 建议先将Composer版本升级到最新：
+composer self-update
+2. 执行诊断命令：
+composer diagnose
+3. 清除缓存：
+composer clear
+4. 若项目之前已通过其他源安装，则需要更新 composer.lock 文件，执行命令：
+composer update --lock
+
+平台软件包
+Composer 将那些已经安装在系统上，但并不是由 Composer 安装的包视为一个虚拟的平台软件包。包括PHP本身，PHP扩展和一些系统库。
+
+composer show --platform 命令来获取可用的平台软件包的列表。
+
+
+
+
+为什么需要重视命名？
+好的命名即是注释，别人一看到你的命名就知道你的变量、方法或者类是做什么的！ 好的命名对于其他人（包括你自己）理解你的代码有着很大的帮助！
+好的代码本身就是注释，我们要尽量规范和美化自己的代码来减少不必要的注释。若编程语言足够有表达力，就不需要注释，尽量通过代码来阐述。
+
+常见命名规则以及适用场景
+
+驼峰命名法（CamelCase）：驼峰命名法应该我们最常见的一个，这种命名方式使用大小写混合的格式来区别各个单词，并且单词之间不使用空格隔开或者连接字符连接的命名方式。
+大驼峰命名法（UpperCamelCase）类名需要使用大驼峰命名法
+小驼峰命名法（lowerCamelCase）方法名、参数名、成员变量、局部变量需要使用小驼峰命名法。
+
+蛇形命名法（snake_case）：各个单词之间通过下划线连接，使用场景是命名所需要的单词比较多的时候。测试方法名、常量、枚举名称需要使用蛇形命名法
+串式命名法（kebab-case）：各个单词之间通过中横杠连接，建议项目文件夹名称使用串式命名法。
+
+Codelf:变量命名神器：https://unbug.github.io/codelf/
+
+
+
+linux 命令
+
+compgen -c 将列出你可以运行的所有命令。
+compgen -a 将列出你可以运行的所有别名。
+compgen -b 将列出你可以运行的所有 built-ins 。
+compgen -k 将列出你可以运行的所有关键字。
+compgen -A function 将列出你可以运行的所有函数。
+compgen -A function -abck 将逐一列出上所有内容。
+
+
+
+
+
+单点登录 Single /sing guo/ Sign /sai in/ On，简称就是SSO。在多个应用系统中，只需要登录一次，就可以访问其他相互信任的应用系统。
+
+
+同域下的单点登录: cookie 的域设置在同一级的域名下,再解决session 共享问题.
+
+不同域下的单点登录:
+
+CAS 是 Central Authentication Service的缩写，中央认证服务，一种独立开放指令协议, 旨在为 Web 应用系统提供一种可靠的单点登录方法。
+
+1.用户访问app系统，app系统是需要登录的，但用户现在没有登录。
+2.跳转到 CAS 服务器，即 SSO登录系统， SSO系统也没有登录，弹出用户登录页。
+3.用户填写用户名、密码，SSO系统进行认证后，将登录状态写入 SSO 的 session，浏览器中写入 SSO 域下的 Cookie。
+4.SSO系统登录完成后会生成一个ST（Service Ticket），然后跳转到app系统，同时将ST作为参数传递给app系统。
+5.app系统拿到 ST 后，从后台向 SSO 发送请求，验证ST是否有效。
+6.验证通过后，app系统将登录状态写入 session 并设置 app 域下的 Cookie。
+
+
+访问app2系统时的流程。
+
+1.用户访问app2系统，app2系统没有登录，跳转到SSO。
+2.由于 SSO 已经登录了，不需要重新登录认证。
+3.SSO生成ST，浏览器跳转到app2系统，并将ST作为参数传递给app2。
+4. app2拿到ST，后台访问SSO，验证ST是否有效。
+5.验证成功后，app2将登录状态写入session，并在app2域下写入Cookie。
+
+这样，app2系统不需要走登录流程，就已经是登录了。CAS 方式，app 和 app2在不同的域，它们之间不共享 session 也是没问题的。
+
+总结
+1.单点登录（SSO系统）是保障各业务系统的用户资源的安全 。
+2.各个业务系统获得的信息是，这个用户能不能访问我的资源。
+3.单点登录，资源都在各个业务系统这边，不在SSO那一方。 
+4.用户在给SSO服务器提供了用户名密码后，作为业务系统并不知道这件事。SSO随便给业务系统一个ST，那么业务系统是不能确定这个ST是用户伪造的，还是真的有效，所以要拿着这个ST去SSO服务器再问一下，这个用户给我的ST是否有效，是有效的我才能让这个用户访问。
+
+
+
+
+OAuth 是 Open Authority /wo fo ti/ 的缩写，这两者都是使用令牌的方式来代替用户密码访问应用。
+
+上面的流程大概为：
+
+用户输入网址进入业务系统Protected App，系统发现用户未登录，将用户重定向到单点登录系统CAS Server，并带上自身地址service参数
+用户浏览器重定向到单点登录系统，系统检查该用户是否登录，这是SSO(这里是CAS)系统的第一个接口，该接口如果用户未登录，则将用户重定向到登录界面，如果已登录，则设置全局session，并重定向到业务系统
+用户填写密码后提交登录，注意此时的登录界面是SSO系统提供的，只有SSO系统保存了用户的密码，
+SSO系统验证密码是否正确，若正确则重定向到业务系统，并带上SSO系统的签发的ticket
+浏览器重定向到业务系统的登录接口，这个登录接口是不需要密码的，而是带上SSO的ticket，业务系统拿着ticket请求SSO系统，获取用户信息。并设置局部session，表示登录成功返回给浏览器sessionId(tomcat中叫JSESSIONID)
+之后所有的交互用sessionId与业务系统交互即可
+OAuth2.0
+OAuth2.0有多种模式，这里讲的是OAuth2.0授权码模式，OAuth2.0的流程跟SSO差不多
+
+用户在某网站上点击使用微信授权，这里的某网站就类似业务系统，微信授权服务器就类似单点登录系统
+之后微信授权服务器返回一个确认授权页面，类似登录界面，这个页面当然是微信的而不是业务系统的
+用户确认授权，类似填写了账号和密码，提交后微信鉴权并返回一个ticket，并重定向业务系统。
+业务系统带上ticket访问微信服务器，微信服务器返回正式的token，业务系统就可以使用token获取用户信息了
+
+
+translate /chuan si lei te/
+
+
+子shell是嵌在圆括号()内部的命令序列，子Shell内部定义的变量为局部变量。
+
+COMMAND1
+COMMAND2
+(
+  IFS=:
+  PATH=/bin
+  unset TERMINFO
+  set -C
+  shift 5
+  COMMAND-3
+  COMMAND-4
+  exit 3 # 只是从子shell退出。
+)
+# 父shell不受影响，变量值没有更改。
+COMMAND5
+
+
+
+
+并发：指多个事件在同一段时间内进行。多道程序环境下，虽然程序只能是分时地交替执行，但从宏观来看，在一段时间内有多个程序在同时运行。
+并行：指多个事件在同一时间点进行。在多道程序环境下，并行性使多个程序同一时刻可在不同 CPU 上同时执行。
+
+串行：多个任务按顺序一个一个执行。
+并行：多个任务同时执行，异步是多个任务并行的前提条件。
+
+同步：等待同步结果返回，才能继续往下执行。
+异步：不必等待返回结果，接着往下执行。实现异步可以采用多线程技术或则交给另外的进程来处理。
+
+
+它通过强制事务排序，使之不可能相互冲突
+
+shutdown [/i 显示对话框 | /l 立即注销 | /s 关机 | /r 重启 | /a 中止关机 | /p 本地计算机 | /h 休眠 | /e 记录意外关闭 ] [/f 强制退出应用程序 ] [/m \\<ComputerName>] [/t <XXX>] [/d 原因 [p 计划 | u: 用户定义] <XX 主原因号，小于256的正整数>:<YY 次原因号，小于65536的正整数 > [/c comment 注释 ]]
+
+
+start [<Title 标题>] [/d <Path 启动目录>] [/i 传递启动环境 ] [{/min 最小化 | /max 最大化 }] [{/separate | /shared}] [ 优先级 {/low | /normal | /high | /realtime | /abovenormal | belownormal } ] [/affinity <HexAffinity>] [/wait 等待结束 ] [/elevate 以管理身份] [/b 在当前命令行，CTRL + BREAK 中断]  [ <Program 程序>  [<Parameter 程序运行参数>... ] ]
+
+
+
+
+docker volume create portainer_data
+docker run --network=host --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data -d portainer/portainer
+
+
+docker run --name=test1 --privileged -v /usr/bin/docker:/usr/bin/docker -v /var/run/docker.sock:/var/run/docker.sock -v etc:/etc -d nginx:1.9
+run --network=host --privileged -v /usr/bin/docker:/usr/bin/docker -v /var/run/docker.sock:/var/run/docker.sock -v etc:/etc -d test nginx:1.9
+
+
+docker run --network=host -v etc:/etc -v /e:/e -w /e -dit --name=php php:7.3-fpm bash
+
+docker cp test:/etc/mysql /etc/mysql
+
+docker run --rm -it --name=test -e MYSQL_ROOT_PASSWORD=123456 -d mysql:8.0
+
+
+docker run --network=host --name mysql -v database:/var/lib/mysql -v /etc/mysql:/etc/mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql:8.0
+
+docker run --network=host --name mysql  -e MYSQL_ROOT_PASSWORD=123456 -d mysql:8.0
+
+2，输入以下语句，进入mysql库：
+
+use mysql
+SHOW VARIABLES LIKE 'validate_password%';
+SET global validate_password.policy = LOW;
+SET global validate_password.length = 6;
+ALTER USER 'root'@'localhost' IDENTIFIED BY '123456';
+ALTER USER 'root'@'%' IDENTIFIED BY '123456';
+update user set host='%' where user ='root' limit 1;
+select host,user,plugin from user;
+update user set plugin='mysql_native_password' where user='root';
+FLUSH PRIVILEGES;
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%'WITH GRANT OPTION;
+
+
+JAVA_TOOL_OPTIONS -Dfile.encoding=UTF-8
+
+
+
+
+
+
+
 wget https://repo.percona.com/apt/percona-release_latest.generic_all.deb
 sudo dpkg -i percona-release_latest.generic_all.deb
 sudo percona-release enable-only ps-80 release
