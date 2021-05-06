@@ -15,7 +15,6 @@ if "%cmd%" == "create" (
 )
 
 if "%cmd%" == "env" ( call :env %arg1% %arg2% %arg3% )
-if "%cmd%" == "push" ( call :push )
 if "%cmd%" == "rejava" ( call :rejava %arg1% %arg2%  )
 if "%cmd%" == "jads" ( call :jads %arg1%  )
 if "%cmd%" == "web" ( call :web %arg1% %arg2% %arg3%  )
@@ -71,14 +70,6 @@ goto :eof
 
 
 
-:push
-
-        set commit="日常更新"
-        cd /d E:\develop
-        git add -A
-        git commit -m %commit%
-        git push
-goto :eof
 
 :link 
     mklink /d D:\Development\Python\python D:\Development\Python\python3.8
