@@ -161,3 +161,4 @@ pear.conf
 /bin/consul
 /software/
 /src/
+.ssh/
