@@ -1078,3 +1078,29 @@ php.fix .
 history
 php.fix app/Models/MwsAccountOwners.php
 php artisan sync-sku-sale
+cd e
+ls
+cd laravel/
+ls
+push
+php artisan list
+php artisan tinker
+php artisan make:command --help
+php artisan tink
+php artisan tinker
+load
+tinker 
+php artisan list
+php artisan make:controller Cache
+php.fix app/Services/Inventory/AmazonSearchService.php
+php.fix app/Services/Product/MarginRateService.php
+php.fix app/Services/Statistics/ProductMarginRateBaseService.php
+php.fix app/Services/Statistics/ProductMarginRateService.php
+tinker 
+php.fix app/Services/Statistics/ProductMarginRateService.php
+tinker 
+php artisan product-margin-rate-base
+php.fix app/Services/Product/MarginRateService.php
+start php nginx mysql redis
+php artisan make:model ModelController
+php artisan make:controller ModelController
