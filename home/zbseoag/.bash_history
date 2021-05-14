@@ -1104,3 +1104,229 @@ php.fix app/Services/Product/MarginRateService.php
 start php nginx mysql redis
 php artisan make:model ModelController
 php artisan make:controller ModelController
+php -r "str_split('AABBCCCD')";
+php -r "str_split('AABBCCCD');"
+php -r "echo str_split('AABBCCCD');"
+php -r "p( str_split('AABBCCCD'));"
+php -r "print_r( str_split('AABBCCCD'));"
+start php redis mysql
+cd dev
+ls
+push
+cd e
+ls
+cd laravel/
+ls
+push
+cd d
+ls
+git staus
+status
+git push
+ls
+cat composer.json 
+rm composer.json 
+ls
+git push
+push
+tinker
+php.fix app/Services/Inventory/RemovalShipmentsService.php
+git pull
+php artisan make:controller Collection
+php.fix app/Console/Commands/AsinKingCommand.php
+php artisan asinKing 
+php artisan asinKing inventory
+debug php
+php artisan asinKing inventory
+php.fix app/Services/Inventory/RemovalShipmentsService.php
+start php nginx mysql redis
+tinker
+load
+method aaaaa::sfsfsf
+php artisan product-margin-rate-base
+tinker --help
+tinker --exec TestModel::test1();
+tinker --exec TestModel::test1()
+tinker --exec 'TestModel::test1();'
+tinker --execute 'TestModel::test1();'
+tinker --execute TestModel::test1();
+load
+tinker 
+method TestModel::test1
+method \App\Models\TestModel::test1
+method Test::test1
+method TestController::test
+phpunit --help
+phpunit tests/unit
+phpunit tests/unit/ExampleTest
+phpunit tests/unit
+phpunit tests/unit/DebugTest/testAbc
+phpunit tests/unit/DebugTest/testABC
+php artisan tinker
+php artisan tinker --execute InventoryMidSearch::query()->select('d.name', DB::raw('(shelf_qty-applying_qty-picking_qty) as usableInventory'))->from('inventory_mid_search', 'i')->where('sku',  'abc')->where('ware_code', 8)->where(DB::raw('shelf_qty-applying_qty-picking_qty'), '>', 0)->join('departments as d', 'd.id', 'i.team_id')->groupBy('subject')->dd();
+echo InventoryMidSearch::query()->select('d.name', DB::raw('(shelf_qty-applying_qty-picking_qty) as usableInventory'))->from('inventory_mid_search', 'i')->where('sku',  'abc')->where('ware_code', 8)->where(DB::raw('shelf_qty-applying_qty-picking_qty'), '>', 0)->join('departments as d', 'd.id', 'i.team_id')->groupBy('subject')->dd(); | php artisan tinker
+php artisan tinker --help
+php artisan tinker --execute 
+php artisan tinker --execute "InventoryMidSearch::query()->select('d.name', DB::raw('(shelf_qty-applying_qty-picking_qty) as usableInventory'))->from('inventory_mid_search', 'i')->where('sku',  'abc')->where('ware_code', 8)->where(DB::raw('shelf_qty-applying_qty-picking_qty'), '>', 0)->join('departments as d', 'd.id', 'i.team_id')->groupBy('subject')->dd();"
+start php nginx
+tinker "InventoryMidSearch::query()->select('d.name', DB::raw('(shelf_qty-applying_qty-picking_qty) as usableInventory'))->from('inventory_mid_search', 'i')->where('sku',  'abc')->where('ware_code', 8)->where(DB::raw('shelf_qty-applying_qty-picking_qty'), '>', 0)->join('departments as d', 'd.id', 'i.team_id')->groupBy('subject')->dd();"
+tinker
+tinker 
+tinker "InventoryMidSearch::query()->select('d.name', DB::raw('(shelf_qty-applying_qty-picking_qty) as usableInventory'))->from('inventory_mid_search', 'i')->where('sku', 'aaaaa')->where('ware_code', 9999)->where(DB::raw('shelf_qty-applying_qty-picking_qty'), '>', 0)->join('departments as d', 'd.id', 'i.team_id')->groupBy('subject')->dd();"
+tinker "InventoryMidSearch::query()->where('sku', 'sku')->where('ware_code', 'wareCode')->where('team_id', $user->root_department_id)->where(DB::raw('shelf_qty-applying_qty-picking_qty'), '>', 0)->groupBy('subject')->dd();"
+tinker "InventoryMidSearch::query()->where('sku', 524)->where('ware_code', 'wareCode')->where('team_id', $user->root_department_id)->where(DB::raw('shelf_qty-applying_qty-picking_qty'), '>', 0)->groupBy('subject')->dd();"
+tinker "InventoryMidSearch::query()->where('sku', 524)->where('ware_code', 'wareCode')->where(DB::raw('shelf_qty-applying_qty-picking_qty'), '>', 0)->groupBy('subject')->dd();"
+artisan make:controller FuncController
+php artisan sync-sku-sale
+tinker "MwsSellerSku::query()->where('account_id',  '1607139626968962')->where('sku', 'AMJJ400')->select([DB::raw(\"seller_sku as code\"), DB::raw(\"seller_sku as name\")])->dd();"
+tinker
+start php nginx redis
+start php nginx mysql redis
+cd e
+ls
+cd fbaerp/
+ls
+tinker (new AsinKingPullService())->removalShipments(['sid'=>1654, 'isAll'=>true]);
+tinker "(new AsinKingPullService())->removalShipments(['sid'=>1654, 'isAll'=>true])"
+tinker "dispatch(new AsinKingRemovalShipmentsJob(['sid'=>1654, 'isAll'=> ($type == 'all')]));"
+tinker "dispatch(new AsinKingRemovalShipmentsJob(['sid'=>1654, 'isAll'=>  'all']));"
+start php nginx
+tinker "MwsStores::query()->dd();"
+artisan pull-removal-shipments
+artisan pull-removal-shipments all
+load
+tinker UserService getUserInfo('jiangshilin')
+tinker UserService getUserInfo\('jiangshilin'\)
+tinker UserService getUserInfo\('zhuzhihao'\)
+sudo apt-get install php-xdebug
+php -m | grep xdebug
+cd /d/etc/php/
+ls
+cd 7.4/
+ls
+cd /etc/php/7.4/
+ls
+cd mods-available/
+ls
+open
+ll
+sudo vim xdebug.ini 
+php --help
+php --rz xdebug
+php -m | grep debug
+php -m
+php -m | grep debug
+php -m
+php --help
+php --rz Xdebug
+ls
+cd /etc/php/7.4/
+ls
+cd mods-available/
+ls
+sudo vim xdebug.ini 
+php --version
+start php nginx
+start redis
+cd 
+ls
+start redis
+start php nginx
+cd 
+ll
+cd /
+ll
+start php nginx mysql redis
+cd /
+ls
+cd e
+ls
+ll
+cd /mnt
+ls
+sudo rmdir c d e
+ls
+cd ../
+ls
+cd e
+ls
+cd ../
+ls
+start php nginx mysql redis
+cd d
+ls
+cd et
+cd etc
+ls
+cd php/
+ls
+cd 7.4/
+ls
+cd fpm/
+ls
+start php
+start php nginx
+ls
+cd /etc/php/7.4/
+ls
+cd mods-available/
+ls
+sudo vim xdebug.ini 
+ping 127.0.0.1
+sudo vim xdebug.ini 
+start php nginx
+cd /etc/php/7.4/
+ls
+ope mods-available/
+ls
+cd mods-available/
+ls
+sudo vim xdebug.ini 
+start php
+echo $PATH
+echo $PATH | grep user
+echo $USER
+echo $WUSER
+load
+echo $WUSER
+load
+reset.idea
+load
+reset.idea
+start php nginx redis mysql
+start php nginx
+start php nginx mysql redis
+php -m | grep pdo
+cd d
+ls
+cd e
+ls
+cd fbaerp/
+ls
+tinker "InventoryMwsPerformance::query()->select(['account_id', 'asin', 'acoas'])->where('account_id', '<>', '')->where('asin', '<>', '')->where('acoas', '<>', 0)->dd();"
+cat /tmp/debug.txt 
+start php nginx mysql redis
+start php nginx
+stop nginx
+start php
+start nginx
+composer require looxis/laravel-amazon-mws
+$ php artisan vendor:publish --provider="Looxis\LaravelAmazonMWS\AmazonMWSServiceProvider" --tag="config"
+s\LaravelAmazonMWS\AmazonMWSServiceProvider" --tag="config"
+$: command not found
+php artisan vendor:publish --provider="Looxis\LaravelAmazonMWS\AmazonMWSServiceProvider" --tag="config"
+composer test
+start php nginx redis mysql
+cd e
+l
+ls
+cd fbaerp/
+ls
+tinker \App
+cd e
+ls
+cd fbaerp/
+ls
+tinker "(new /App/Services/Inventory/MidService)->grabShipment();"
+tinker "(new App\Services\Inventory\MidService)->grabShipment();"
+tinker "(new \App\Services\Inventory\MidService)->grabShipment();"
