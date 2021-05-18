@@ -1330,3 +1330,151 @@ ls
 tinker "(new /App/Services/Inventory/MidService)->grabShipment();"
 tinker "(new App\Services\Inventory\MidService)->grabShipment();"
 tinker "(new \App\Services\Inventory\MidService)->grabShipment();"
+cd e
+ls
+cd fbaerp/
+ls
+tinker "(new \App\Services\Inventory\MidService)->grabShipment();"
+start php nginx redis
+cd dev
+ls
+push
+cd d
+ls
+push
+cd e
+ls
+cd laravel/
+ls
+push
+cd e
+ls
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo usermod -aG docker $USER
+start docker
+docker ps
+sudo service docker start
+docker ps
+ls
+pcd
+cd e
+ls
+cd dev
+ls
+cd c
+ls
+run test.cpp
+reset
+run test.cpp
+open
+cd dev
+ls
+push
+sudo apt-get remove docker docker-engine docker.io containerd runc
+sudo apt-get update
+sudo apt-get install     apt-transport-https     ca-certificates     curl     gnupg     lsb-release
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+echo   "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io
+sudo service docker start
+docker ps
+sudo apt-get purge docker-ce docker-ce-cli containerd.io
+sudo rm -rf /var/lib/docker
+sudo rm -rf /var/lib/containerd
+sudo apt-get purge docker-ce docker-ce-cli containerd.io
+cd dev
+push
+cd dev
+ls
+cd 
+ls
+start php nginx mysql redis
+start php nginx
+stop php nginx
+start php nginx
+start php nginx mysql redis
+ls
+rm redis.log 
+start mysql 
+start php nginx
+cd dev
+ls
+cd c
+ls
+cd ../
+ls
+cd c
+ls
+l
+ls
+run a.cpp
+sudo vim /etc/sysctl.conf
+sudo vim  /proc/sys/net/core/somaxconn
+sudo vim /proc/sys/net/core/somaxconn
+sudo rm /var/tmp/somaxconn.swp
+sudo vim /proc/sys/net/core/somaxconn
+su root
+cat /proc/sys/net/core/somaxconn
+su root
+ls
+ll
+start php nginx redis mysql
+cd d
+ls
+cd home/zbseoag/
+ls
+ll
+cd /d/usr/jdk
+ls
+cd bin
+ls
+w
+who
+w
+whoami
+cd /etc/
+ls
+cd d
+ls
+cd home/
+ls
+cd zbseoag/
+ls
+ll
+cd /roo
+cd /root
+ls
+ll
+ls
+cat redis.conf 
+ls
+rm redis.conf 
+ls
+ll
+cd /root
+ls
+su root
+ls
+cd 
+ls
+cat redis.log 
+ls
+rm redis.log 
+ls
+ll
+ls
+shutdown
+start php nginx mysql redis
+su root
+start redis
+ls
+cat redis.
+cat redis.log 
+sudo vim /etc/sysctl.conf
+cat /proc/sys/net/core/somaxconn
+sudo vim /etc/sysctl.conf
+cat redis.log 
+sudo sysctl -p
