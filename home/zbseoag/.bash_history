@@ -1478,3 +1478,212 @@ cat /proc/sys/net/core/somaxconn
 sudo vim /etc/sysctl.conf
 cat redis.log 
 sudo sysctl -p
+cd d
+ls
+push
+cd dev
+push
+start php nginx redis mysql
+cd tmp
+ls
+php /e/fbaer/tinker "InventoryMwsTransaction::query()->select(['account_id', 'sku', 'quantity', 'fba_fees'])->where('type', 1)->where('account_id', '<>', '')->where('fba_fees', '<>', '0.0000')->groupBy(['account_id', 'sku'])->dd();"
+php /e/fbaerp/tinker "InventoryMwsTransaction::query()->select(['account_id', 'sku', 'quantity', 'fba_fees'])->where('type', 1)->where('account_id', '<>', '')->where('fba_fees', '<>', '0.0000')->groupBy(['account_id', 'sku'])->dd();"
+alias tinker
+php /e/fbaerp/artisan tinker 
+php /e/fbaerp/artisan tinker "InventoryMwsTransaction::query()->select(['account_id', 'sku', 'quantity', 'fba_fees'])->where('type', 1)->where('account_id', '<>', '')->where('fba_fees', '<>', '0.0000')->groupBy(['account_id', 'sku'])->dd();"
+cd /usr/share/java
+ls
+cd ../
+ls
+cd 
+ls
+cd tmp
+ls
+java Main
+java Main.class
+load
+run Main.java
+ls
+rm Main.*
+ls
+php --help
+ls
+php Main.php
+php -f Main.php
+install
+sudo apt install golang
+ls
+cd dev
+ls
+cd go
+ls
+cat lang.go
+go --help
+tobin /usr/bin/python3.8
+mv /usr/local/bin/python3.8 /usr/local/bin/python
+sudo mv /usr/local/bin/python3.8 /usr/local/bin/pytho
+load
+cd desktop
+cd desk
+ls
+ll
+cat test.php
+run test.php
+load
+run test.php
+load
+run 
+loa
+load
+run 
+run aafs.php
+load
+run aafs.php
+ls
+reset
+ls
+run test.php
+run ljsfls.php
+cd dev
+ls
+push
+echo $desktop
+echo $desk
+load
+cd $desk
+run test.php
+run test.php > a.html
+run test.php
+run test.php > a.html
+run test.php
+ls
+run test.php
+start php nginx
+run test.php
+cd dev
+ls
+cd e
+ls
+cd laravel/
+ls
+composer require spatie/laravel-web-tinker --dev
+php artisan web-tinker:install
+php artisan vendor:publish --provider="Spatie\WebTinker\WebTinkerServiceProvider" --tag="config"
+cd ../
+ls
+cd fbaerp/
+ls
+tinker "InventoryMwsTransaction::query()->select(['account_id', 'sku', 'quantity', 'fba_fees'])->where('type', 1)->where('account_id', '<>', '')->where('fba_fees', '<>', '0.0000')->groupBy(['account_id', 'sku'])->dd();"
+ll
+php /e/fbaerp/artisan  /e/fbaerp/tinker "InventoryMwsTransaction::query()->select(['account_id', 'sku', 'quantity', 'fba_fees'])->where('type', 1)->where('account_id', '<>', '')->where('fba_fees', '<>', '0.0000')->groupBy(['account_id', 'sku'])->dd();"
+php /e/fbaerp/artisan  tinker --execute "InventoryMwsTransaction::query()->select(['account_id', 'sku', 'quantity', 'fba_fees'])->where('type', 1)->where('account_id', '<>', '')->where('fba_fees', '<>', '0.0000')->groupBy(['account_id', 'sku'])->dd();"
+cd e
+ls
+cd laravel/
+ls
+push
+cd dev
+ls
+push
+start php nginx mysql redis
+cd e
+ls
+cd fbaerp/
+ls
+tinker WmsusFbaClient getWarehouseQty
+tinker '\App\Tools\Client' getWarehouseQty
+tinker '\App\Tools\Client\WmsusFbaClient' getWarehouseQty
+load
+tikner class mothod 1 2 3 "abc"
+tinker class mothod 1 2 3 "abc"
+tinker user getName 1 2 3 "abc"
+load
+tinker user getName 1 2 3 "abc"
+load
+tinker user getName 1 2 3 "abc"
+load
+tinker user getName 1 2 3 "abc"
+load
+tinker user getName 1 2 3 "abc"
+tinker user "getName(1,2, 'abc')"
+load
+tinker user getName "2,3 'abc'"
+tinker user getName
+load
+tinker WmsusFbaClient getnamne "222"
+tinker abc\def WmsusFbaClient getnamne "222"
+tinker "sfsfs\def" WmsusFbaClient getnamne "222"
+load
+tinker "App\Tools\Client\WmsusFbaClient" getWarehouseQty "1"
+load
+tinker "App\Tools\Client\WmsusFbaClient" getWarehouseQty "1"
+load
+tinker "App\Tools\Client\WmsusFbaClient" getWarehouseQty "1"
+tinker "App\Tools\Client\WmsusFbaClient" getWarehouseQty
+tinker
+load
+tinker
+load
+tinker
+load
+tinker
+tinker run
+cat --help
+tail -n +2 /tmp/tinker.php
+load
+tinker run
+php artisan tinker --help
+tinker run
+load
+tinker
+tinker run
+reset
+cd e/fbaerp
+tinker run
+cd e/fbaerp
+tinker run
+seq -f "%02g daodaotest" 1 10 > test.txt
+cat -n test.txt
+sed -n '5p' test.txt
+wsl.exe --help
+cd e/fbaerp
+ls
+tinker run 2
+reset
+tinker run 2
+tinker
+tinker run 2
+tinker run 4
+reset.phpstrom
+tinker run 2
+cd e/fbaerp
+tinker run 2
+reset
+tinker run 2
+cd e
+ls
+cd fbaerp/
+ls
+reset
+tinker run 4
+cd dev
+push
+tinker
+start php redis mysql nginx
+cd e
+ls
+cd fbaerp/
+ls
+tinker run
+tinker run 137
+load
+cd fba
+ls
+tinker run 8
+tinker run getWarehouseQty
+echo $HOME
+load
+cd down
+ls
+cd fba
+ls
