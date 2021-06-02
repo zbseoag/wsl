@@ -162,3 +162,5 @@ pear.conf
 /software/
 /src/
 .ssh/
+.config/
+.local/

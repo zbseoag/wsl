@@ -1,71 +1,3 @@
-remove mysql-server
-update
-upgrade
-sudo rm -rf /etc/mysql
-install mysql-server
-sudo apt install mysql-server
-sudo apt --help
-sudo apt reinstall mysql-server
-remove mysql-server
-install mysql-server mysql-common
-sudo apt reinstall mysql-server
-start mysql
-cd /var/lib/dpkg/info.bak
-remove mysql-server
-cd ../
-sudo rm -rf info
-sudo mv info.bak/ info
-ll /etc/mysql/my.cnf
-purge mysql-server
-ll /etc/mysql/my.cnf
-cd /etc/mysq
-cd /etc/mysql
-sudo apt reinstall mysql-common
-cd /etc/mysql
-sudo apt purge mysql-*
-sudo rm -rf /etc/mysql/ /var/lib/mysql
-sudo apt autoremove
-sudo apt autoclean
-install mysql-server
-cd ../
-cd 
-update
-sudo apt purge mysql-*
-sudo rm -rf /etc/mysql/ /var/lib/mysql
-sudo apt purge mysql-*
-sudo rm -rf /etc/mysql/ /var/lib/mysql
-sudo apt purge mysql-*
-sudo apt autoremove
-sudo apt autoclean
-install mysql-server
-open -common
-cd /etc/mysql
-cat my.cnf.fallback 
-sudo rm my.cnf.fallback
-sudo chown -R zbseoag:zbseoag /etc/mysql
-sudo mysql
-start mysql
-FLUSH PRIVILEGES;
-sudo mysql
-cd /etc/mysql
-php artisan make:seeder UserSeeder
-php artisan make:migration create_users_table
-php artisan make:migration create_users_table2 --create=users
-php artisan make:migration add_votes_to_users_table111 --table=users
-composer require doctrine/dbal
-php artisan make:observer UserObserver --model=User
-
-composer require laravel/telescope
-php artisan telescope:install
-php artisan migrate
-php artisan telescope:publish
-stop nginx
-start php nginx mysql redis
-java -version
-start php nginx mysql redis
-python e:/develop/python/office/writeExcel.py
-python
-cd devf
 cd dev
 cd python/
 cd office/
@@ -1998,3 +1930,71 @@ pip install mysql-connector
 cd dev
 push
 php /e/outmain/kohana/index.php --uri=triggertable/rpcdata
+php -v
+php.exe -v
+php.exe /e/outmain/kohana/index.php --uri=triggertable/rpcdata
+php /e/outmain/kohana/index.php --uri=triggertable/rpcdata
+
+php /e/outmain/kohana/index.php --uri=triggertable/rpcdata
+php.exe /e/outmain/kohana/index.php --uri=triggertable/rpcdata
+
+php.exe /e/outmain/kohana/index.php --uri=triggertable/rpcdata
+php.exe e:/outmain/kohana/index.php --uri=triggertable/rpcdata
+open /tmp/debug.txt 
+php.exe e:/outmain/kohana/index.php --uri=triggertable/rpcdata
+tp TransferOrder/pushOutData
+cd e
+cd outmain
+cd e
+cd outmain
+tp TransferOrder/pushOutData
+router Inventory/mwsSearch
+cd fba
+router Inventory/mwsSearch
+open -comm
+router Inventory/mwsSearch
+start php nginx redis mysql
+start nginx
+start php
+cd dev
+push
+router Inventory/mwsSearch
+open -comm
+load
+router Inventory/mwsSearch
+load
+router Inventory/mwsSearch
+cd fba
+router Inventory/mwsSearch
+load
+router Inventory/mwsSearch
+cd e
+ls
+cd outmain
+tp TransferOrder/pushStockin
+tools.com
+open -comm
+call -l "E:\fbaerp\app\Services\Inventory\MidService.php" test
+tinker
+call -l "E:\fbaerp\app\Tools\Client\WmsusFbaClient.php" test
+tinker 15
+cd fba
+tinker 15
+cd dev
+push
+cd d
+ls
+push
+cd fba
+router Common/dict
+open -comm
+load
+router Common/dict
+load
+router Common/dict
+load
+router Common/dict
+router Common/warehouses
+cd div
+cd dev
+push
