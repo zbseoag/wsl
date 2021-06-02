@@ -1,2 +1,2 @@
 _HiStOrY_V2_
-return\040(new\040App\134Console\134Commands\134SynSkuSaleCommand)->reset();
+\011\011return\040(new\040\134App\134Tools\134Client\134WmsusFbaClient())->getWarehouseQty(['AMSG2201']);

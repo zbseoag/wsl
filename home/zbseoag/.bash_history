@@ -1,404 +1,3 @@
-
-
-sudo mv /etc/apt/sources.list /etc/apt/sources.list.bak
-sudo apt install -y language-pack-zh-hans
-sudo vim /etc/default/locale
-LANG="zh_CN.UTF-8"
-LANGUAGE="zh_CN:zh"
-
-list php-zip
-install php-zip
-open -common
-composer config -g repo.packagist composer https://packagist.phpcomposer.com
-composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
-list php-bcmath
-install php-bcmath
-list php-json
-install php-json
-install
-php -m
-list freetype
-install libfreetype-dev
-list php-gd
-install php-gd
-cd e
-cd /etc/php
-open 7.4
-start php
-start nginx
-start mysql
-open /etc/nginx
-start nginx
-install 
-where python
-pip install pillow
-python3-pip
-pip install pillow
-pip install numpy
-pip install matplotlib
-pip install xlsxwriter
-pip -v
-pip -V
-pip install pillowpip3 install pytesseract
-pip install pytesseract
-open -common
-sudo vim /etc/inputrc
-list tesseract
-install tesseract-ocr 
-install tesseract-ocr-chi-sim
-pip install PySimpleGUI
-pip install http
-cd desk
-python a.py
-pip install tkinter
-list python3-tk
-list python-tk
-install python3-tk
-python a.py
-wsl python a.py
-wsl.exe python a.py
-wsl.exe python3.8 a.py
-python3.8 a.py
-python a.py
-tesseract --help
-tesseract --list-langs
-man tesseract 
-tesseract bbbb.png b.txt --psm 7
-tesseract bbbb.png out --psm 7
-tesseract bbbb.png out --psm 3
-tesseract c.png out --psm 3
-list libpng
-install libpng-dev
-install libpng12-dev
-install libpng16-dev
-list libpng
-install libpng++-dev
-list libjpeg
-install libjpeg62-dev
-list libtiff
-install libtiff-dev
-install gcc g++ automake
-tesseract c.png out
-tesseract c.png out -l chi_sim
-tesseract c.png out -l chi_sim --psm 7
-tesseract c.png out -l chi_sim
-tesseract bbbb.png out -l chi_sim
-tesseract 111.png out -l chi_sim
-tesseract --version 
-tesseract 22.png out -l chi_sim
-cat out.txt
-tesseract 553.png out -l chi_sim
-cat out.txt
-tesseract test.png out -l chi_sim
-cat out.txt
-tesseract test.jpg out -l chi_sim
-cat out.txt
-tesseract test.jpg out -l chi_sim
-cat out.txt
-tesseract 1.jpg out -l chi_sim
-cat out.txt
-train.bat
-./train.bat
-tesseract --help-extra
-open -hosts
-slmgr /ipk 46J3N-RY6B3-BJFDY-VBFT9-V22HG
-install php-redis
-where pip
-update
-start php nginx
-start mysql
-open /etc/nginx
-cd e
-cd fbaerp/
-cd public/
-real
-real .
-back
-cd /etc/nginx
-rm -rf sites-enabled/
-start nginx
-open -hosts
-cd sites-enabled/
-open default.conf 
-up
-open
-start nginx
-cd e:
-cd fbaerp/
-cd /etc/php/
-cd 7.4/
-cd fpm/
-cd pool.d/
-open www.conf 
-start php
-open /etc/nginx/nginx.conf 
-start nginx
-cd 
-open redis.conf
-redis-server --help
-redis-server redis.conf 
-cd /etc/nginx
-cd vhosts
-open default.conf 
-start nginx
-where python
-open -common
-cat /etc/profile
-sudo vim /etc/profile
-start nginx php
-redis-server redis.conf 
-sudo vim /etc/profile
-sudo vim /etc/inputrc 
-start nginx
-open -common
-load
-ll bin
-load
-ll bin
-ssh-keygen -o
-cat ~/.ssh/id_rsa.pub
-cd .ssh
-ll\
-git.config
-cd e
-git status
-cd develop/
-git status
-git pull
-gstatus
-git status
-rm php/tools/.htaccess
-git add .
-git commit -m update
-git push
-cd ~
-open .gitconfig 
-cd dev
-cd .git
-cat config
-open config 
-vim config
-cd ../
-git push
-status
-git status
-push
-cd d
-rm test?.jpg
-rm test.jpg 
-git status
-git add .
-git commit -m update
-git push
-vim .git/config
-push
-where git
-start php nginx 
-redis-cli
-cd e
-cd fbaerp/
-git status
-open -common
-cd dev
-cd shell/
-open common.sh 
-open
-load
-status
-push
-where lua
-cd d bin
-cd d/bin
-tobin lua luac
-where java
-cd d/usr/jdk
-cd d/bin/jdk
-cd bin
-tobin javac java
-open -common
-cd usr/
-cd jdk
-cd bin
-tobin java javac
-install golang-go
-go version
-go evn
-go env
-cd 
-cd go
-mkdir go
-cd go
-vim a.go
-go run a.go
-list mysql-pdo
-list pdo-mysql
-php -m
-list php-mysql
-install php-mysql
-start php
-php -m
-open /etc/php/7.4/fpm/php.ini 
-list php-curl
-install php-curl
-start php
-open /etc/php/7.4
-ll bin
-ll sbin
-php-fpm -m
-start php
-open -common
-load
-start php
-cd dev
-push
-where python
-cd e
-open test.py
-python test.py
-where python
-python3.exe test.py
-pip install tkinter
-python test.py
-where python
-cd e
-open test.py 
-python test.py
-python test.py test.jpg
-chmod o+x test.py
-test.py test.jpg
-where python
-/usr/bin/env python3.8
-test.py test.jpg
-./test.py
-chmod a+x./test.py
-chmod a+x ./test.py
-./test.py
-./test.py aaa bbb
-./test.py test.jpg
-./test.py test.jpg 140
-./test.py test.jpg 255
-./test.py test.jpg 0
-./test.py test.jpg 127
-./test.py test.jpg 128
-./test.py test.jpg 127.5
-where ocr
-open -common
-cd dev
-push
-img /e/test.jpg
-cat redis.
-cat redis.log
-ocr /e/test3.png
-ocr /e/test3.png 58
-ocr /e/test3.png 200
-pip install opencv-python
-redis-server
-redis-server redis.conf 
-cd dev
-cd e
-cd fbaerp/
-pull
-git status
-open app/Http/Resources/Api/Inventory/AmazonSearchResource.php
-git status
-cd dev
-status
-push
-cd d
-status
-push
-start php nginx mysql
-redis-server redis.conf 
-where git
-git.exe -V
-cd /etc/nginx
-open
-start nginx
-cd /e
-cd fbaerp/
-php artisan db
-cd e
-l
-git clone git@github.com:zbseoag/manual.git
-start mysql
-cd laravel/
-git init
-git status
-git add .
-git commit -m update
-git branch -M main
-git remote add origin git@github.com:zbseoag/laravel.git
-git push -u origin main
-cd /etc/nginx
-cd vhosts/
-open default.conf 
-open -host
-start nginx
-laravel new laravel
-cd e
-laravel new laravel
-cd /etc/mysql
-open
-sudo mysql
-start nginx php mysql
-cat /etc/hosts
-cd d
-cd e
-cd laravel/
-push
-stat php nginx
-start php nginx
-start mysql
-sudo mysql
-start mysql
-sudo mysql
-cd /etc/mysql
-open
-cat debian-start 
-open
-cat my.cnf 
-cd ..
-cd mysql
-ll /etc/alternatives/my.cnf
-start mysql
-sudo mysql
-cd /var/lib/mysql
-sudo cd /var/lib/mysql
-su root
-start mysql
-stop mysql
-start mysql
-stop mysql
-open -common
-sudo service mysql stop
-sudo service mysql start
-load
-purge mysql-server
-install mysql-server
-purge mysql-server
-sudo apt autoremove
-install mysql-server
-purge mysql-server
-sudo apt-get update --fix-missing
-install mysql-server
-sudo apt-get update --fix-missing
-sudo apt-get autoremove && sudo apt-get clean && sudo apt-get install -f
-sudo dpkg --configure -a
-sudo apt-get install –f
-sudo apt-get install –f mysql-server
-sudo apt-get install mysql-server
-sudo apt autoremove
-sudo dpkg --configure -a
-sudo apt install--fix-broken
-sudo apt install --fix-broken
-sudo mv /var/lib/dpkg/info /var/lib/dpkg/info.bak
-sudo mkdir /var/lib/dpkg/info
-update
-upgrade
-update
-upgrade
-start php
-install mysql-server
 remove mysql-server
 update
 upgrade
@@ -1687,3 +1286,715 @@ cd down
 ls
 cd fba
 ls
+msedge.exe --help
+ls
+msedge.exe help
+tinker
+start php nginx redis mysql
+cd fba
+tinker
+open -comm
+load
+tinker
+load
+tinker
+open -comm
+cd dev
+push
+start php nginx redis
+tools.com
+tinker
+open -comm
+load
+tinker run abc
+tinker run abc def
+tinker run abc "sfsfsf ad"
+load
+liad
+load
+tinker run
+load
+cd fba
+tinker hello
+tinker 14
+open -comm
+load
+start.work 
+tools.com
+start php ngin
+start php nginx
+code
+tinker
+tinker es
+cd fba
+tinker es
+tinker getShipment
+open -comm
+where composer
+cd b
+ls
+cd d
+ls
+cd bin
+ls
+cd phar/
+ls
+tobin phpunit.phar composer.phar
+rename /usr/local/bin/composer.phar composer
+rename /usr/local/bin/phpunit.phar phpunit
+ll bin
+cd 
+ls
+rename test.txt 
+ls
+rename test  test.txt
+cd d
+ls
+cd bin
+ls
+cd phar/
+ls
+cd ../
+ls
+rm phpunit 
+ls
+mkdir mine
+ls
+mv ocr mine
+mv img mine
+ll
+ls
+rm phalcon 
+ls
+cd mine
+ls
+cd ../
+ls
+cd phar/
+ls
+cd ../
+ls
+open -comm
+topath "E:\develop\php\tools\index.php"
+load
+toname "E:\develop\php\tools\index.php"
+load
+toname "E:\develop\php\tools\index.php"
+load
+toname "E:\develop\php\tools\index.php"
+load
+toname "E:\develop\php\tools\index.php"
+load
+topath "E:\develop\php\tools\index.php"
+load
+toname "E:\develop\php\tools\index.php"
+toname "E:\develop\php\tools\index.php" | grep namesp
+toname "E:\develop\php\tools\index.php" | grep namespace
+load
+toname "E:\fbaerp\app\Services\Inventory\MidService.php"
+load
+toname "E:\fbaerp\app\Services\Inventory\MidService.php"
+load
+toname "E:\fbaerp\app\Services\Inventory\MidService.php"
+load
+toname "E:\fbaerp\app\Services\Inventory\MidService.php"
+load
+toname "E:\fbaerp\app\Services\Inventory\MidService.php"
+kiad
+load
+toname "E:\fbaerp\app\Services\Inventory\MidService.php"
+load
+toname "E:\fbaerp\app\Services\Inventory\MidService.php"
+load
+toname "E:\fbaerp\app\Services\Inventory\MidService.php"
+load
+toname "E:\fbaerp\app\Services\Inventory\MidService.php"
+load
+toname "E:\fbaerp\app\Services\Inventory\MidService.php"
+load
+toname "E:\fbaerp\app\Services\Inventory\MidService.php"
+load
+toname "E:\fbaerp\app\Services\Inventory\MidService.php"
+grep --help
+toname "E:\fbaerp\app\Services\Inventory\MidService.php"
+load
+toname "E:\fbaerp\app\Services\Inventory\MidService.php"
+load
+toname "E:\fbaerp\app\Services\Inventory\MidService.php"
+cat --help
+load
+toname "E:\fbaerp\app\Services\Inventory\MidService.php" 3
+cat --help
+load
+toname "E:\fbaerp\app\Services\Inventory\MidService.php" 3
+toname "E:\fbaerp\app\Services\Inventory\MidService.php" 200
+toname "E:\fbaerp\app\Services\Inventory\MidService.php" 134
+load
+toname "E:\fbaerp\app\Services\Inventory\MidService.php" 134
+load
+toname "E:\fbaerp\app\Services\Inventory\MidService.php" 134
+toname "E:\fbaerp\app\Services\Inventory\MidService.php" getname
+toname "/e/Services/Inventory/MidService.php" getname
+where call
+load
+call "E:\fbaerp\app\Services\Inventory\MidService.php" 134
+reset
+call "E:\fbaerp\app\Services\Inventory\MidService.php" 134
+load
+call "E:\fbaerp\app\Services\Inventory\MidService.php" 134
+reset
+call "E:\fbaerp\app\Services\Inventory\MidService.php" 134
+load
+call "E:\fbaerp\app\Services\Inventory\MidService.php" 134
+reset
+call "E:\fbaerp\app\Services\Inventory\MidService.php" 134
+open -comm
+reset
+mkcall "E:\fbaerp\app\Services\Inventory\MidService.php" 134
+cd dev
+push
+log php
+log php -c
+log php
+where renew
+cat /d/win/bat/renew.bat
+load
+cd dev
+push
+tools.com
+mkcall "E:\fbaerp\app\Imports\BaseImport.php" import('/e/aaa.xlsx') -t
+mkcall "E:\fbaerp\app\Imports\BaseImport.php" import -t
+tinker
+tinker 242
+cd fba
+tinker 242
+reset
+open -comm
+load
+mkcall "E:\fbaerp\app\Imports\BaseImport.php" import
+load
+mkcall "E:\fbaerp\app\Imports\BaseImport.php" import
+load
+mkcall "E:\fbaerp\app\Imports\BaseImport.php" import
+load
+cd dev
+push
+cd dev 
+push
+tinker
+tinker 241
+cd fba
+tinker 241
+start php nginx mysql redis
+tinker 241
+tools.com
+tinker 241
+cd fba
+tinker "config('host.overseawms.' . config('app.env')) ;"
+tinker 
+tinker 240
+tools.com
+tinker 241
+cd fba
+ls
+tinker
+tinker 241
+mkcall "E:\fbaerp\app\Models\LogSystemMutual.php"
+tinker test2
+tinker test3
+tinker test2
+tools.com
+tinker test2
+tinker test3
+tools.com
+tinker test3
+tinker test2
+tinker test3
+mkcall -t "E:\fbaerp\app\Services\Statistics\ProductMarginRateService.php" 243
+mkcall -t "E:\fbaerp\app\Services\Statistics\ProductMarginRateService.php" getTransportPriceTable
+tinker 273
+cd fba
+ls
+tinker
+start php nginx redis mysql
+\
+open -comm
+tinker 273
+tools.com
+tinker -t "E:\fbaerp\app\Services\Statistics\ProductMarginRateService.php" 272
+mkcall -t "E:\fbaerp\app\Services\Statistics\ProductMarginRateService.php" 272
+tinker
+tinker 276
+reset
+tinker 276
+tools.com
+tinker 276
+sudoc vim /etc/sysctl.conf
+sudo vim /etc/sysctl.conf
+ls
+open redis.conf 
+open -comm
+ls
+start.work
+tools.com
+start php nginx
+start php nginx redis mysql
+desk.com
+tinker
+mkcall "E:\fbaerp\app\Models\ProductMarginRate.php" aaa
+mkcall "E:\fbaerp\app\Models\ProductMarginRate.php"
+tinker test9
+cd fba
+tinker test9
+mkcall -t "E:\fbaerp\app\Services\Statistics\ProductMarginRateService.php" 383
+mkcall -t "E:\fbaerp\app\Services\Statistics\ProductMarginRateService.php" testss
+tinker 277
+cd fba
+ls
+tinker 277
+tools.com
+tinker 277
+tinker
+mkcall -c "E:\fbaerp\app\Services\Product\MarginRateService.php" createFreightUnit
+mkcall -t "E:\fbaerp\app\Services\Product\MarginRateService.php" createFreightUnit
+tinker 278
+cd fba
+tinker 278
+start php nginx redis mysql
+tinker 278
+mkcall -t "E:\fbaerp\app\Services\Statistics\ProductMarginRateService.php" updateDataList
+tinker 280
+tools.com
+open -comm
+where exit
+exit --help
+load
+t
+load
+t
+load
+t
+load
+t
+load
+t
+load
+t
+load
+load
+mkcall "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+mkcall "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+mkcall "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+mkcall "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+loa
+load
+mkcall "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+mkcall "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+tinker
+cd
+ls
+cat test.txt 
+open test.txt 
+sed -i '/08 daodaotest/a\server 127.127.1.0'
+sed -i '/08 daodaotest/a\server 127.127.1.0' test.txt 
+cat
+cat test.txt 
+load
+mkcall "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+mkcall -t "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+mkcall -t "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+mkcall -t "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+mkcall -t "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+mkcall -t "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+mkcall -t "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+mkcall -t "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+mkcall -t "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+mkcall -t "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+mkcall -t "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+mkcall -t "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+mkcall -t "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+mkcall -t "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+loa
+load
+loa
+mkcall -t "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+mkcall -t "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+mkcall -t "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+mkcall -t "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+mkcall -t "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+mkcall -t "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+mkcall -t "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+mkcall -t "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+mkcall "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+mkcall "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+cd dev
+push
+load
+mkcall -t
+load
+mkcall -t
+load
+mkcall -t
+load
+mkcall -t
+load
+mkcall -t
+load
+mkcall -f "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+mkcall -f "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+mkcall -f "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+mkcall -f "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+where call
+loca
+load
+call  -f "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+call  -f "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" aaa "abc ss" sf2 1
+load
+call  -f "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" aaa "abc ss" sf2 1
+load
+call  -f "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" aaa "abc ss" sf2 1
+call  -f "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21 12 332
+load
+call  -f "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+call  -f "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21 dsf
+call  -f "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" test a b c
+load
+call  -f "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" test a b c
+load
+call  -f "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" test a b c
+call  -f "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+laod
+load
+call  -f "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php"
+load
+call  -f "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call  -f "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call  -f "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+load
+call -l "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+call -f "E:\fbaerp\app\Imports\ProductMarginTransportPriceImport.php" 21
+ls
+open code.txt 
+update
+upgrade
+open -comm
+load
+router abc
+router skuList
+clip.exe --help
+clip.exe /?
+CLIP /?
+ls | clip.exe
+load
+router getSkuUsers
+load
+router skuCategorySelect
+load
+router skuCategorySelect
+load
+router aafsfs
+load
+rest
+reset
+router skuList
+where clip
+echo 222 | clip
+load
+topath "E:/eeeee"
+topaht "E:\fbaerp\app\Console\Commands\SynSkuSaleCommand.php"
+topath "E:\fbaerp\app\Console\Commands\SynSkuSaleCommand.php"
+reset
+load
+router skuList
+start php nginx redis mysql
+start php nginx
+reset
+topath "E:\fbaerp\app\Http\Resources\Api\Product\SkuResource.php"
+open -comm
+reset
+topath "E:\fbaerp\app\Http\Resources\Api\Product\SkuResource.php"
+reset
+topath "E:\SkuResource.php"
+router skuList
+router aaaa
+open -comm
+find /e/fbaerp/routes -type f -name "*.php" | grep s
+load
+grep --help
+topath "E:\fbaerp\app\Http\Controllers\Api\Product\SkuController.php"
+topaht "App\Http\Controllers\Api\Product\SkuController"
+topath "App\Http\Controllers\Api\Product\SkuController"
+load
+update
+upgrade
+router InventoryOne/amazonSearchIndex
+router amazonSearchIndex
+cd fba
+router InventoryOne/amazonSearchIndex
+router amazonSearchIndex
+php artisan routes:list
+start php nginx redis mysql
+router amazonSearchIndex
+router InventoryOne/amazonSearchIndex
+mkcall "E:\fbaerp\app\Services\Inventory\AmazonSearchService.php" 155
+call "E:\fbaerp\app\Services\Inventory\AmazonSearchService.php" 155
+open -comm
+call -l "E:\fbaerp\app\Services\Inventory\AmazonSearchService.php" 155
+tinker
+call -l "E:\fbaerp\app\Services\Inventory\AmazonSearchService.php" 155
+load
+call -l "E:\fbaerp\app\Services\Inventory\AmazonSearchService.php" 155
+tinker 15
+tools.com
+tinker 15
+cd tmp
+ls
+cat debug.txt 
+cd desk
+php test.php
+router Product/skuList
+cd fba
+router Product/skuList
+tools.com
+start php nginx
+cd tmp
+ls
+open debug.txt 
+cat debug.txt 
+call -l "E:\fbaerp\app\Services\Product\SkuService.php" 330
+tinker 17
+cd fba
+tinker 17
+load
+tinker 17
+load
+tinker 17
+load
+tinker 17
+reset
+tinker 17
+load
+tinker 17
+load
+tinker 17
+cat /tmp/debug.txt 
+open -test
+find --help
+cd tmp
+ls
+cat debug.txt 
+tp Ppo/unqualified.html
+load
+tp Ppo/unqualified.html
+open -comm
+lang
+load
+tofile 
+load
+tofile 
+load
+tofile 
+load
+tofile 
+cd e
+ls
+cd outmain
+ls
+find . -type f -name PurchaseOrderController.php
+find ./ -type f -name PurchaseOrderController.php
+find . -type f -name PurchaseOrderController.php
+find . -type f -name PurchaseOrderController.class.php
+load
+tp
+load
+tp
+load
+tp
+load
+tp
+load
+tp
+load
+tp
+find . -type f -name PurchaseOrderController.class.php
+load
+find . -type f -name PurchaseOrderController.class.php
+load
+tp
+load
+tp
+load
+tp
+load
+tp
+load
+tp
+load
+tp
+find . -type f -name PurchaseOrderController.class.php | xargs grep -PoZ "public\s+function\s+Technical_Overseas_order"
+load
+tp
+load
+tp
+load
+tp
+where line
+load
+tp
+load
+tp 
+load
+tp 
+load
+tp
+load
+tp Ppo/unqualified.html
+tp Ppo/purchaseDetail.html
+tp Finance/index.html
+tp Finance/inventory
+tp Inventory/index.html
+tp Prepackage/exist_bind_prepackage
+tp PurchaseOrder/Technical_Overseas_order.html
+tp Prepackage/batch_create_package.html
+tp Transport/create_all
+tp Inventory/special_in.html
+tp TransferRecievenWarehouse/check.html
+tp Inventory/stockout_detail
+stop php nginx
+wps.exe aaaaaaaaaa.xlsx
+./wps.exe aaaaaaaaaa.xlsx
+./wps.exe --help
+./wps.exe /?
+ce e
+cd e
+excel.exe a.xlsx
+ls
+excel.exe /?
+tp SyncDailyReport/generateOverseaswhDailyReport
+cd e
+ls
+cd outmain
+tp SyncDailyReport/generateOverseaswhDailyReport
+tp Inventory/Idownload
+clip.exe > aa.xlsx
+clip.exe > a.xlsx
+clip.exe > abc.csv
+clip.exe > abc.txt
+cd e
+ls
+cd outmain
+ls
+tp Inventory/stockout_detail
+pip install bs4
+pip install mysql-connector
+cd dev
+push
+php /e/outmain/kohana/index.php --uri=triggertable/rpcdata
