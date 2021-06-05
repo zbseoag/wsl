@@ -1,121 +1,3 @@
-cd dev
-cd python/
-cd office/
-cd ../
-code office/
-composer require laravel/jetstream
-php artisan make:test UserTest
-open writeExcel.py 
-composer global update
-where composer
-ll /d/bin/composer 
-cd d/bin
-ll composer 
-cd phar/
-cd ../
-composer global require laravel/envoy
-wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
-sudo apt-get install apt-transport-https
-echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-7.x.list
-sudo apt-get update && sudo apt-get install elasticsearch
-ps -p 1
-start elasticsearch 
-ls /var/log/elasticsearch/
-sudo ls /var/log/elasticsearch/
-curl -X GET "localhost:9200/?pretty"
-ls /etc/elasticsearch
-sudo ls /etc/elasticsearch
-sudo chown zbseoag:zbseoag /etc/elasticsearch
-cd /etc/elasticsearch/
-open
-sudo chown -R zbseoag:zbseoag /etc/elasticsearch
-where elasticsearch
-cd /usr/share/elasticsearch/
-cd jdk
-cd ../
-ls /var/lib/elasticsearch/
-sudo ls /var/lib/elasticsearch/
-curl -X GET 'http://localhost:9200/_cat/indices?v'
-curl -X GET "localhost:9200/_cat/health?v=true&pretty"
-cd 
-curl -X GET "localhost:9200/_cat/health?v=true&pretty"
-composer require laravel/horizon
-composer require laravel/scout
-php artisan vendor:publish --provider="Laravel\Scout\ScoutServiceProvider"
-composer require algolia/algoliasearch-client-php:^2.2
-start elasticsearch
-ll /etc/elasticsearch
-sudo chmod -R o+xr /etc/elasticsearch
-start elasticsearch
-curl -X GET "localhost:9200/bank/_search?pretty" -H 'Content-Type: application/json' -d '
-{
-    "query" : {
-        "match" : {
-            "last_name" : "Smith"
-        }
-    }
-}
-'
-curl -X GET "localhost:9200/bank/_search?pretty" -H 'Content-Type: application/json' -d'{
-    "query" : {
-        "match" : {
-            "last_name" : "Smith"
-        }
-    }
-curl -X GET "localhost:9200/bank/_search?pretty" -H 'Content-Type: application/json' -d'
-{
-  "size": 0,
-  "aggs": {
-    "group_by_state": {
-      "terms": {
-        "field": "state.keyword"
-      },
-      "aggs": {
-        "average_balance": {
-          "avg": {
-            "field": "balance"
-          }
-        }
-      }
-    }
-  }
-}'
-open -common
-load
-get '{"query":{"match":{"last_name":"Smith"}}}'
-load
-where search
-get ' "query" : {'
-        "match_phrase" : {
-            "about" : "rock climbing"
-        }
-curl -X GET "localhost:9200/_cluster/health?pretty"
-curl -X PUT "localhost:9200/blogs?pretty" -H 'Content-Type: application/json' -d '{ "settings": {  "number_of_shards" : 3,  "number_of_replicas" : 1 }}'
-curl -X GET "localhost:9200/_cluster/health?pretty"
-
-
-install php-fpm
-install gcc zip net-tools curl tesseract-ocr tesseract-ocr-chi-sim
-sudo apt install  gcc zip net-tools curl tesseract-ocr tesseract-ocr-chi-sim
-sudo apt install php-fpm php-gd php-zip php-mbstring php-bcmath php-json php-redis php-curl php-mysql
-open
-where composer
-mv php-fpm.conf  php.ini  pool.d /d/etc/php/7.4/fpm
-ln -s  /d/etc/php/7.4/fpm/php.ini /etc/php/7.4/fpm
-ln -s  /d/etc/php/7.4/fpm/php-fpm.conf /etc/php/7.4/fpm
-ln -s  /d/etc/php/7.4/fpm/pool.d/ /etc/php/7.4/fpm
-
-
-wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
-sudo apt-get install apt-transport-https
-echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-7.x.list
-sudo apt-get update && sudo apt-get install elasticsearch
-start elasticsearch 
-
-
-
-php artisan product-margin-rate
-sudo dpkg-reconfigure locales
 cd e
 cd fbaerp/
 php artisan product-margin-rate
@@ -1998,3 +1880,121 @@ router Common/warehouses
 cd div
 cd dev
 push
+cd dev
+push
+ls
+cd d
+ls
+push
+ls
+git status
+git push
+snipaste.exe 
+snipaste.exe snip
+snipaste.exe paste --plain sbcd
+cd e
+lls
+ls
+cd outmain
+ls
+tp TransferRecievenWarehouse/check.html
+tp TransferRecievenWarehouse/skuSelect.html
+tp TransferRecievenWarehouse/unwarehouse.html
+tp TransferRecievenWarehouse/recieveDetail.html
+tp TransferRecievenWarehouse/select
+tp TransferRecievenWarehouseController.class.php:540
+tp TransferCheckAttr/index.html
+tp TransferCheckAttr/qualityCompleted.html
+open -comm
+where host
+host --help
+lang
+load
+url http://192.168.5.42:8180/kohana/triggerserver/synpurchaseorderpays
+url 192.168.5.42:8180/kohana/triggerserver/synpurchaseorderpays
+load
+url 192.168.5.42:8180/kohana/triggerserver/synpurchaseorderpays
+load
+url 192.168.5.42:8180/kohana/triggerserver/synpurchaseorderpays test.com:8080
+load
+url 192.168.5.42:8180/kohana/triggerserver/synpurchaseorderpays test.out.com:8080
+cd /tmp/
+ls
+open debug.txt
+cat debug.txt 
+php.exe e:/outmain/kohana/index.php --uri=triggertable/rpcdata
+where get
+open -comm
+browser www.baidu.com
+curl --help
+cd d
+cd e
+ls
+cd outmain
+tp TransferOrder/pushOutData
+open -comm
+load
+tp TransferOrder/pushOutData
+load
+tp TransferOrder/pushOutData
+find . -type f -name TransferOrderController.class.php
+find . -type f -name TransferOrderController.class.php | xargs grep -Pn pushOutData
+find . -type f -name TransferOrderController.class.php | xargs grep -Pn pushOutData | grep -PoZ "\d+:"
+grep --help
+find . -type f -name TransferOrderController.class.php | xargs grep -Pnh pushOutData | grep -PoZ "\d+:"
+find . -type f -name TransferOrderController.class.php | xargs grep -Pnh pushOutData | grep -PoZ "\d+"
+find . -type f -name TransferOrderController.class.php | xargs grep -Pnh pushOutData
+load
+tp TransferOrder/pushOutData
+tp TransferRecievenWarehouse/check
+tp TransferCheckAttr/index.html
+tp TransferReceiptAjax/updateAttr
+tp TransferCheckAttr/index.html
+tp TransferReceiptAjax/addCheck
+start php nginx redis mysql
+start nginx
+start php
+start nginx
+tools.com
+cd e
+ls
+cd outmain
+ls
+tp TransferRecievenWarehouse/check
+tp TransferRecievenWarehouse/receiptInert
+tp TransferCheckAttr/index
+tp TransferReceiptAjax/updateAttr
+tp TransferReceiptAjax/addCheck
+tp Prepackage/other_prepackage
+tp Prepackage/create_prepackage_table
+tp prepackage/batch_create
+tp Prepackage/batch_create
+tp Transport/manage
+tp Transport/get_prepackage_detail_by_transport
+tp Prepackage/judge_is_exist_prepackage
+tp Transport/create_all
+tp Transport/input
+tp Transport/verify_update
+tp Transport/confirm_delivery
+tp Transport/transport_report
+tp tp Transport/create_all
+tp Transport/create_all
+tp Prepackage/batch_create
+tp Transport/create_all
+wt new-tab
+wt.exe new-tab
+tools.cm
+tools.com
+cd desk
+php test.php 
+start nginx php redis
+cd e
+ls
+cd outmain
+ls
+cd ..
+ls
+cd outmainlinetransport/
+ls
+tp Inventory/special_deal.html
+active
