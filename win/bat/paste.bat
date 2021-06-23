@@ -1,2 +1,2 @@
 @echo off
-PowerShell -Command "Get-Clipboard"
+powershell.exe -Command "Get-Clipboard"

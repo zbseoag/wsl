@@ -1,453 +1,3 @@
-cd e
-cd fbaerp/
-php artisan product-margin-rate
-install translate-shell
-sudo apt install -y nginx php-dev php-fpm php-gd
-php-bcmath
-php artisan product-margin-rate
-ll
-rm redis.conf
-ll
-mv redis.conf.bak redis.conf
-ll
-debug php
-php -m | look bc
-install
-cd d
-ls
-cd home/
-ls
-cd zbseoag/
-ls
-ll
-cd d/etc/
-ls
-cd apt/
-ls
-link.file sources.list 
-update
-apt.list php-bcma
-php -m
-php -m | look bc
-php -m | grep bcmath
-ls
-cd e/develop
-ls
-cd shell
-ls
-touch ~/.hushlog
-rm~/.hushlog
-rm ~/.hushlog
-update
-upgrade
-cd desk
-cd /c/Users/work/Desktop
-ls
-php test.php 
-see hosts
-see host
-cat /etc/hosts
-cd d/etc/nginx
-ls
-open
-wget work.com
-cd /etc/nginx
-ls
-ll
-ls
-cd php
-ls
-cd 7.4/
-ls
-cd fpm/
-ls
-ll
-cd  /d/etc/php/7.4/fpm
-ls
-cd pool.d/
-ls
-ps -aux | grep php
-cd /etc/nginx
-ls
-cd ../
-ls
-cd nginx
-ls
-cat nginx.conf.bak 
-cd /d
-ls
-cd nginx
-cd etc/nginx
-ls
-history
-php-curl
-cat /etc/hosts
-ls
-rm redis.log 
-ls
-php test.php
-cd desktop
-cd desk
-load
-cd desktop
-ls
-load
-cd desk
-php test.php
-cd
-php test.php
-php-zip
-libzip-dev
-zip
-unzip
-ls
-cat test.php 
-load
-start php nginx
-ls
-cat redis.
-cat redis.log 
-ls
-rm redis.log 
-start php nginx
-start redis
-start php nginx
-history
-php artisan product-margin-rate
-cat /var/log/nginx/error.log
-sudo chmod zbseaog:zbseoag /var/log/nginx/error.log
-sudo chown zbseaog:zbseoag /var/log/nginx/error.log
-sudo chmod o+w /var/log/nginx/error.log
-sudo chmod 777 /var/log/nginx/error.log
-start php nginx
-start php nginx redis
-cd e
-ls
-git clone git@github.com:zbseoag/laravel.git
-cd laravel/
-ls
-status
-push
-tree
-install
-ls
-cd d
-ls
-cd e
-ls
-cd fbaerp/
-tree
-tree > fbafile.txt
-ls
-start php nginx
-cd 
-ls
-php test.php
-show ip
-load
-show ip
-sudo apt install net-tools
-show ip
-ip addr show eth0
-ifconfig
-ifconfig -all
-ifconfig -a
-ip route | grep default | awk '{print $3}'
-cat /etc/resolv.conf | grep nameserver | awk '{ print $2 }'
-cat /etc/resolv.conf
-history
-php artisan product-margin-rate
-cd e
-ls
-cd fbaerp/
-ls
-php artisan product-margin-rate
-start php nginx redis
-cd d
-ls
-cd fba
-cd e
-cd fbaerp
-ls
-php artisan product-margin-rate
-php-fpm7.4 -m | grep bcmath
-php -m | grep bcmath
-cd
-ls
-php test.php 
-php artisan product-margin-rate-base
-start php nginx
-start redis
-ls
-vim test.php 
-sudo apt install mysql-server
-sudo service mysql stop
-sudo usermod -d /var/lib/mysql/ mysql
-sudo service mysql start
-mysql -V
-cd e
-ls
-cd fbaerp
-ls
-php artisan product-margin-rate-base
-sudo mysql
-stop mysql
-start mysql
-debug php
-cd e
-ls
-cd fbaerp
-ls
-php artisan product-margin-rate-base
-cd /e/fbaerp
-ls
-php artisan product-margin-rate-base
-cd e
-ls
-cd fbaerp
-ls
-php artisan product-margin-rate-base
-show name
-show uname
-cd e
-ls
-cd fbaerp
-ls
-php artisan product-margin-rate-base
-start redis
-php artisan product-margin-rate-base
-start mysql
-php artisan product-margin-rate-base
-start php nginx
-cd e
-ls
-cd fbaerp
-ls
-php artisan product-margin-rate-base
-debug php
-php artisan product-margin-rate-base
-debug php
-php artisan product-margin-rate-base
-start php nginx
-cd /tmp/
-ls
-php test.php
-ls
-ll
-ls
-start php nginx mysql redis
-start nginx
-start php mysql redis
-cd tmp
-ls
-mkdir api
-ls
-cd api
-ls
-start php nginx redis mysql
-ls
-cd e
-ls
-cd fba
-cd fbaerp/
-ls
-history
-php artisan product-margin-rate-base
-start php redis
-php artisan product-margin-rate-base
-cd dev
-ls
-git status
-push
-cd e
-ls
-cd laravel/
-ls
-git status
-git push
-php-mbstring
-php-mbstring
-cd e
-ls
-cd laravel/
-ls
-php artisan storage:link
-composer require league/flysystem-cached-adapter ~1.0
-install
-load
-install
-load
-install
-exit
-cd e
-ls
-cd laravel/
-ls
-histroy
-history
-composer require league/flysystem-cached-adapter ~1.0
-ls
-ll
-cat test.php
-start php nginx redis
-start php nginx
-crontab -l
-crontab --hlep
-crontab -e
-select-editor
-crontab -e
-service crond restart
-sudo service crond start
-service rsyslog restart
-service cron start
-sudo service cron start
-status cron
-ll
-ls
-cat contab.txt 
-crontab -e
-time
-date
-debug php
-load
-conetab -e
-crontab -e
-stop cron
-status cron
-start php
-start php nginx mysql redis
-cd e
-ls
-cd laravel/
-ls
-php artisan migrate
-debug php
-rm /tmp/debug.txt 
-debug php
-cd ../
-ls
-cd fbaerp/
-ls
-history
-php artisan product-margin-rate-base
-debug php
-cd e
-ls
-cd laravel/
-ls
-push
-git status
-start php nginx
-start php nginx mysql redis
-cd ../
-ls
-cd fbaerp/
-ls
-start php nginx
-php --ini
-php -i
-php -i | grep log
-load
-log php
-cat /var/log/php7.4-fpm.log 
-load
-log php
-start php nginx
-zsh
-start php nginx mysql redis
-cd d
-ls
-cd etc
-ls
-cd php/
-ls
-cd 7.4/
-ls
-cd cli/
-ls
-cd ../
-ls
-cd fpm/
-ls
-cd d
-ls
-composer require global friendsofphp/php-cs-fixer
-composer global require friendsofphp/php-cs-fixer
-composer -V
-php-cs-fixer fix ~
-cd /home/zbseoag/.config/composer
-ls
-cd vendor/
-ls
-cd bin
-ls
-tobin php-cs-fixer
-ln -s ~/.config/composer/vendor/bin/php-cs-fixer /d/bin
-php-cs-fixer fix ~
-cd `
-cd
-ls
-ll
-cd e
-ls
-cd fbaerp/
-ls
-php-cs-fixer fix ./app --rules=@PSR2
-cd d
-ls
-cd bin
-ls
-install
-ls
-ll
-history
-ls
-ll
-cat /etc/shells
-chsh --help
-chsh -s /bin/zsh
-echo $SHELL
-cat /etc/shells
-chsh -s /usr/bin/zsh
-cd e
-ls
-php artisan make:model Country
-ls
-php.fix ./MwsAccountOwners.php 
-start php nginx  redis
-ls
-start php nginx
-start php ngixn
-start php nginx
-history
-ls
-cd ../
-ls
-ll
-cp -R .config /d/
-ll
-cp --help
-cd d/
-ls
-ll
-mv .config/ /home/zbseoag/
-mv -r .config/ /home/zbseoag/
-mv --help
-ll
-rm -rf .config/
-cd 
-ls
-ll
-cp -r .config/ /d/home/zbseoag/
-ll
-mv --help
-ls
-ll
-mv .config/ .config.back
-sudo mv .config/ ~/.config.back
-sudo mv ~/.config/ ~/.config.back
-lls
-ll
 sudo rm -rf .config/
 ll
 ln -s /d/home/zbseoag/.config ~/
@@ -1998,3 +1548,463 @@ cd outmainlinetransport/
 ls
 tp Inventory/special_deal.html
 active
+cd d
+push
+cd dev
+push
+start php nginx redis
+cd d
+cd e
+ls
+cd outmainlinetransport/
+tp TransferRecievenWarehouse/check
+tp TransferRecievenWarehouse/receipt
+tp Transport/create_al
+tp Transport/create_all
+open -comm
+where Get-Clipboard
+cd e
+ls
+cd outmainlinetransport/
+ls
+tp 
+cd e
+ls
+cd outmainlinetransport/
+load
+tp
+load
+tp
+load
+tp
+load
+tp
+load
+tp
+load
+tp
+load
+tp
+load
+tp
+tp Transport/create_all
+load
+tp
+load
+tp
+load
+tp Transport/create_all
+load
+tp Transport/create_all
+open -comm
+grep --help
+grep --help | gp -Phn
+tp Transport/create_all
+load
+tp Transport/create_all
+load
+tp Transport/create_all
+load
+tp Transport/create_all
+grep --help | gp -P abc
+grep --help | gp -P are
+tp Transport/create_all
+start php nginx
+tp Transport/scan_transport
+tp Transport/confirm_delivery
+php artisan product-margin-rate-base
+reset
+php artisan product-margin-rate-base
+start php nginx redis
+cd desk
+php test.php 
+tools.com
+start php nginx
+start redis
+tinker
+cd fba
+call -l "E:\fbaerp\app\Services\Statistics\ProductMarginRateService.php" 384
+tinker updateCostSetting
+cd desk
+php test.php
+tinker updateCostSetting
+cd fba
+tinker updateCostSetting
+open -comm
+cd dev
+push
+paste
+where namespace
+where name
+load
+name
+load
+name
+load
+name
+load
+name
+ls
+open a.txt 
+load
+name
+load
+name
+load
+name
+read --help
+load
+name
+load
+name
+load
+name
+load
+name
+load
+name
+load
+name
+tr --help
+load
+name
+load
+name
+load
+name
+load
+name
+load
+name
+load
+name
+load
+name
+load
+name
+load
+name
+load
+name
+load
+name
+load
+name
+reset
+name
+tools.com
+name
+cd fba
+ls
+tinker
+tinker updateCostSetting
+open /e/fbaerp/config/fbaerp.env
+name
+tinker
+tinker aaa
+cd fba
+tinker aaa
+php artisan make:test UserTest
+cd dev
+push
+start php nginx
+start redis mysql
+cd fba
+router User/fields
+open -comm
+load
+open -comm
+router User/fields
+load
+router User/fields
+load
+router User/fields
+php artisan route:list
+php artisan route:list | grep fields
+php artisan route:list | grep User/fields
+php artisan route:list | grep -P "User/fields\s"
+load
+router User/fields
+load
+router User/fields
+router User/customSet
+git pull
+ls
+push
+open -comm
+reset.phpstrom
+start php nginx redis
+start php
+start nginx
+cd out
+cd e
+ls
+cd outmainlinetransport/
+tp Transport/create_all.html
+tp Transport/confirm_delivery
+tp Transport/create_all.html
+php -v
+cd /tmp
+ls
+open debug.log
+open debug.txt
+open -comm
+read --help
+echo --help
+load
+cd 
+ls
+router E:\a\b\c\d.tet
+cat a.txt 
+router E:\a\b\c\d.tet
+router User/fields
+load
+router User/fields
+cd fba
+router User/fields
+router Statistics/productMarginRateIndex
+start php 
+start nginx
+start redis
+cd e
+ls
+cd laravel/
+ls
+push
+open -comm
+cd desk
+php test.php
+start nginx
+start php
+start nginx
+start php
+start redis
+start php
+start nginx
+start php
+start nginx
+start php
+composer show --platform
+tools.com
+start php
+start nginx redis
+start mysql
+cd fba
+php artisan product-margin-rate-base
+cd e
+ls
+cd outmainlinetransport/
+ls
+tp PurchaseOrder/Checked.html
+tp TransferRecievenWarehouse/check
+open -comm
+load
+tp
+load
+tp
+load
+tp
+cd e
+ls
+cd outmainlinetransport/
+ls
+tp
+cd fba
+ls
+php artisan product-margin-rate-base
+cd desk
+php test.php
+cd e
+ls
+cd outmainlinetransport/
+ls
+tp
+open -comm
+load
+class "E:\outmainlinetransport\Admin\Transitwms\Controller\TransportController.class.php"
+load
+class "E:\outmainlinetransport\Admin\Transitwms\Controller\TransportController.class.php"
+lang
+python --help
+echo $SHELL
+cat /etc/shells
+reset
+echo $SHELL
+cat /etc/shells
+start php nginx redis
+tools.com
+cd e
+ls
+cd outmainlinetransport/
+ls
+tp TransferRecievenWarehouse/receiptInert
+tp
+start php nginx
+tools.com
+start mysql
+cd e
+push
+ls
+cd dev
+ls
+push
+where test
+where run
+open --comm
+open -comm
+cd desk
+run test.php
+open -comm
+echo $foo
+echo $-
+declare -i val1=12 val2=5 result
+result=val1*val2
+echo $reslut
+declare -i val1=12 val2=5
+declare -i result
+result=val1*val2
+echo $result
+declare -i var=12
+var=foo
+echo $var
+pwd
+ls
+echo ~root
+echo ~+
+echo ~+/abc
+echo ${!S*}
+shopt globstar
+shopt -s globstar
+shopt globstar
+echo \a
+echo "$(cal)"
+cal
+env
+printenv
+echo $USER
+open -comm
+load
+open -test.php
+set
+export foo=bar
+echo $foo
+bash
+php artisan product-margin-rate-base
+reset
+php artisan product-margin-rate-base
+cd fba
+router Product/skuAmazonStatusSelect
+open -comm
+lang
+read --help
+load
+cd e
+ls
+cd outmainlinetransport/
+tp
+loade
+load
+tp aaa/bb
+load
+tp asfs/bbb
+tools.com
+load
+tp aab/bb
+tp
+load
+start php nginx
+start redis
+cd e
+ls
+cd outmainlinetransport/
+ls
+tp
+cd fba
+router InventoryOne/amazonSearchIndex
+cd dev
+push
+router InventoryOne/amazonSearchExport
+cd fba
+router InventoryOne/amazonSearchExport
+start php nginx redis
+start php
+start nginx
+tools.com
+call
+load
+call
+load
+call
+load
+call
+load
+call
+load
+call
+load
+cal
+load
+cal
+load
+cal
+load
+cal
+load
+call
+load
+call
+load
+call
+cal
+load
+cal
+load
+cal
+load
+cal
+load
+cal
+load
+cal
+load
+cal
+load
+cal
+load
+cal
+cd dev
+push
+load
+open -comm
+php artisan make:model MwsLogisticPlanShipments
+call
+load
+call
+load
+call
+reset
+call
+run -test.php
+open -comm
+load
+run -test.hp
+run -test.php
+load
+run -test.php
+load
+run -test.php
+load
+run -test.php
+tools.com
+start php nginx
+run -test.php
+call
+open -comm
+load
+call
+call 
+open -comm
+load
+call
+load
+call
