@@ -159,8 +159,9 @@ runtime/
 $Eis$Bak/
 pear.conf
 /bin/consul
-/software/
+/phpstudy_pro/
 /src/
 .ssh/
 .config/
 .local/
+/software/

@@ -1,112 +1,3 @@
-sudo rm -rf .config/
-ll
-ln -s /d/home/zbseoag/.config ~/
-ll
-cp -r .local/ /d/home/zbseoag/
-ln -s /d/home/zbseoag/.local ~/
-rm -rf .local/
-ln -s /d/home/zbseoag/.local ~/
-ll
-cat /d/home/zbseoag/.bashrc
-ll
-history
-rm /d/bin/php-cs-fixer 
-ln -s /d/home/zbseoag/.config/composer/vendor/bin/php-cs-fixer php-cs-fixer
-ll
-ls
-mv php-cs-fixer /d/bin
-history
-cd e
-ls
-cd fba
-cd fbaerp/
-ls
-cd app
-ls
-cd ../
-ls
-ll
-cd ../
-ls
-cd develop/
-
-cd php/
-ls
-php-cs-fixer fix . --rules=@PSR12
-php-cs-fixer --help
-php-cs-fixer fix --help
-php-cs-fixer fix --rules=@PSR12 .
-load
-php.fix .
-history
-php.fix app/Models/MwsAccountOwners.php
-php artisan sync-sku-sale
-cd e
-ls
-cd laravel/
-ls
-push
-php artisan list
-php artisan tinker
-php artisan make:command --help
-php artisan tink
-php artisan tinker
-load
-tinker 
-php artisan list
-php artisan make:controller Cache
-php.fix app/Services/Inventory/AmazonSearchService.php
-php.fix app/Services/Product/MarginRateService.php
-php.fix app/Services/Statistics/ProductMarginRateBaseService.php
-php.fix app/Services/Statistics/ProductMarginRateService.php
-tinker 
-php.fix app/Services/Statistics/ProductMarginRateService.php
-tinker 
-php artisan product-margin-rate-base
-php.fix app/Services/Product/MarginRateService.php
-start php nginx mysql redis
-php artisan make:model ModelController
-php artisan make:controller ModelController
-php -r "str_split('AABBCCCD')";
-php -r "str_split('AABBCCCD');"
-php -r "echo str_split('AABBCCCD');"
-php -r "p( str_split('AABBCCCD'));"
-php -r "print_r( str_split('AABBCCCD'));"
-start php redis mysql
-cd dev
-ls
-push
-cd e
-ls
-cd laravel/
-ls
-push
-cd d
-ls
-git staus
-status
-git push
-ls
-cat composer.json 
-rm composer.json 
-ls
-git push
-push
-tinker
-php.fix app/Services/Inventory/RemovalShipmentsService.php
-git pull
-php artisan make:controller Collection
-php.fix app/Console/Commands/AsinKingCommand.php
-php artisan asinKing 
-php artisan asinKing inventory
-debug php
-php artisan asinKing inventory
-php.fix app/Services/Inventory/RemovalShipmentsService.php
-start php nginx mysql redis
-tinker
-load
-method aaaaa::sfsfsf
-php artisan product-margin-rate-base
 tinker --help
 tinker --exec TestModel::test1();
 tinker --exec TestModel::test1()
@@ -2008,3 +1899,102 @@ load
 call
 load
 call
+open -comm
+start php nginx
+start redis
+load
+call
+tools.com
+run -test.php
+cd dev
+push
+cd d
+push
+cd e
+ls
+cd laravel/
+push
+action
+call
+open -comm
+where rmake
+lang
+load
+where action
+load
+where action
+action 
+load
+action 
+load
+action
+load
+action
+load
+action
+loa
+load
+action 
+load
+action
+load
+action
+load
+action
+load
+action
+load
+action
+load
+action
+load
+action
+load
+action
+load
+action
+load
+action
+load
+action
+tools.com
+start php nginx
+cd e
+cd outmainlinetransport/
+ls
+tp
+start php
+start nginx
+start redis
+run -test.php
+tools.com
+run -test.php
+pwd
+tp
+call 
+router Product/skuList
+start php nginx
+start redis
+tools.com
+ls
+cd /tmp
+ls
+cat debug.txt 
+tools.com
+start nginx php
+start redis
+start nginx
+start php
+tools.com
+start nginx
+start php
+tools.com
+pwd
+ls
+pwd
+ls
+pwd
+start php nginx
+start redis
+tools.com
+router Mws/shipmentSearch
