@@ -1,141 +1,3 @@
-tinker --help
-tinker --exec TestModel::test1();
-tinker --exec TestModel::test1()
-tinker --exec 'TestModel::test1();'
-tinker --execute 'TestModel::test1();'
-tinker --execute TestModel::test1();
-load
-tinker 
-method TestModel::test1
-method \App\Models\TestModel::test1
-method Test::test1
-method TestController::test
-phpunit --help
-phpunit tests/unit
-phpunit tests/unit/ExampleTest
-phpunit tests/unit
-phpunit tests/unit/DebugTest/testAbc
-phpunit tests/unit/DebugTest/testABC
-php artisan tinker
-php artisan tinker --execute InventoryMidSearch::query()->select('d.name', DB::raw('(shelf_qty-applying_qty-picking_qty) as usableInventory'))->from('inventory_mid_search', 'i')->where('sku',  'abc')->where('ware_code', 8)->where(DB::raw('shelf_qty-applying_qty-picking_qty'), '>', 0)->join('departments as d', 'd.id', 'i.team_id')->groupBy('subject')->dd();
-echo InventoryMidSearch::query()->select('d.name', DB::raw('(shelf_qty-applying_qty-picking_qty) as usableInventory'))->from('inventory_mid_search', 'i')->where('sku',  'abc')->where('ware_code', 8)->where(DB::raw('shelf_qty-applying_qty-picking_qty'), '>', 0)->join('departments as d', 'd.id', 'i.team_id')->groupBy('subject')->dd(); | php artisan tinker
-php artisan tinker --help
-php artisan tinker --execute 
-php artisan tinker --execute "InventoryMidSearch::query()->select('d.name', DB::raw('(shelf_qty-applying_qty-picking_qty) as usableInventory'))->from('inventory_mid_search', 'i')->where('sku',  'abc')->where('ware_code', 8)->where(DB::raw('shelf_qty-applying_qty-picking_qty'), '>', 0)->join('departments as d', 'd.id', 'i.team_id')->groupBy('subject')->dd();"
-start php nginx
-tinker "InventoryMidSearch::query()->select('d.name', DB::raw('(shelf_qty-applying_qty-picking_qty) as usableInventory'))->from('inventory_mid_search', 'i')->where('sku',  'abc')->where('ware_code', 8)->where(DB::raw('shelf_qty-applying_qty-picking_qty'), '>', 0)->join('departments as d', 'd.id', 'i.team_id')->groupBy('subject')->dd();"
-tinker
-tinker 
-tinker "InventoryMidSearch::query()->select('d.name', DB::raw('(shelf_qty-applying_qty-picking_qty) as usableInventory'))->from('inventory_mid_search', 'i')->where('sku', 'aaaaa')->where('ware_code', 9999)->where(DB::raw('shelf_qty-applying_qty-picking_qty'), '>', 0)->join('departments as d', 'd.id', 'i.team_id')->groupBy('subject')->dd();"
-tinker "InventoryMidSearch::query()->where('sku', 'sku')->where('ware_code', 'wareCode')->where('team_id', $user->root_department_id)->where(DB::raw('shelf_qty-applying_qty-picking_qty'), '>', 0)->groupBy('subject')->dd();"
-tinker "InventoryMidSearch::query()->where('sku', 524)->where('ware_code', 'wareCode')->where('team_id', $user->root_department_id)->where(DB::raw('shelf_qty-applying_qty-picking_qty'), '>', 0)->groupBy('subject')->dd();"
-tinker "InventoryMidSearch::query()->where('sku', 524)->where('ware_code', 'wareCode')->where(DB::raw('shelf_qty-applying_qty-picking_qty'), '>', 0)->groupBy('subject')->dd();"
-artisan make:controller FuncController
-php artisan sync-sku-sale
-tinker "MwsSellerSku::query()->where('account_id',  '1607139626968962')->where('sku', 'AMJJ400')->select([DB::raw(\"seller_sku as code\"), DB::raw(\"seller_sku as name\")])->dd();"
-tinker
-start php nginx redis
-start php nginx mysql redis
-cd e
-ls
-cd fbaerp/
-ls
-tinker (new AsinKingPullService())->removalShipments(['sid'=>1654, 'isAll'=>true]);
-tinker "(new AsinKingPullService())->removalShipments(['sid'=>1654, 'isAll'=>true])"
-tinker "dispatch(new AsinKingRemovalShipmentsJob(['sid'=>1654, 'isAll'=> ($type == 'all')]));"
-tinker "dispatch(new AsinKingRemovalShipmentsJob(['sid'=>1654, 'isAll'=>  'all']));"
-start php nginx
-tinker "MwsStores::query()->dd();"
-artisan pull-removal-shipments
-artisan pull-removal-shipments all
-load
-tinker UserService getUserInfo('jiangshilin')
-tinker UserService getUserInfo\('jiangshilin'\)
-tinker UserService getUserInfo\('zhuzhihao'\)
-sudo apt-get install php-xdebug
-php -m | grep xdebug
-cd /d/etc/php/
-ls
-cd 7.4/
-ls
-cd /etc/php/7.4/
-ls
-cd mods-available/
-ls
-open
-ll
-sudo vim xdebug.ini 
-php --help
-php --rz xdebug
-php -m | grep debug
-php -m
-php -m | grep debug
-php -m
-php --help
-php --rz Xdebug
-ls
-cd /etc/php/7.4/
-ls
-cd mods-available/
-ls
-sudo vim xdebug.ini 
-php --version
-start php nginx
-start redis
-cd 
-ls
-start redis
-start php nginx
-cd 
-ll
-cd /
-ll
-start php nginx mysql redis
-cd /
-ls
-cd e
-ls
-ll
-cd /mnt
-ls
-sudo rmdir c d e
-ls
-cd ../
-ls
-cd e
-ls
-cd ../
-ls
-start php nginx mysql redis
-cd d
-ls
-cd et
-cd etc
-ls
-cd php/
-ls
-cd 7.4/
-ls
-cd fpm/
-ls
-start php
-start php nginx
-ls
-cd /etc/php/7.4/
-ls
-cd mods-available/
-ls
-sudo vim xdebug.ini 
-ping 127.0.0.1
-sudo vim xdebug.ini 
-start php nginx
-cd /etc/php/7.4/
-ls
-ope mods-available/
-ls
-cd mods-available/
-ls
-sudo vim xdebug.ini 
 start php
 echo $PATH
 echo $PATH | grep user
@@ -1998,3 +1860,141 @@ start php nginx
 start redis
 tools.com
 router Mws/shipmentSearch
+run -test.php
+tools.com
+cd dev
+push
+cd d
+git status
+push
+cd e
+ls
+cd laravel/
+push
+tools.com
+start php nginx redis
+tools.com
+ping test.outmainlinetransport.kokoerp.com
+tp TransferRecievenWarehouse/check
+start php nginx
+tools.com
+start redis
+path
+tp TransferRecievenWarehouse/check
+tp
+start mysql
+cat *.sql > all.sql
+tools.com
+start nginx ph
+start nginx php
+cd div
+cd dev
+push
+start php nginx
+start mysql
+start redis
+tools.com
+tp 
+start php ngixn
+start php nginx
+tools.com
+tp Inventory/Odownload
+tp
+start php nginx redis
+tools.com
+start php nginx
+tools.com
+start php nginx
+start nginx php
+tools.com
+start mysql
+composer require phpunit/phpunit
+tp
+sudo pecl install inotify
+cd /etc/php
+l
+ls
+cd 7.4/
+ls
+cd cli/
+ls
+open php.ini
+php-m ;extension=uopz
+open test.php
+php test.php
+ls -lsart /proc/sys/fs/inotify  
+where back
+load
+where up
+load
+up
+back
+load
+bk
+up
+lw
+ping www.baidu.com
+open -comm
+cd e
+cd dev
+cd shell/
+ls
+open -comm
+open ~/.bashrc
+ls
+srouce init.sh 
+source init.sh 
+init.home 
+where load
+reload
+load
+where load
+load init.sh 
+init.home 
+load init.sh 
+init.home 
+load init.sh 
+init.home 
+load init.sh 
+init.home 
+tee --help
+cd dev
+push
+load
+push
+rm ~/.bashrc
+open .bashrc
+load
+open .bashrc
+cd 
+open .bashrc
+load
+where image
+who
+where who
+who --help
+who
+who -a
+who -u
+echo who
+where docker
+cd dev
+ls
+cd /d
+ls
+cd home/
+ls
+cd zbseoag/
+ls
+ll
+cd 
+ls
+echo aaa | sudo tee abc.txt > /dev/null
+ls
+cat abc.txt 
+ls
+ll
+rm .bashrc
+open .bashrc
+open /d/home/zbseoag/.bashrc
+who

@@ -1,0 +1,10 @@
+[Mysql]
+Db = "test"
+Host = "127.0.0.1"
+Port = "3306"
+Password = "123456"
+User = "zbseoag"
+
+[General]
+SecretKey = "dbcjqheupqjsuwsm"
+Hours = 4
